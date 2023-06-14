@@ -416,7 +416,7 @@ public class Grid extends JPanel {
         } else {
             scoresFileName = scoresFileNameOther;
         }
-        String RemainingLives= String.valueOf(lives-answers.cellsExploded());
+        String RemainingLives= String.valueOf(Math.max(0, lives-answers.cellsExploded()));
         String timeString = answers.getTime();
         boolean highscore = false;
         boolean newBoardSize = false;
