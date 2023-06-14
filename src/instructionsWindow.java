@@ -1,0 +1,79 @@
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.KeyboardFocusManager;
+import java.awt.Component;
+
+public class instructionsWindow extends javax.swing.JFrame {
+    public instructionsWindow() {
+        initComponents();
+    }
+    private void initComponents() {
+        JButton Back = new JButton("Back");
+        Back.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                ((JFrame) SwingUtilities.getWindowAncestor(((JButton) evt.getSource()))).dispose();
+            }
+        });
+        KeyAdapter keyAdapter = new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
+                // Check if the Enter key is pressed
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    // get focused component source
+                Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                ((JButton)CurrComp).doClick();
+                }
+            }
+        };
+        Back.addKeyListener(keyAdapter);
+
+        JLabel TitleLabel = new JLabel();
+        TitleLabel.setFont(new Font("Tahoma", 0, 36));
+        TitleLabel.setText("Instructions");
+        TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel instructions1 = new JLabel();
+        instructions1.setVerticalAlignment(SwingConstants.NORTH);
+        instructions1.setBorder(new EmptyBorder(10, 10, 10, 10));
+        instructions1.setText("<html>Begin by choosing numbers for width by height, then bombs, then lives. 25x25 45 bombs, 2-3 lives is a good starting point, but choose whatever you want. Keep in mind it takes a little bit to pull up the window if you choose something like 200x200. (CTRL+Scroll to zoom)<br><br>If you click a bomb, you lose a life, lose all your lives to lose the game. Click a cell to reveal if it is a bomb. If your cell is not a bomb, it will instead display how many bombs are in the 8 surrounding cells, and if there are none, it will fill out all bombless cells surrounding the cell you clicked until no cell marked with a zero is adjacent to another cell that could be marked with a zero. The goal is to reveal every cell that is not a bomb. You may mark cells that contain bombs by use of the mark bombs button, or by right-clicking a cell. You cannot interact with marked cells other than to unmark them so as to prevent accidental death. If you mark twice it will instead receive a question mark, which is similar but interacts differently with chords.<br>There is another method of interaction called a chord. If you use both mouse buttons when you click an already revealed numbered cell it clicks all surrounding squares but not an X mark, and if you marked too many it penalizes you for each extra mark by exploding a bomb each. However, this means it will reveal many more squares from just 1 action so it can be advantageous. It will explode question marks but not reveal if not a bomb.<br><br>I have made a modification from the original ruleset in that you will always reveal a square with no adjacent bombs on your first click of the game instead of just requiring the cell itself to not be a bomb (unless your board size and #ofBombs prohibit this, in which case it will revert to the original ruleset).<br><br>Personal leaderboards will be saved in %userprofile%\\AppData\\Roaming\\minesweeperScores on windows, and ~/.minesweeper on linux or mac. If you alter the leaderboard manually and do not follow the format, scores will be unreadable by the program. format: x:y:bombCount:lives-livesLeft-time Additionally, if Leaderboard.txt is deleted or moved your scores can't be read until you move it back, but a new Leaderboard.txt file will be created to record future games.</html>");
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setPreferredSize(new Dimension(650,500));
+        getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints containerConstraints = new GridBagConstraints();
+        
+        containerConstraints.gridx = 0;
+        containerConstraints.gridy = 0;
+        containerConstraints.gridwidth = 1;
+        containerConstraints.gridheight = 1;
+        containerConstraints.fill = GridBagConstraints.BOTH;
+        getContentPane().add(Back, containerConstraints);
+
+        containerConstraints.weightx = 1.0;
+        containerConstraints.gridx = 1;
+        getContentPane().add(TitleLabel, containerConstraints);
+        containerConstraints.weightx = 0.0;
+
+        containerConstraints.gridx = 0;
+        containerConstraints.gridy = 1;
+        containerConstraints.gridwidth =2;
+        containerConstraints.weightx = 1.0;
+        containerConstraints.weighty = 1.0;
+        getContentPane().add(instructions1, containerConstraints);
+
+        pack();
+        getContentPane().setVisible(true);
+    }
+}
