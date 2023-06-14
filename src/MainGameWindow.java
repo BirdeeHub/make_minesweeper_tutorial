@@ -42,15 +42,26 @@ public class MainGameWindow extends javax.swing.JFrame {
     private final Timer displayTimer = new Timer();
     private final TimerTask timeDisplayTask = new TimerTask() {
         public void run() {
-            timeDisplay.setText(grid.getTime());
+            timeDisplay.setText(grid.getTime());//if you want to add a time format you can do that here
         }
     };
     private JLabel GameOverDisplay = new JLabel();
     private JLabel BombsFoundDisplay = new JLabel();
     private JLabel livesLostDisplay = new JLabel();//our 3 display labels and functions to set them.
-    private void setBombsFoundDisplay(){BombsFoundDisplay.setText("M:" + grid.getBombsFound() + "/" + String.valueOf(bombCount));}
-    private void setLivesLostDisplay(){livesLostDisplay.setText("L:" + grid.getLivesLeft() + "/" + String.valueOf(lives));}
-    private void setGameOverDisplay(){GameOverDisplay.setText(grid.getGameOverMessage());}
+    private final String highScoreMessage = "Record Time!";//to change text of messages in menubar display, edit from here
+    private final String newBoardSizeAndWonMessage = "New Board Cleared!";
+    private final String wonAndNotHighScoreMessage = "Cleared!";//compiler will treat it the same as having it actually in setGameOverDisplay()
+    private final String diedButNewBoardMessage = "1st Board Death";//so having these here is just for readability
+    private final String diedAndNotNewBoardMessage = "Exploded...";
+    private void setBombsFoundDisplay(){BombsFoundDisplay.setText("M:" + Integer.toString(grid.getBombsFound()) + "/" + Integer.toString(bombCount));}
+    private void setLivesLostDisplay(){livesLostDisplay.setText("L:" + Integer.toString(grid.getLivesLeft()) + "/" + Integer.toString(lives));}//and end edit here
+    private void setGameOverDisplay(){
+        int[] GOIndex = new int[2];//GOIndex[0] is message index, GOIndex[1] is won value.
+        GOIndex = grid.getGameOverIndex();//if not in game over state, these will both be 3.
+        if(GOIndex[1]==1){ GameOverDisplay.setText((GOIndex[0]==2)?highScoreMessage:((GOIndex[0]==1)?newBoardSizeAndWonMessage:wonAndNotHighScoreMessage));
+        }else if(GOIndex[1]==0){ GameOverDisplay.setText((GOIndex[0]==1)?diedButNewBoardMessage:diedAndNotNewBoardMessage);
+        }else GameOverDisplay.setText("");
+    }
     private Grid grid;//<-- Game Board Class (action listeners not included)
     //things for listeners that needed to persistance across buttons or are used in different scopes
     private JScrollPane scrollPane;

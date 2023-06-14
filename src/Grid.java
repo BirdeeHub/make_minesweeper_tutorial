@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.Icon;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -17,32 +16,34 @@ import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 import java.awt.Graphics;
 import javax.swing.SwingConstants;
+import javax.swing.Icon;
 //This class controls the behavior of the game board. Contains cell display and action logic, and uses Minefield to keep track of the game state
 public class Grid extends JPanel {
-    //--------------Initialize-----------------------------
-    private final int Fieldx, Fieldy, bombCount, lives;
-    private final Color BLACK = new Color(0);
-    private final Color GREEN = new Color(31, 133, 28);
-    private final Color MAGENTA = new Color(255,0,255);
-    private final Color RED = new Color(255,0,0);
+    //--------------Initialize-Colors--------Many are the same color, but now theyre easily changed?
+    private final boolean DarkMode = false;
+    private final Icon DefaultButtonIcon = (new JButton()).getIcon();
+    private final Color WHITE = (DarkMode)?new Color(255, 255, 255):new Color(0);//<-- default button foreground
+    private final Color BLACK = new Color(0);//<-- default button background
+    private final Color GREEN = new Color(31, 133, 28);//<-- grass
+    private final Color MAGENTA = new Color(255,0,255);//<-- game over color
+    private final Color BLUE = new Color(0,0,255);//<-- game over color 2
+    private final Color RED = new Color(255,0,0);//<-- exploded bomb background
+    private final Color CGORED = new Color(255,0,0);//<-- game over indicator on chord number foreground
+    private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
+    private final Color QSTNMARKCOLOR = new Color(133, 95, 227);//<-- question mark color
+    private final Color MARKCOLOR = new Color(255,0,0);//<-- color of marks
+    private final Color YELLOW = new Color(255, 255, 0);//<-- border colors
     private final Color ORANGE = new Color(255, 160, 0);
     private final Color ORANGERED = new Color(255,95,0);
-    private final Color YELLOW = new Color(255, 255, 0);
-    private final Color BLUE = new Color(0,0,255);
-    private final Color CYAN = new Color(0,255,200);
-    private final Color PURPLE = new Color(109, 50, 153);
-    private final Color defaultBorderColor = new Color(126, 126, 126);
-    private final Insets CellInset = new Insets(-20, -20, -20, -20);
-    private final Icon defaultButtonIcon = (new JButton()).getIcon();//<-- it should just do this at compile time right? I'd hope?
+    private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
+    private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
+    private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
     private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-    private final String highScoreMessage = "Record Time!";
-    private final String newBoardSizeAndWonMessage = "New Board Cleared!";
-    private final String wonAndNotHighScoreMessage = "Cleared!";
-    private final String diedButNewBoardMessage = "1st Board Death";
-    private final String diedAndNotNewBoardMessage = "Exploded...";
+    private final int Fieldx, Fieldy, bombCount, lives;//logic initializing
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
-    private String GameOverMessage = "";
+    private int GameOverMessageIndex = 3;
+    private int wonValue = 3;
     private int BombsFound = 0;
     private int livesLeft = 0;
     private Minefield answers;//<-- this one is the data class for game logic
@@ -97,6 +98,7 @@ public class Grid extends JPanel {
                 Grid.this.add(Cell[i][j]);
             }
         }
+        if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)Cell[i][j].setBackground(BLACK);
     }//-----------------------------------function for adding mouse Listener to cells in Grid-------------------------------------------------
     void addCellListener(MouseListener mouseListener){//----------addCellListener()--------------------------------------------------
         for (int i = 0; i < Fieldx; i++) {
@@ -112,9 +114,14 @@ public class Grid extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
     }//---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
     String getTime(){return answers.getTime();}
-    String getBombsFound(){return Integer.toString(BombsFound);}
-    String getLivesLeft(){return Integer.toString(livesLeft);}
-    String getGameOverMessage(){return GameOverMessage;}
+    int getBombsFound(){return BombsFound;}
+    int getLivesLeft(){return livesLeft;}
+    int[] getGameOverIndex(){
+        int[] messageIndexes = new int[2];
+        messageIndexes[0]=GameOverMessageIndex;
+        messageIndexes[1]=wonValue;
+        return messageIndexes;
+    }
     void toggleQuestionMarks(){//<-- toggles the ability to mark cells with a ? on and off (i find it annoying so it starts turned off)
         this.cancelQuestionMarks = !cancelQuestionMarks;
         if(cancelQuestionMarks == true){
@@ -122,7 +129,7 @@ public class Grid extends JPanel {
                 for (int y = 0; y < Fieldy; y++) {
                     if(answers.isQuestionable(x, y)){
                         answers.clearSuspicion(x,y);
-                        Cell[x][y].setForeground(BLACK);
+                        Cell[x][y].setForeground(WHITE);
                         Cell[x][y].setText("");
                     }
                 }
@@ -133,17 +140,21 @@ public class Grid extends JPanel {
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- get a new minefield, thus resetting the timer and everything else
         for(int i=0;i<Fieldx;i++){//resetting Cell Properties is way faster than creating new ones
             for(int j=0;j<Fieldy;j++){
-                Cell[i][j].setForeground(BLACK);
+                Cell[i][j].setForeground(WHITE);
                 Cell[i][j].setBorderColor(defaultBorderColor, 1);
-                Cell[i][j].setBackground(null);
-                Cell[i][j].setIcon(defaultButtonIcon);
+                if(DarkMode){Cell[i][j].setBackground(BLACK);
+                }else {
+                    Cell[i][j].setBackground(null);
+                    Cell[i][j].setIcon(DefaultButtonIcon);
+                }
                 Cell[i][j].setText("");
             }
         }
         Grid.this.repaint();
         BombsFound = 0;
         livesLeft = lives;
-        GameOverMessage = "";
+        GameOverMessageIndex = 3;
+        wonValue = 3;
     }
     void doZoom(int rotation){//it makes the cells bigger. The main window is in a scroll pane
         Dimension currentCellSize = Cell[0][0].getSize();
@@ -209,6 +220,7 @@ public class Grid extends JPanel {
                     livesLeft = lives-answers.cellsExploded();
                 } else if (answers.adjCount(xValue, yValue) != 0) {//*whew*.... close one.
                     current.setText(String.valueOf(answers.adjCount(xValue, yValue)));
+                    current.setForeground(WHITE);
                     answers.check(xValue, yValue);
                     setBorderBasedOnAdj(xValue, yValue);
                 } else {                           //you clicked a 0
@@ -236,17 +248,17 @@ public class Grid extends JPanel {
             if (!answers.exploded(xValue,yValue) && !answers.checked(xValue,yValue) && !answers.isFirstClick()){
                 if(!answers.marked(xValue,yValue) && !answers.isQuestionable(xValue, yValue)) {
                     answers.mark(xValue,yValue);
-                    current.setForeground(RED);
+                    current.setForeground(MARKCOLOR);
                     current.setText("X");
                 } else if (answers.marked(xValue,yValue) && !cancelQuestionMarks) {
                     answers.unmark(xValue,yValue);
                     answers.question(xValue,yValue);
-                    current.setForeground(PURPLE);
+                    current.setForeground(QSTNMARKCOLOR);
                     current.setText("?");
                 }else if (answers.isQuestionable(xValue,yValue) || ((answers.marked(xValue, yValue) && cancelQuestionMarks))){
                     answers.unmark(xValue,yValue);//<-- it already checks if it was unmarked so just stick it here as well to make it work regardless of ? settings
                     answers.clearSuspicion(xValue,yValue);
-                    current.setForeground(BLACK);
+                    current.setForeground(WHITE);
                     current.setText("");
                 }
                 BombsFound = answers.cellsMarked()+answers.cellsExploded();
@@ -272,6 +284,7 @@ public class Grid extends JPanel {
                             }else if(!answers.isQuestionable(i, j)){
                                 if (answers.adjCount(i, j) != 0) {//adjCount>0
                                     Cell[i][j].setText(String.valueOf(answers.adjCount(i, j)));
+                                    Cell[i][j].setForeground(WHITE);
                                     answers.check(i, j);
                                     setBorderBasedOnAdj(i, j);
                                 } else {                           //you hit a 0
@@ -308,7 +321,7 @@ public class Grid extends JPanel {
             }
             if(answers.cellsExploded()>=lives){//RIP
                 current.setText("!");
-                current.setForeground(RED);
+                current.setForeground(CGORED);
                 answers.setGameOver();
                 GameOver(false);//<-- starts game over process
             }else if(answers.cellsExploded()<lives){//You lost some of your privates.
@@ -343,7 +356,7 @@ public class Grid extends JPanel {
                                 answers.check(i, j);
                                 setBorderBasedOnAdj(i, j);
                                 Cell[i][j].setText(String.valueOf(answers.adjCount(i, j)));
-                                Cell[i][j].setForeground(BLACK);
+                                Cell[i][j].setForeground(WHITE);
                             } else {
                                 stack.push(i * Fieldy + j);//is 0. queue it up!
                             }
@@ -372,7 +385,7 @@ public class Grid extends JPanel {
                     if(totalneighbors==meetsConditions)dqed=false;//fillzeroes revealed all neighbors and all were 1.
                     if(!dqed){//<-- if it was a lonely bomb
                         answers.mark(j,k); //If so, mark the lonely bomb.
-                        Cell[j][k].setForeground(RED);
+                        Cell[j][k].setForeground(MARKCOLOR);
                         Cell[j][k].setText("X");
                     }
                 }
@@ -389,7 +402,7 @@ public class Grid extends JPanel {
         }else if(answers.adjCount(x, y)<=5 ){ 
             Cell[x][y].setBorderColor(ORANGERED, 2); 
         }else if(answers.adjCount(x, y)<=8 ){ 
-            Cell[x][y].setBorderColor(RED, 2); 
+            Cell[x][y].setBorderColor(BORDERRED, 2); 
         }
     }//---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to UpdateLeaderboard
@@ -405,8 +418,9 @@ public class Grid extends JPanel {
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
         if(Fieldx*Fieldy!=bombCount/*unnecessary filtering*/)MessageIndex = updateLeaderboard(won);//<--
-        if(won){ GameOverMessage = (MessageIndex==2)?highScoreMessage:((MessageIndex==1)?newBoardSizeAndWonMessage:wonAndNotHighScoreMessage);
-        }else GameOverMessage = (MessageIndex==1)?diedButNewBoardMessage:diedAndNotNewBoardMessage;
+        GameOverMessageIndex = MessageIndex;
+        wonValue=(won)?1:0;
+
     }//---------------------------------------------updateLeaderboard()-------------------------------------------------------------------------
     private int updateLeaderboard(boolean won){//Reads and writes scores from score file, returns index for win/loss message
         String os = System.getProperty("os.name").toLowerCase();
