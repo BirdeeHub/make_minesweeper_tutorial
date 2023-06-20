@@ -15,16 +15,33 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.KeyboardFocusManager;
 import java.awt.Component;
+import javax.swing.JToggleButton;
 
 public class instructionsWindow extends javax.swing.JFrame {
+    private JFrame ParentWindow = null;
     public instructionsWindow() {
+        initComponents();
+    }
+    public instructionsWindow(JFrame ParentWindow){
+        this.ParentWindow = ParentWindow;
         initComponents();
     }
     private void initComponents() {
         JButton Back = new JButton("Back");
+        JToggleButton DMToggleButton = new JToggleButton("<html>Dark<br>Mode</html>");
+        if(ParentWindow instanceof MainGameWindow){
+            if(((MainGameWindow)ParentWindow).isDMOn())DMToggleButton.doClick();//<--sync toggle button status with dark mode status
+        }
         Back.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent evt) {
-                ((JFrame) SwingUtilities.getWindowAncestor(((JButton) evt.getSource()))).dispose();
+            public void actionPerformed(ActionEvent e) {
+                ((JFrame) SwingUtilities.getWindowAncestor(((JButton) e.getSource()))).dispose();
+            }
+        });
+        DMToggleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if(ParentWindow instanceof MainGameWindow){
+                    ((MainGameWindow)ParentWindow).toggleDarkMode();
+                }
             }
         });
         KeyAdapter keyAdapter = new KeyAdapter() {
@@ -32,12 +49,17 @@ public class instructionsWindow extends javax.swing.JFrame {
                 // Check if the Enter key is pressed
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                     // get focused component source
-                Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-                ((JButton)CurrComp).doClick();
+                    Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                    if(CurrComp instanceof JToggleButton){
+                        ((JToggleButton)CurrComp).doClick();
+                    }else{
+                        ((JButton)CurrComp).doClick();
+                    }
                 }
             }
         };
         Back.addKeyListener(keyAdapter);
+        DMToggleButton.addKeyListener(keyAdapter);
 
         JLabel TitleLabel = new JLabel();
         TitleLabel.setFont(new Font("Tahoma", 0, 36));
@@ -62,13 +84,19 @@ public class instructionsWindow extends javax.swing.JFrame {
         getContentPane().add(Back, containerConstraints);
 
         containerConstraints.weightx = 1.0;
+        containerConstraints.gridwidth = (ParentWindow instanceof MainGameWindow)?1:2;
         containerConstraints.gridx = 1;
         getContentPane().add(TitleLabel, containerConstraints);
         containerConstraints.weightx = 0.0;
 
+        if(ParentWindow instanceof MainGameWindow){
+            containerConstraints.gridx = 2;
+            getContentPane().add(DMToggleButton, containerConstraints);
+        }
+
         containerConstraints.gridx = 0;
         containerConstraints.gridy = 1;
-        containerConstraints.gridwidth =2;
+        containerConstraints.gridwidth =3;
         containerConstraints.weightx = 1.0;
         containerConstraints.weighty = 1.0;
         getContentPane().add(instructions1, containerConstraints);

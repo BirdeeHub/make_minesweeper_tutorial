@@ -34,16 +34,16 @@ import java.awt.GridBagLayout;
 //This is the main game board display window. contains action listeners and displays control buttons, and a Grid instance, which is the game board.
 public class MainGameWindow extends javax.swing.JFrame {
     //--------------Initialize-----------------------------
-    private final int Fieldx, Fieldy, bombCount, lives;
-    private final Color PURPLE = new Color(58, 0, 82);
-    private final Color GREEN = new Color(0, 255, 0);
-    private final Dimension DefaultWindowSize = new Dimension(830, 830);
-    private JLabel timeDisplay = new JLabel();  // Create Timer Displayer
+    private final int Fieldx, Fieldy, bombCount, lives;//you may wonder why I have 3 classes (and 1 private) for the main window. This is because, well...
+    private final Color PURPLE = new Color(58, 0, 82);//its java what did you expect. so you create a new minefield to store mutable game state.
+    private final Color GREEN = new Color(0, 255, 0);//Then the file got long so I put the grid display in grid and then split the rest of the window here.
+    private final Dimension DefaultWindowSize = new Dimension(830, 830);//also i needed a private cellbutton class for border painting
+    private JLabel timeDisplay = new JLabel();// Create Timer Displayer
     private final Timer displayTimer = new Timer();
     private final TimerTask timeDisplayTask = new TimerTask() {
         public void run() {
-            timeDisplay.setText(grid.getTime());//if you want to add a time format you can do that here
-        }
+            timeDisplay.setText(grid.getTime());//if you want to add a time format you can do that here, or in minefield.
+        }//                            we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
     };
     private JLabel GameOverDisplay = new JLabel();
     private JLabel BombsFoundDisplay = new JLabel();
@@ -70,6 +70,8 @@ public class MainGameWindow extends javax.swing.JFrame {
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
+    void toggleDarkMode(){grid.toggleDarkMode();}
+    boolean isDMOn(){return grid.isDarkMode();}
 //---------------------MainGameWindow CONSTRUCTOR----------------------MainGameWindow CONSTRUCTOR----------------------------MainGameWindow CONSTRUCTOR------------------------------
     public MainGameWindow(int w, int h, int bombNum, int lives) {
         Fieldx = w;
@@ -79,10 +81,10 @@ public class MainGameWindow extends javax.swing.JFrame {
         grid = new Grid(Fieldx, Fieldy, bombCount, lives);//<-- Generate game board
         displayTimer.scheduleAtFixedRate(timeDisplayTask, 0, 50);//this just displays the time in Minefield answers.
         scrollPane = new JScrollPane(grid);
-        addGridActionListeners();
-        initComponents();
+        addGridActionListeners();//<-- I could have done this in Grid but it was nice to keep the listeners in 1 place, and it would have been harder
+        initComponentsAndMiscListeners();
     }
-    private void addGridActionListeners(){
+    private void addGridActionListeners(){//i would have needed to pass in the toggle buttons for click action, and scrolls for zoom. this is better.
         grid.addCellListener(new MouseAdapter() {//add our listener to each cell.
             @Override
             public void mouseEntered(MouseEvent e){//allows the 1.5 click trick by actually getting the component the mouse is over rather than just
@@ -145,8 +147,8 @@ public class MainGameWindow extends javax.swing.JFrame {
                     getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old size
                     //get wheel and cell size info and do zoom
                     grid.doZoom(e.getWheelRotation());
-                    pack();
-                    getContentPane().revalidate();
+                    pack();//<-- pack to make sure size updates
+                    //getContentPane().revalidate();//<-- apparently you dont need to revalidate though?
                     //make sure it keeps the spot the mouse is over in more or less the same place on the board. not exact due to integer division
                     int mouseX2 = (grid.getWidth() * mouseX1)/sizeX1;
                     int mouseY2 = (grid.getHeight() * mouseY1)/sizeY1;
@@ -161,7 +163,7 @@ public class MainGameWindow extends javax.swing.JFrame {
             }
         });
     }
-    private void initComponents() {//-------------------initComponents() on window below-----------------------------------------------------------------------------
+    private void initComponentsAndMiscListeners() {//-------------------initComponents() on window below-----------------------------------------------------------------------------
         scrollPane.setBackground(PURPLE);
         JMenuBar menuBar = new JMenuBar();
         JPanel menuPanel = new JPanel(new GridBagLayout());
@@ -229,10 +231,11 @@ public class MainGameWindow extends javax.swing.JFrame {
         menuPanel.add(NewGame, menuBagConstraints);
         setJMenuBar(menuBar);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
-        pack();
-        getContentPane().revalidate();
-        grid.setCellFontSize();
-        //------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
+        //System.out.println("Start packing.");//<-- if you need proof of the below, uncomment this and start a 300x300 with 6000 bombs game.
+        pack();//<-- This pack() call is the slowest, heaviest thing in the entire program. But we need to call it to use layout managers...
+        getContentPane().revalidate();//^For 300x300 (90,000 cells) execution reaches here in under 1s, and the rest after is even faster.
+        grid.setCellFontSize();//       ^pretty sure to make it faster would need a different language unless there is a better pack function somewhere?
+//------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
         Reset.addActionListener(new ActionListener() {//reset button
             long clickmemory = System.currentTimeMillis();//<-- this is for protection from spamming
             public void actionPerformed(ActionEvent evt) {
@@ -243,7 +246,6 @@ public class MainGameWindow extends javax.swing.JFrame {
                     setBombsFoundDisplay();
                     setLivesLostDisplay();
                     setGameOverDisplay();
-                    MainGameWindow.this.pack();
                     getContentPane().revalidate();
                 }else clickmemory = System.currentTimeMillis();//if you spammed, update clickmemory
             }
@@ -267,7 +269,7 @@ public class MainGameWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
-                        new instructionsWindow().setVisible(true);
+                        new instructionsWindow(MainGameWindow.this).setVisible(true);
                     }
                 });
             }

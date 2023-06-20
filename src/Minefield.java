@@ -15,7 +15,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     private final Timer currentTimeTimer = new Timer();
     private TimerTask timeTask = new TimerTask() {
         public void run() {
-            time = String.valueOf((System.currentTimeMillis() - startTime) / 1000);
+            time = String.valueOf((System.currentTimeMillis() - startTime) / 1000);//if you want to add a time format you can do that here, or in minefield.
         }
     };
     //----------Constructor---------------------------------
@@ -30,7 +30,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         exp  = new boolean[Fieldx][Fieldy];
         qstn = new boolean[Fieldx][Fieldy];
     }//----------Reset Function-----------MANDATORY---------------Reset Function------------------Reset Function-------------
-    void reset(int a, int b){//THIS MUST BE CALLED BEFORE REFERENCING MINEFIELD CLASS
+    void reset(int a, int b){//THIS MUST BE CALLED BEFORE REFERENCING MINEFIELD CLASS IF YOU WANT BOMBS OR ADJ COUNTS
         //This cannot place a bomb that would cause AdjCount(a,b) to become >0 unless that is impossible
         totalMarked = 0;//initialize variables
         totalChecked = 0;
