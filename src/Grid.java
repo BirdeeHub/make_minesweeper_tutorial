@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseListener;
 import java.util.Stack;
 import java.io.File;
@@ -20,7 +21,6 @@ import javax.swing.Icon;
 //This class controls the behavior of the game board. Contains cell display and action logic, and uses Minefield to keep track of the game state
 public class Grid extends JPanel {
     //--------------Initialize-Colors--------Many are the same color, but now theyre easily changed?
-    private boolean DarkMode = false;
     private final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- used for non darkmode
     private final Color LightModeTextColor = new Color(0);//<-- LightMode button foreground
     private final Color DarkModeTextColor = new Color(255, 255, 255);//<-- DarkMode button foreground
@@ -40,6 +40,7 @@ public class Grid extends JPanel {
     private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
+    private boolean DarkMode = false;
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
     private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
@@ -102,8 +103,8 @@ public class Grid extends JPanel {
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {
                 getButtonAt(i,j).addMouseListener(mouseListener);
-            }//The short time where your click wont immediately update the visuals
-        }//yet after board becomes visible on large board sizes isnt due to not waiting (it happens regardless) its just because its java (tm).
+            }//The short time where your click wont immediately update the visuals yet after board becomes visible on large board sizes
+        }//                                                                  ^ isnt due to this function its just because its java (tm).
     }//---Look what you have to do to make the background GRASS without making the components also GRASS??------------------------------------
     @Override//is there another way? a panel behind this panel maybe that isnt this panels parent and draw it first? How do i do that?
     protected void paintComponent(Graphics g) {
@@ -173,29 +174,27 @@ public class Grid extends JPanel {
         }
         Grid.this.repaint();//repaint so that it actually repaints at a time that makes sense rather than just like... later.
     }
-    void doZoom(int rotation){//it makes the cells bigger. The main window is in a scroll pane
+    int[] doZoom(int rotation, int mouseX1, int mouseY1){//it makes the cells bigger. The main window is in a scroll pane. does not set font
         Dimension currentCellSize = Grid.this.getComponent(0).getSize();
-        Dimension newCellSize = new Dimension(currentCellSize.width - rotation, currentCellSize.height - rotation);
-        int newFontSize = newCellSize.height-1;
-        if(newCellSize.height>18)newFontSize=18;
-        Font newFont = new Font("Tahoma", 0, newFontSize);//create the font first so you dont make a new one for each cell
+        Dimension newCellSize = new Dimension(currentCellSize.width + rotation, currentCellSize.height + rotation);
         for (int i = 0; i < Fieldx; i++) {//apply the new sizes
             for (int j = 0; j < Fieldy; j++) {
-                getButtonAt(i,j).setFont(newFont);
                 getButtonAt(i,j).setPreferredSize(newCellSize);
             }
-        }
+        }//Returns new mouse location over grid. I need it to recenter window on mouse. MUCH faster than using pack(); to update size before recenter
+        int[] gridSizesOldNew= new int[4];
+        gridSizesOldNew[0] = currentCellSize.width*Fieldx;
+        gridSizesOldNew[1] = currentCellSize.height*Fieldy;
+        gridSizesOldNew[2] = (newCellSize.width*Fieldx);
+        gridSizesOldNew[3] = (newCellSize.height*Fieldy);
+        return gridSizesOldNew;
     }
     void setCellFontSize(){//call this after pack to get correct component size.
         int cellHeight = Grid.this.getComponent(0).getHeight();
         int FontSize = cellHeight- 1;
         if(cellHeight>18)FontSize=18;
         Font newFont = new Font("Tahoma", 0, FontSize);
-        for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {
-                getButtonAt(x,y).setFont(newFont);
-            }
-        }
+        for(int x = 0; x < Fieldx; x++)for(int y = 0; y < Fieldy; y++)getButtonAt(x,y).setFont(newFont);
     }
 //----GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW-------GAME-LOGIC-BELOW----------
 //--------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler------

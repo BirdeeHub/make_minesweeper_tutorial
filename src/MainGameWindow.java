@@ -133,29 +133,39 @@ public class MainGameWindow extends javax.swing.JFrame {
         grid.addMouseWheelListener(new MouseWheelListener() {//zoom and scroll (only active over grid)
             JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
             JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+            int rotationAmount = 0;
+            boolean zoomInProgress = false;
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if(e.isControlDown()){
-                    //initialize stuff we need to know for recentering before changing zoom
-                    PointerInfo pointerInfo = MouseInfo.getPointerInfo();
-                    Point mouseLocation = pointerInfo.getLocation();
-                    SwingUtilities.convertPointFromScreen(mouseLocation, grid);//<-- find mouse relative to grid at function call
-                    int mouseX1 = mouseLocation.x;
-                    int mouseY1 = mouseLocation.y;
-                    int sizeX1 = grid.getWidth();//mouse location wont change after pack even if remeasured apparently but size will?
-                    int sizeY1 = grid.getHeight();
-                    getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old size
-                    //get wheel and cell size info and do zoom
-                    grid.doZoom(e.getWheelRotation());
-                    pack();//<-- pack to make sure size updates
-                    //getContentPane().revalidate();//<-- apparently you dont need to revalidate though?
-                    //make sure it keeps the spot the mouse is over in more or less the same place on the board. not exact due to integer division
-                    int mouseX2 = (grid.getWidth() * mouseX1)/sizeX1;
-                    int mouseY2 = (grid.getHeight() * mouseY1)/sizeY1;
-                    int scrollAmountX = mouseX2 - mouseX1;
-                    int scrollAmountY = mouseY2 - mouseY1;
-                    verticalScrollBar.setValue(verticalScrollBar.getValue() + scrollAmountY);
-                    horizontalScrollBar.setValue(horizontalScrollBar.getValue() + scrollAmountX);
+                    if(zoomInProgress){rotationAmount+=e.getWheelRotation();//<--save for when previous action is done
+                    }else{//initialize stuff we need to know for recentering before changing zoom
+                        zoomInProgress = true;
+                        rotationAmount += e.getWheelRotation();
+                        PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                        Point mouseLocation = pointerInfo.getLocation();
+                        SwingUtilities.convertPointFromScreen(mouseLocation, grid);//<-- find mouse relative to grid at function call
+                        int mouseX1 = mouseLocation.x;
+                        int mouseY1 = mouseLocation.y;
+                        getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old size
+                        //get wheel and cell size info and do zoom
+                        SwingUtilities.invokeLater(() -> {//<-- invoke later to avoid issues with many simultaneous scroll inputs,
+                            int[] gridSizesOldNew = grid.doZoom(-rotationAmount, mouseX1, mouseY1);//<-- does zoom, gives old and new button grid sizes
+                            rotationAmount=0;//reset rotation amount
+                            grid.setCellFontSize();//set font size after zoom so that its not dependent on rotationAmount
+                            //make sure it keeps the spot the mouse is over in more or less the same place on the board.
+                            int mouseX2 = (gridSizesOldNew[2]*mouseX1)/gridSizesOldNew[0];//if i calculate these inside doZoom and then call
+                            int mouseY2 = (gridSizesOldNew[3]*mouseY1)/gridSizesOldNew[1];//revalidate it works weird. Outside works great. Idk.
+                            int scrollAmountX = (mouseX2 - mouseX1);
+                            int scrollAmountY = (mouseY2 - mouseY1);
+                            int newScrollValueX = horizontalScrollBar.getValue() + scrollAmountX;
+                            int newScrollValueY = verticalScrollBar.getValue() + scrollAmountY;
+                            revalidate();//i got rid of the need to pack() by creating newScrollValueX & Y BEFORE i revalidate apparently
+                            horizontalScrollBar.setValue(newScrollValueX);
+                            verticalScrollBar.setValue(newScrollValueY);
+                            zoomInProgress = false;
+                        });
+                    }
                 } else {//if no control key, do scroll
                     verticalScrollBar.setUnitIncrement(20);
                     verticalScrollBar.setValue(verticalScrollBar.getValue() + (e.getUnitsToScroll() * verticalScrollBar.getUnitIncrement()));
@@ -168,7 +178,6 @@ public class MainGameWindow extends javax.swing.JFrame {
         JMenuBar menuBar = new JMenuBar();
         JPanel menuPanel = new JPanel(new GridBagLayout());
         GridBagConstraints menuBagConstraints = new GridBagConstraints();
-        menuBar.add(menuPanel);
         JButton NewGame = new JButton("New Game");
         JButton Reset = new JButton("Reset");
         JButton HowToPlay = new JButton("Help");
@@ -229,11 +238,12 @@ public class MainGameWindow extends javax.swing.JFrame {
         menuPanel.add(Reset, menuBagConstraints);
         menuBagConstraints.gridx =10;
         menuPanel.add(NewGame, menuBagConstraints);
+        menuBar.add(menuPanel);
         setJMenuBar(menuBar);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
         //System.out.println("Start packing.");//<-- if you need proof of the below, uncomment this and start a 300x300 with 6000 bombs game.
         pack();//<-- This pack() call is the slowest, heaviest thing in the entire program. But we need to call it to use layout managers...
-        getContentPane().revalidate();//^For 300x300 (90,000 cells) execution reaches here in under 1s, and the rest after is even faster.
+        getContentPane().revalidate();//^For 300x300 (90,000 cells) execution reaches here in under 1s, and the rest after it is even faster.
         grid.setCellFontSize();//       ^pretty sure to make it faster would need a different language unless there is a better pack function somewhere?
 //------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
         Reset.addActionListener(new ActionListener() {//reset button
