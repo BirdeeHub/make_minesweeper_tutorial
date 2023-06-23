@@ -1,3 +1,3 @@
 IF EXIST ".\Minesweeper.cfg" (move .\Minesweeper.cfg ..\)
-jpackage --name Minesweeper --description "Minesweeper for Windows" --input ..\app --dest ..\ --main-jar minesweeper.jar --icon .\PackageIcons\Minesweeper.ico --add-modules java.desktop,java.logging,java.xml --win-dir-chooser --win-menu --win-shortcut --win-shortcut-prompt --win-per-user-install --app-version 42.0 --vendor Birdee
+jpackage --name Minesweeper --description "Minesweeper for Windows" --input ..\app --dest ..\ --main-jar minesweeper.jar --icon .\PackageIcons\Minesweeper.ico --add-modules java.desktop,java.logging,java.xml --win-dir-chooser --win-menu --win-shortcut --win-shortcut-prompt --win-per-user-install --app-version 2.0 --vendor Birdee
 IF EXIST ".\Minesweeper.cfg" (move ..\Minesweeper.cfg .)

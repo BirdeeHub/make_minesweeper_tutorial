@@ -277,7 +277,7 @@ public class Grid extends JPanel {
                     BombsFound = answers.cellsMarked()+answers.cellsExploded();
                 }
             }
-            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount)&&(answers.cellsChecked()>0)) {//Are you done yet?
+            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount)&&(answers.cellsChecked()>0)&&!answers.isGameOver()) {//Are you done yet?
                 answers.setGameOver();
                 GameOver(true);//<-- starts game over process
             }
@@ -370,7 +370,7 @@ public class Grid extends JPanel {
                 BombsFound = answers.cellsMarked()+answers.cellsExploded();
             }
             livesLeft = lives-answers.cellsExploded();
-            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount)&&answers.cellsChecked()>0) {//Are you done yet?
+            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount)&&answers.cellsChecked()>0&&!answers.isGameOver()) {//Are you done yet?
                 answers.setGameOver();
                 GameOver(true);//<-- starts game over process
             }
