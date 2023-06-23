@@ -36,7 +36,7 @@ You will need a version of Java Development Kit to recompile if you wish to edit
 https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 
 ##or if you have Chocolatey package manager for windows:
-choco search oracle17jdk
+choco install oracle17jdk
 ```
 
 for linux, search for JDK in your package manager.
@@ -122,6 +122,10 @@ scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window. 
 
 The rest of the source files are just the other windows.
+
+--
+
+**Random note** I play with scaling to make my terrible explosions look good. Go to Game Over Function near end of grid and do what it says if you want to use a real explosion icon
 
 _______________________________________________________________________________________________________________________________________________
 

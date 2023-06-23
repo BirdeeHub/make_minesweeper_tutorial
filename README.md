@@ -11,8 +11,6 @@ Mostly I just wanted to learn some Java.
 
 ![Screenshot](./Screenshot.png)
 
-(also you can 1.5 click without waiting for mouse release, and always hit a 0 first click and you can turn off the question marks)
-
 You can learn too! Source code is included with the installer, as well as a compile script, 
 which will update your actual installed version of the game that you can run from your start menu.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
@@ -181,3 +179,5 @@ It doesnt work for mac right now. only jar for mac.
 ____________________________________________________________________________________
 Have fun!!!!!!!!!!
 ************************************************************************************
+
+(also you can 1.5 click without waiting for mouse release, and always hit a 0 first click and you can turn off the question marks)

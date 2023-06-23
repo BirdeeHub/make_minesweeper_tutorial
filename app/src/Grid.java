@@ -4,6 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
 import java.util.Stack;
@@ -32,7 +33,7 @@ public class Grid extends JPanel {
     private final Color BLACK = new Color(0);//<-- default button background color in dark mode
     private final Color GRASS = new Color(31, 133, 28);//<-- grass
     private final Color MAGENTA = new Color(255,0,255);//<-- game over marked status color 1
-    private final Color GREEN = new Color(0,255,0);//<-- game over marked status color 2
+    private final Color BLUE = new Color(0,0,255);//<-- game over marked status color 2
     private final Color RED = new Color(255,0,0);//<-- in game exploded bomb background
     private final Color ChGO_RED = new Color(255,0,0);//<-- game over indicator on chord number foreground
     private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
@@ -75,6 +76,7 @@ public class Grid extends JPanel {
         }
         public int getXcoord(){return x;}
         public int getYcoord(){return y;}
+        
         @Override
         protected void paintBorder(Graphics g) {//<-- override paintBorder so that I can change border color and thickness
             if(borderColor!=null){
@@ -100,12 +102,12 @@ public class Grid extends JPanel {
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);//<-- RenderingHints
             AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that i couldnt remember the name of
             transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());// but im sure
-            g2d.drawImage(originalIcon.getImage(), transform, null);// if i get used to it it could be "powerful"
+            g2d.drawImage(originalIcon.getImage(), transform, null);// if i get used to it it could be powerful
             g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
         }//                                                        into a thing that doesnt look like it used to be square so thats cool.
     }
-    private final ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverExplosion.png")));
-    private final ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverRevealed.png")));
+    Image EXPicon = new ImageIcon(getClass().getResource("GameOverExplosion.png")).getImage();
+    Image RVLicon = new ImageIcon(getClass().getResource("GameOverRevealed.png")).getImage();
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
     public Grid(int w, int h, int bombNum, int lives) {//INIT
@@ -467,22 +469,28 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to UpdateLeaderboard
+                //I was relying on the poor scaling to have my explode look good. uncomment if you have a better icon
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon)/*get rid of this ); too-->*/);//.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
                     if (won == false){
                         if(answers.marked(i,j)){
-                            getButtonAt(i,j).setForeground(GREEN);
+                            getButtonAt(i,j).setForeground(BLUE);
                             getButtonAt(i,j).setText("@");
                         }else{getButtonAt(i,j).setText("");}
                         getButtonAt(i,j).setIcon(EXPiconAutoScaled);
+                        getButtonAt(i,j).revalidate();
                     }else{
                         if(!answers.marked(i,j)){
                             getButtonAt(i,j).setForeground(MAGENTA);
                             getButtonAt(i,j).setText("@");
                         }else{getButtonAt(i,j).setText("");}
                         getButtonAt(i,j).setIcon(RVLiconAutoScaled);
+                        getButtonAt(i,j).revalidate();
                     }
+                    getButtonAt(i,j).setIconTextGap(-((getButtonAt(0,0).getWidth()*2)/3));
                     answers.check(i,j);//check the exploded bomb so you cant mess it up by toggling dark mode
                 }
             }
