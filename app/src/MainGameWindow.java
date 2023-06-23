@@ -53,8 +53,12 @@ public class MainGameWindow extends javax.swing.JFrame {
     private final String wonAndNotHighScoreMessage = "Cleared!";//compiler will treat it the same as having it actually in setGameOverDisplay()
     private final String diedButNewBoardMessage = "1st Board Death";//so having these here is just for readability
     private final String diedAndNotNewBoardMessage = "Exploded...";
-    private void setBombsFoundDisplay(){BombsFoundDisplay.setText("M:" + Integer.toString(grid.getBombsFound()) + "/" + Integer.toString(bombCount));}
-    private void setLivesLostDisplay(){livesLostDisplay.setText("L:" + Integer.toString(grid.getLivesLeft()) + "/" + Integer.toString(lives));}//and end edit here
+    private void setBombsFoundDisplay(){
+        BombsFoundDisplay.setText("M:" + Integer.toString(grid.getBombsFound()) + "/" + Integer.toString(bombCount));
+    }
+    private void setLivesLostDisplay(){
+        livesLostDisplay.setText("L:" + Integer.toString(grid.getLivesLeft()) + "/" + Integer.toString(lives));
+    }
     private void setGameOverDisplay(){
         int[] GOIndex = new int[2];//GOIndex[0] is message index, GOIndex[1] is won value.
         GOIndex = grid.getGameOverIndex();//if not in game over state, these will both be 3.
@@ -70,8 +74,12 @@ public class MainGameWindow extends javax.swing.JFrame {
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
-    void toggleDarkMode(){grid.toggleDarkMode();}
-    boolean isDMOn(){return grid.isDarkMode();}
+    void toggleDarkMode(){
+        grid.toggleDarkMode();
+    }
+    boolean isDMOn(){
+        return grid.isDarkMode();
+    }
 //---------------------MainGameWindow CONSTRUCTOR----------------------MainGameWindow CONSTRUCTOR----------------------------MainGameWindow CONSTRUCTOR------------------------------
     public MainGameWindow(int w, int h, int bombNum, int lives) {
         Fieldx = w;
@@ -116,12 +124,12 @@ public class MainGameWindow extends javax.swing.JFrame {
                         }
                     }
                 }
-                setBombsFoundDisplay();
+                setBombsFoundDisplay();//<-- update display text with changes
                 setLivesLostDisplay();
                 setGameOverDisplay();
             }
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {//<-- not holding the mouse anymore
                 if(SwingUtilities.isLeftMouseButton(e)){
                     LMB = false;
                 }
@@ -174,7 +182,7 @@ public class MainGameWindow extends javax.swing.JFrame {
         });
     }
     private void initComponentsAndMiscListeners() {//-------------------initComponents() on window below-----------------------------------------------------------------------------
-        scrollPane.setBackground(PURPLE);
+        //--------------init
         JMenuBar menuBar = new JMenuBar();
         JPanel menuPanel = new JPanel(new GridBagLayout());
         GridBagConstraints menuBagConstraints = new GridBagConstraints();
@@ -183,14 +191,15 @@ public class MainGameWindow extends javax.swing.JFrame {
         JButton HowToPlay = new JButton("Help");
         JToggleButton toggleQuestionMarking = new JToggleButton("?'s?");
         JButton ScoreBoard = new JButton("HiSc");
+        Font ScoreAreaFontSize = new Font("Tahoma", 0, 20);
         setBombsFoundDisplay();
         setLivesLostDisplay();
         setGameOverDisplay();
+        //------------------------set stuff
         BombsFoundDisplay.setHorizontalAlignment(SwingConstants.CENTER);
         livesLostDisplay.setHorizontalAlignment(SwingConstants.CENTER);
         GameOverDisplay.setHorizontalAlignment(SwingConstants.CENTER);
         timeDisplay.setHorizontalAlignment(SwingConstants.CENTER);
-        Font ScoreAreaFontSize = new Font("Tahoma", 0, 20);
         BombsFoundDisplay.setFont(ScoreAreaFontSize);
         livesLostDisplay.setFont(ScoreAreaFontSize);
         GameOverDisplay.setFont(ScoreAreaFontSize);
@@ -204,13 +213,14 @@ public class MainGameWindow extends javax.swing.JFrame {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setBackground(PURPLE);
         scrollPane.getHorizontalScrollBar().setBackground(PURPLE);
+        scrollPane.setBackground(PURPLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
-        //component adding and layout managing
+        //---------------------component adding and layout managing
         menuBagConstraints.gridx =0;
         menuBagConstraints.gridy =0;
         menuBagConstraints.gridwidth =1;
-        menuBagConstraints.gridheight =1;
+        menuBagConstraints.gridheight =1;//           theyre all in a menu bar.
         menuBagConstraints.weightx = 0.0;
         menuBagConstraints.fill = GridBagConstraints.BOTH;
         menuPanel.add(markToggle, menuBagConstraints);
@@ -245,7 +255,8 @@ public class MainGameWindow extends javax.swing.JFrame {
         pack();//<-- This pack() call is the slowest, heaviest thing in the entire program. But we need to call it to use layout managers...
         getContentPane().revalidate();//^For 300x300 (90,000 cells) execution reaches here in under 1s, and the rest after it is even faster.
         grid.setCellFontSize();//       ^pretty sure to make it faster would need a different language unless there is a better pack function somewhere?
-//------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
+
+        //------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
         Reset.addActionListener(new ActionListener() {//reset button
             long clickmemory = System.currentTimeMillis();//<-- this is for protection from spamming
             public void actionPerformed(ActionEvent evt) {

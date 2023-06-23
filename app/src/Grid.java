@@ -25,42 +25,22 @@ import javax.swing.ImageIcon;
 
 //This class controls the behavior of the game board. Contains cell display and action logic, and uses Minefield to keep track of the game state
 public class Grid extends JPanel {
-    private class ScalableIcon implements Icon {
-        private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
-        public ScalableIcon(ImageIcon originalIcon) {//<-- Constructor
-            this.originalIcon = originalIcon;
-        }//Stuff for resizing Icon.
-        public int getIconWidth() {return originalIcon.getIconWidth();}
-        public int getIconHeight() {return originalIcon.getIconHeight();}
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            int width = c.getWidth();
-            int height = c.getHeight();
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            AffineTransform transform = new AffineTransform();
-            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());
-            g2d.drawImage(originalIcon.getImage(), transform, null);
-            g2d.dispose();
-        }
-    }
-    private final ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverExplosion.png")));
-    private final ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverRevealed.png")));
     //--------------Initialize-Colors--------Many are the same color, but now theyre easily changed?
     private final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- used for non darkmode
     private final Color LightModeTextColor = new Color(0);//<-- LightMode button foreground
     private final Color DarkModeTextColor = new Color(255, 255, 255);//<-- DarkMode button foreground
     private final Color BLACK = new Color(0);//<-- default button background color in dark mode
     private final Color GRASS = new Color(31, 133, 28);//<-- grass
-    private final Color MAGENTA = new Color(255,0,255);//<-- game over color 1
-    private final Color GREEN = new Color(0,255,0);//<-- game over color 2
-    private final Color RED = new Color(255,0,0);//<-- exploded bomb background
+    private final Color MAGENTA = new Color(255,0,255);//<-- game over marked status color 1
+    private final Color GREEN = new Color(0,255,0);//<-- game over marked status color 2
+    private final Color RED = new Color(255,0,0);//<-- in game exploded bomb background
     private final Color ChGO_RED = new Color(255,0,0);//<-- game over indicator on chord number foreground
     private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
     private final Color QSTNMARKCOLOR = new Color(133, 95, 227);//<-- question mark color
     private final Color MARKCOLOR = new Color(255,0,0);//<-- color of marks
-    private final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors
-    private final Color BORDERORANGE = new Color(255, 160, 0);
-    private final Color BORDERORANGERED = new Color(255,95,0);
+    private final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors 2
+    private final Color BORDERORANGE = new Color(255, 160, 0);//<-- 3
+    private final Color BORDERORANGERED = new Color(255,95,0);//<-- 4
     private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
@@ -80,10 +60,10 @@ public class Grid extends JPanel {
         private Color borderColor = defaultBorderColor;//<--not defined inside class because that would mean creating a new color for each button, which is expensive.
         private int x, y;
         public CellButton() {//<-- -Constructor
-            this.setMargin(CellInset);        //Initialize our cell button properties other than font size (which is done after packing layout)
             this.setFocusable(false);//<-- made unfocusable because i didnt like hitting tab for 3 years
             this.setHorizontalAlignment(SwingConstants.CENTER);//<-- they used to be in their own loop but this is the same thing
-            this.setVerticalAlignment(SwingConstants.CENTER);
+            this.setVerticalAlignment(SwingConstants.CENTER);//Initialize our cell button properties other than font size (which is done after packing layout)
+            this.setMargin(CellInset);//<-- defined outside of class so not multiplied times whatever
         }
         public void setBorderColor(Color borderColor, int borderWeight) {
             this.borderColor = borderColor;
@@ -105,40 +85,74 @@ public class Grid extends JPanel {
                 for(int i=0;i<top;i++)g.drawRect(i, i, getWidth() - i*2 - 1, getHeight() - i*2 -1);
             }
         }
-    }//---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
-    public Grid(int w, int h, int bombNum, int lives) {
+    }//--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
+    private class ScalableIcon implements Icon {
+        private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
+        public ScalableIcon(ImageIcon originalIcon) {//<-- Constructor
+            this.originalIcon = originalIcon;
+        }//Stuff for resizing Icon.
+        public int getIconWidth() {return originalIcon.getIconWidth();}
+        public int getIconHeight() {return originalIcon.getIconHeight();}
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            int width = c.getWidth();
+            int height = c.getHeight();
+            Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);//<-- RenderingHints
+            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that i couldnt remember the name of
+            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());// but im sure
+            g2d.drawImage(originalIcon.getImage(), transform, null);// if i get used to it it could be "powerful"
+            g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
+        }//                                                        into a thing that doesnt look like it used to be square so thats cool.
+    }
+    private final ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverExplosion.png")));
+    private final ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(getClass().getResource("GameOverRevealed.png")));
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
+    public Grid(int w, int h, int bombNum, int lives) {//INIT
         Fieldx = w;
-        Fieldy = h;
+        Fieldy = h;                                      //THE
         this.lives = lives;
-        bombCount = bombNum;
+        bombCount = bombNum;                               //GRID
         BombsFound = 0;
         livesLeft = lives;
         answers = new Minefield(Fieldx, Fieldy, bombCount);
         Grid.this.setLayout(new GridLayout(Fieldy, Fieldx));
         Grid.this.setOpaque(false);
-        for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)Grid.this.add(new CellButton());
-        for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setXY(i,j);//order irrelevant because (i,j)=(i,j)
+        for(int i = 0; i < Fieldx; i++){
+            for(int j = 0; j < Fieldy; j++){
+                Grid.this.add(new CellButton());//<-- add the buttons to the grid.
+            }
+        }
+        for(int i = 0; i < Fieldx; i++){
+            for(int j = 0; j < Fieldy; j++){
+                getButtonAt(i,j).setXY(i,j);//order of button add irrelevant because (i,j)=(i,j)
+            }
+        }
         if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);
-    }//--------------------getButtonAt(int x, int y) Became necessary after getting rid of 2d array to reference cells by location-------------------------
+    }
+    //--------------------getButtonAt(int x, int y) Became necessary after getting rid of 2d array to reference cells by location-------------------------
     private CellButton getButtonAt(int x, int y) {
         return (CellButton) Grid.this.getComponent(y * Fieldx + x);
-    }//-----------------------------------function for adding mouse Listener to cells in Grid-------------------------------------------------
+    }
+    //-----------------------------------function for adding mouse Listener to cells in Grid-------------------------------------------------
     void addCellListener(MouseListener mouseListener){//----------addCellListener()--------------------------------------------------
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {
                 getButtonAt(i,j).addMouseListener(mouseListener);
             }//The short time where your click wont immediately update the visuals yet after board becomes visible on large board sizes
-        }//                                                                  ^ isnt due to this function its just because its java (tm).
-    }//---Look what you have to do to make the background GRASS without making the components also GRASS??------------------------------------
-    @Override//is there another way? a panel behind this panel maybe that isnt this panels parent and draw it first? How do i do that?
-    protected void paintComponent(Graphics g) {
+        }//                               ^ isnt due to this function its just because its java (tm).
+    }//----------------------------------------------------------------------------------------------------------------------------------------
+    @Override
+    protected void paintComponent(Graphics g) {//<--Look what you have to do to make the background GRASS without making the components also GRASS??
             g.setColor(GRASS);
             g.fillRect(0, 0, getWidth(), getHeight());
-    }//---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    String getTime(){return answers.getTime();}
-    int getBombsFound(){return BombsFound;}
-    int getLivesLeft(){return livesLeft;}
-    int[] getGameOverIndex(){
+    }
+    //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
+    //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
+    String getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
+    int getBombsFound(){return BombsFound;}//<-- get
+    int getLivesLeft(){return livesLeft;}//<-- that
+    int[] getGameOverIndex(){//     <--    text
         int[] messageIndexes = new int[2];
         messageIndexes[0]=GameOverMessageIndex;
         messageIndexes[1]=wonValue;
@@ -158,8 +172,9 @@ public class Grid extends JPanel {
             }
         }
     }
-    boolean isDarkMode(){return DarkMode;}
-    void toggleDarkMode(){
+    boolean isDarkMode(){return DarkMode;}//<-- this is a function
+
+    void toggleDarkMode(){//<-- and so is this
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
             for (int y = 0; y < Fieldy; y++) {
@@ -172,20 +187,20 @@ public class Grid extends JPanel {
                     }
                     if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
-                    }//the 1 exception to checking answers like before for this ^ is if you got game over on a chord, it changes a number to a ! and makes it red. This would change back to default color
-                }//    so instead, i didnt do that.
+                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
+                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
             }
         }
         Grid.this.repaint();
     }
-    void ResetBoard(){
+    void ResetBoard(){//<-- for when you want new but not like, new new. Just like, sorta new. Refreshed.
         BombsFound = 0;
         livesLeft = lives;
         GameOverMessageIndex = 3;
         wonValue = 3;
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- get a new minefield, thus resetting the timer and everything else
         for (int i = 0; i < Fieldx; i++) {
-            for (int j = 0; j < Fieldy; j++) {
+            for (int j = 0; j < Fieldy; j++) {// and then reset appearances.
                 getButtonAt(i,j).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                 getButtonAt(i,j).setBorderColor(defaultBorderColor, 1);
                 getButtonAt(i,j).setText("");
@@ -282,7 +297,8 @@ public class Grid extends JPanel {
                 GameOver(true);//<-- starts game over process
             }
         }
-    }//---------------------------------------------------------------markCell()--------------------------markCell()-------------
+    }
+    //---------------------------------------------------------------markCell()--------------------------markCell()-------------
     private void markCell(CellButton current){//----------------------markCell()--------------------------markCell()-------------
         int xValue = current.getXcoord();
         int yValue = current.getYcoord();
@@ -370,12 +386,13 @@ public class Grid extends JPanel {
                 BombsFound = answers.cellsMarked()+answers.cellsExploded();
             }
             livesLeft = lives-answers.cellsExploded();
-            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount)&&answers.cellsChecked()>0&&!answers.isGameOver()) {//Are you done yet?
+            if ((answers.cellsChecked() == Fieldx * Fieldy - bombCount) && answers.cellsChecked()>0&&!answers.isGameOver()) {//Are you done yet?
                 answers.setGameOver();
                 GameOver(true);//<-- starts game over process
             }
         }
     }//--------------end of main cell clicked functions----Helper functions they referenced below---------------------------------------------------------
+    //------------------------------------------fillZeroes()-------------------------------------------------
     private void fillZeroes(int xValue, int yValue) {//-----------fillZeroes()------------------------------------------------------------------
         Stack<Integer> stack = new Stack<>();//a stack must be used instead of recursion because large board sizes cause stack overflow.
         stack.push(yValue * Fieldx + xValue);//make single value out of x and y (in this order because thats the same as getButtonAt)
@@ -408,7 +425,8 @@ public class Grid extends JPanel {
             }
         }
         Grid.this.repaint();//repaint so that it actually repaints at a time that makes sense rather than just like... later.
-    }//-----------------------------------------------------markLonelyBombs()----------------------------------------------------------------
+    }
+    //-----------------------------------------------------markLonelyBombs()----------------------------------------------------------------
     private void markLonelyBombs(boolean[][] prechekd){//I didnt want to click on all the lone bombs on big boards in order to
         for (int j = 0; j < Fieldx; j++) {             //make the count of marked bombs actually useful
             for (int k = 0; k < Fieldy; k++) {
@@ -446,7 +464,8 @@ public class Grid extends JPanel {
         }else if(answers.adjCount(x, y)<=8 ){ 
             getButtonAt(x,y).setBorderColor(BORDERRED, 2); 
         }
-    }//---------------------------------------GameOver()-----------------------------------------------------------------------------------------
+    }
+    //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to UpdateLeaderboard
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {
