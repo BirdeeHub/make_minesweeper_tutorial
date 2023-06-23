@@ -1,1 +1,0 @@
-7z a -sfx minesweeper.exe  ..\Launch4jExe

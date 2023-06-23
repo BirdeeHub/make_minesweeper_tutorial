@@ -1,1 +1,0 @@
-javac ..\src\*.java -d ..\minesweeper_classes && jar -cvfe ..\jar\minesweeper.jar MineSweeper -C ..\minesweeper_classes .

@@ -1,1 +1,0 @@
-jlink --output ..\Launch4jExe\jre --compress=2 --no-man-pages --no-header-files --strip-debug --add-modules java.desktop,java.logging,java.xml
