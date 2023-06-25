@@ -9,19 +9,21 @@ So I made one!
 
 Mostly I just wanted to learn some Java.
 
-![Screenshot](./Screenshot.png)
-
 You can learn too! Source code is included with the installer, as well as a compile script, 
 which will update your actual installed version of the game that you can run from your start menu.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
-version 1.0 is the normal version, version 2.0 contains a compiler you can use, but is much bigger.
+**version 1.0** is the normal version
+
+**version 2.0** contains a compiler you can use, but is an extra 10MB.
 
 if you have 1.0 you will need a version of Java Development Kit to recompile if you wish to edit.
 
 including the compiler on linux made it over 100MB for some reason so i couldnt add an installer with an included compiler.
 
 regardless of version, you will need a JDK to make your own installer.
+
+![Screenshot](./Screenshot.png)
 
 ************************************************************************************
 
