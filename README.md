@@ -161,7 +161,6 @@ run winpackage.bat to make installer using jpackage
 
 jpackage requires Wix toolkit. If you run it without having it,
 it will give you a download link.
-This will make the installer exe in the WindowsInstaller directory.
 
 ************************************************************************************
 
