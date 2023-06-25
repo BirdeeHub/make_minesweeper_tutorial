@@ -19,7 +19,7 @@ Go to the install folder of your game, and read the README in app/ or lib/app fo
 
 if you have 1.0 you will need a version of Java Development Kit to recompile if you wish to edit.
 
-including the compiler on linux made it over 100MB for some reason so i couldnt add an installer with an included compiler.
+including the compiler on linux made it over 100MB for some reason so I couldnt add an installer with an included compiler.
 
 regardless of version, you will need a JDK to make your own installer.
 
