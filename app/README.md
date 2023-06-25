@@ -1,8 +1,10 @@
 This folder contains the compile and package scripts in packaged installs. 
 
-Application source code is in src folder. 
+Application source code is in src/MySweep folder. 
 
-minesweeper_linux_dist.zip creation script, and associated install scripts in LinuxInstall.
+Icons are in src/Icons folder.
+
+minesweeper_linux_dist.zip creation script, and associated install scripts in Packaging/LinuxInstall.
 
 The application binary runs the .jar in this file using the associated Java Runtime Environment.
 
@@ -29,7 +31,7 @@ Mostly I just wanted to learn some Java.
 
 You can learn too!
 
-You will need a version of Java Development Kit to recompile if you wish to edit. 
+If you didnt download the version with a compiler, you will need a version of Java Development Kit to recompile if you wish to edit. 
 
 ```powershell
 ##go to
@@ -39,7 +41,9 @@ https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 choco install oracle17jdk
 ```
 
-for linux, search for JDK in your package manager.
+for linux, search for JDK in your package manager, e.g. sudo apt search jdk or: sudo apt search default-jdk
+
+then install 17 if available, otherwise whatever you can find.
 
 you will need 16+ for JPackage to be easy.
 
@@ -47,10 +51,13 @@ both openjdk and oracle jdk are fine.
 
 You might need to add it to your path.
 
+If you wish to make your own installer, you will still need a JDK regardless of if your game version includes compiler.
+
+You will also need your own JDK if you wish to include modules not included in java.base or java.desktop (you probably wont though, unless maybe you want to mess with how saving works)
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 
-
-Once you properly install a JDK, edit whatever you want in the src folder.
+After making sure you have a jdk, edit whatever you want in the src folder.
 
 Then you can use the appropriate compile script for your OS to make a new jar.
 
@@ -68,21 +75,25 @@ ________________________________________________________________________________
 
 If you have a mac, only bashcompile.sh will work for you.
 
-Compiling is easy. Run the script.
+Compiling is easy. Go to Compiling folder. Run the script.
+
+**Packaging (requires jdk)**
 
 Packaging is also easy if you have jpackage and its dependency.
 
-After you compile, run the package script!
+It is not necessary to do this to update your game, it just makes a version you can send to others.
+
+After you compile, go to Packaging folder and run the package script!
 
 If you are on windows, you are done! the installer program is 1 level up from where you are. Just like in the git repo.
 
 **on Linux? just 1 more step.**
 
-cd to LinuxInstall, and without moving the .deb file from where the package script put it, 
+cd to Packaging/LinuxInstall, and without moving the .deb file from where the package script put it, 
 
-run the zipLinuxMinesweeper.sh script. 
+run the zipLinuxMinesweeper.sh script.
 
-then cd ../.. and use ls and both the package and a distributable zip will be there for you. Again, just like in the git repo.
+then cd ../../.. and use ls and both the package and a distributable zip will be there for you. Again, just like in the git repo.
 
 ____________________________________________________________________________________________________________________________________
 

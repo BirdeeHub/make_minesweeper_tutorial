@@ -15,7 +15,13 @@ You can learn too! Source code is included with the installer, as well as a comp
 which will update your actual installed version of the game that you can run from your start menu.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
-You will need a version of Java Development Kit to recompile if you wish to edit.
+version 1.0 is the normal version, version 2.0 contains a compiler you can use, but is much bigger.
+
+if you have 1.0 you will need a version of Java Development Kit to recompile if you wish to edit.
+
+including the compiler on linux made it over 100MB for some reason so i couldnt add an installer with an included compiler.
+
+regardless of version, you will need a JDK to make your own installer.
 
 ************************************************************************************
 
@@ -104,10 +110,10 @@ If on windows, just run the installer unless you just wanna use the jar.
 
 *Linux:*
 
-either unzip the zip folder, *OR* copy the installLinuxMinesweeper.sh file in LinuxInstall into the same directory as the .deb file.
+either unzip the zip folder, *OR* copy the installLinuxMinesweeper.sh file in Packaging/LinuxInstall into the same directory as the .deb file.
 
 (its designed to get zipped with the .deb and installed that way so it would be in the same folder. 
-In the repo, it is not like that. but the zip folder is right there.)
+In the repo, it is not in the right folder. but the zip folder is right there for you.)
 
 Run the install script in LinuxInstall USING SUDO (needs permission to run dpkg and to copy launcher script to /usr/local/bin)
 
@@ -137,7 +143,7 @@ for windows, just make an installer... instructions below.
 for zipping install scripts with the linux package, use script in LinuxInstall (you dont need to move the zip script.)
 
 *******************************************************************************************************************************
-Download a Java Development kit for the below instructions:
+Download a Java Development kit for the below instructions (if you have 2.0, you will only need it to create an installer):
 
 https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 
@@ -175,7 +181,7 @@ jpackage may require a dependency. For debian it is dpkg
 run bashpackage.sh
 
 non debian distributions may have to change the type in the command for jpackage.
-It doesnt work for mac right now. only jar for mac.
+It doesnt work for mac right now because I dont have one. only jar for mac.
 ____________________________________________________________________________________
 Have fun!!!!!!!!!!
 ************************************************************************************
