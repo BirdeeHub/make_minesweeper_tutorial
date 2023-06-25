@@ -145,46 +145,37 @@ for windows, just make an installer... instructions below.
 for zipping install scripts with the linux package, use script in LinuxInstall (you dont need to move the zip script.)
 
 *******************************************************************************************************************************
+
 Download a Java Development kit for the below instructions (if you have 2.0, you will only need it to create an installer):
 
 https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 
 ______________________________________________________________________________________________________________________
 
-**WINDOWS COMPILE FROM SOURCE TO JAR AND EXE**
+**WINDOWS COMPILE**
 
 ____________________________________________________________________________________
 
-to compile to jar on windows, run wincompile.bat
-
-Make EXE INSTALLER:
-
-run winpackage.bat to make installer using jpackage
-
-jpackage requires Wix toolkit. If you run it without having it,
-it will give you a download link.
+to compile to jar on windows, go to ".\app\Compiling" and run wincompile.bat
 
 ************************************************************************************
 
-**LINUX COMPILE FROM SOURCE TO JAR AND PACKAGE**
+**LINUX AND MAC COMPILE**
 
 ____________________________________________________________________________________
 
 TO COMPILE JAR:
 
 make sure you have a JDK.
-run bashcompile.sh to compile jar.
+cd to app/Compiling and run bashcompile.sh to compile jar.
 
-To make Package Installer:
+_____________________________________________________________________________________
 
-jpackage may require a dependency. For debian it is dpkg
+**for further compiling instructions compiling and creating installers**
 
-run bashpackage.sh
-
-non debian distributions may have to change the type in the command for jpackage.
-It doesnt work for mac right now because I dont have one. only jar for mac.
+go to README.md inside app folder.
 ____________________________________________________________________________________
-Have fun!!!!!!!!!!
+***Have fun!!!!!!!!!!***
 ************************************************************************************
 
 (also you can 1.5 click without waiting for mouse release, and always hit a 0 first click and you can turn off the question marks)

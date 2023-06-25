@@ -77,9 +77,9 @@ If you have a mac, only bashcompile.sh will work for you.
 
 Compiling is easy. Go to Compiling folder. Run the script.
 
-**Packaging (requires jdk)**
+**Packaging (requires jdk regardless of game version)**
 
-Packaging is also easy if you have jpackage and its dependency.
+Packaging is also easy if you have jpackage and its dependency. For windows this is WIX, for debian linux, dpkg
 
 It is not necessary to do this to update your game, it just makes a version you can send to others.
 
