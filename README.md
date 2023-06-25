@@ -138,14 +138,6 @@ If you want to run it on mac, use the .jar file. You will need to download a JDK
 
 ____________________________________________________________________________________________________________________________
 
-***ZIPPING***
-
-for windows, just make an installer... instructions below.
-
-for zipping install scripts with the linux package, use script in LinuxInstall (you dont need to move the zip script.)
-
-*******************************************************************************************************************************
-
 Download a Java Development kit for the below instructions (if you have 2.0, you will only need it to create an installer):
 
 https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
