@@ -107,8 +107,8 @@ public class Grid extends JPanel {
             g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
         }//                                                        into a thing that doesnt look like it used to be square so thats cool.
     }
-    Image EXPicon = new ImageIcon(getClass().getResource("GameOverExplosion.png")).getImage();
-    Image RVLicon = new ImageIcon(getClass().getResource("MineSweeperIcon.png")).getImage();
+    Image EXPicon = new ImageIcon(getClass().getResource("/src/Icons/GameOverExplosion.png")).getImage();
+    Image RVLicon = new ImageIcon(getClass().getResource("/src/Icons/MineSweeperIcon.png")).getImage();
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
     public Grid(int w, int h, int bombNum, int lives) {//INIT

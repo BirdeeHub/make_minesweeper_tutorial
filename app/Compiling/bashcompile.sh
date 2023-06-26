@@ -3,11 +3,11 @@
 ##if you mess up your game too much from editing, simply uninstall and reinstall from the installer. Your scores are saved elsewhere.
 if [ -f ../runtime/bin/javac ] && [ -f ../runtime/bin/jar ]
 then
-../../runtime/bin/javac ../src/MySweep/*.java -d ../minesweeper_jar_in && cp ../src/Icons/* ../minesweeper_jar_in/ && \
-../../runtime/bin/jar --create -v --file=../minesweeper.jar --main-class=MySweep.MineSweeper -C ../minesweeper_jar_in . && \
-rm -r ../minesweeper_jar_in/
+../../runtime/bin/javac ../src/MySweep/*.java -d ../minesweeper_jar_in && cd ../minesweeper_jar_in/ && \
+../../runtime/jar --create -v --file=../minesweeper.jar --main-class=MySweep.MineSweeper  . ../src ../Compiling ../Packaging ../README.md  && \
+cd .. && rm -r ./minesweeper_jar_in/
 else
-javac ../src/MySweep/*.java -d ../minesweeper_jar_in && cp ../src/Icons/* ../minesweeper_jar_in/ && \
-jar --create -v --file=../minesweeper.jar --main-class=MySweep.MineSweeper -C ../minesweeper_jar_in . && \
-rm -r ../minesweeper_jar_in/
+javac ../src/MySweep/*.java -d ../minesweeper_jar_in && cd ../minesweeper_jar_in/ && \
+jar --create -v --file=../minesweeper.jar --main-class=MySweep.MineSweeper  . ../src ../Compiling ../Packaging ../README.md  && \
+cd .. && rm -r ./minesweeper_jar_in/
 fi

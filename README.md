@@ -86,9 +86,21 @@ the uninstall script will cleanup the script from /usr/local/bin, but will not d
 
 ____________________________________________________________________________________
 
-Install a Java runtime (jdk 17+ preferred), use "java -jar <_path_>/<_to_>/minesweeper.jar" to play! This will run it from the jar.
+Download the .jar file inside app directory.
+
+Install a Java runtime (jdk 17+ preferred), 
+
+https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+
+use "java -jar <_path_>/<_to_>/minesweeper.jar" to play!
 
 Make sure jdk is added to your path, or run the java binary directly.
+
+Inside the Jar, you will find a replica of the app directory.
+
+If you wish to access these files to edit the program, use:
+
+jar -xvf ./minesweeper.jar && rm -r MySweeper/ META-INF/
 
 If you have another version of jdk already, 
 but it wont let you run due to incompatible version,
@@ -98,6 +110,7 @@ then the compile script is in \<install_directory\>/minesweeper/lib/app/ and the
 if your computer is unable to install jdk 17 and run programs with it, such as ubuntu 20 or earlier, 
 then the .deb installer script may not work on your system, because java requires C libraries that are not present at runtime.
 You dont have to install jdk 17, just be capable of installing it.
+
 However, using the jar can work with older versions of jdk back to about 11
 
 ***************************************************************************************************************************
@@ -152,7 +165,7 @@ to compile to jar on windows, go to ".\app\Compiling" and run wincompile.bat
 
 ************************************************************************************
 
-**LINUX AND MAC COMPILE**
+**LINUX COMPILE**
 
 ____________________________________________________________________________________
 
@@ -161,11 +174,34 @@ TO COMPILE JAR:
 make sure you have a JDK.
 cd to app/Compiling and run bashcompile.sh to compile jar.
 
+*************************************************************************************
+
+**MAC**
+
 _____________________________________________________________________________________
 
-**for further compiling instructions compiling and creating installers**
+I havent had a computer that can make a package installer for Mac. Download a jdk and the .jar file in the app directory.
+
+run with java -jar path/to/minesweeper.jar
+
+Inside the Jar, you will find a replica of the app directory.
+
+If you wish to access these files to edit the program, use:
+
+jar -xvf ./minesweeper.jar && rm -r MySweeper/ META-INF/
+
+To recompile, use the script ./Compiling/bashcompile.sh just like for linux.
+
+If you can get the package script working on mac let me know and send the script so I can package it on a friend's mac when I have the time! 
+
+I dont have a mac that can install a new enough version of xcode to meet the dependency requirements for jpackage so I can't do it myself right now.
+
+_____________________________________________________________________________________
+
+**for further instructions on compiling and creating installers**
 
 go to README.md inside app folder.
+
 ____________________________________________________________________________________
 ***Have fun!!!!!!!!!!***
 ************************************************************************************
