@@ -23,7 +23,7 @@ including the compiler on linux made it over 100MB for some reason so I couldnt 
 
 regardless of version, you will need a JDK to make your own installer.
 
-![Screenshot](./Screenshot.png)
+![Screenshot](./Screenshots/Screenshot.png)
 
 ************************************************************************************
 
@@ -100,7 +100,7 @@ Inside the Jar, you will find a replica of the app directory.
 
 If you wish to access these files to edit the program, use:
 
-jar -xvf ./minesweeper.jar && rm -r MySweeper/ META-INF/
+jar -xvf ./minesweeper.jar && rm -r MySweep/ META-INF/
 
 If you have another version of jdk already, 
 but it wont let you run due to incompatible version,
@@ -188,7 +188,7 @@ Inside the Jar, you will find a replica of the app directory.
 
 If you wish to access these files to edit the program, use:
 
-jar -xvf ./minesweeper.jar && rm -r MySweeper/ META-INF/
+jar -xvf ./minesweeper.jar && rm -r MySweep/ META-INF/
 
 To recompile, use the script ./Compiling/bashcompile.sh just like for linux.
 
@@ -207,3 +207,6 @@ ________________________________________________________________________________
 ************************************************************************************
 
 (also you can 1.5 click without waiting for mouse release, and always hit a 0 first click and you can turn off the question marks)
+|                                                |                                                     |                                                 |
+|------------------------------------------------|-----------------------------------------------------|-------------------------------------------------|
+| ![Screenshot](./Screenshots/WinScreenshot.png) | ![Screenshot](./Screenshots/ScreenshotWithZoom.png) | ![Screenshot](./Screenshots/LossScreenshot.png) |
