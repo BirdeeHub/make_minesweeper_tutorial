@@ -23,8 +23,6 @@ including the compiler on linux made it over 100MB for some reason so I couldnt 
 
 regardless of version, you will need a JDK to make your own installer.
 
-![Screenshot](./Screenshots/Screenshot.png)
-
 ************************************************************************************
 
 **WINDOWS**
@@ -207,6 +205,7 @@ ________________________________________________________________________________
 ************************************************************************************
 
 (also you can 1.5 click without waiting for mouse release, and always hit a 0 first click and you can turn off the question marks)
-|                                                |                                                     |                                                 |
-|------------------------------------------------|-----------------------------------------------------|-------------------------------------------------|
-| ![Screenshot](./Screenshots/WinScreenshot.png) | ![Screenshot](./Screenshots/ScreenshotWithZoom.png) | ![Screenshot](./Screenshots/LossScreenshot.png) |
+|                                                     |                                                     |
+|-----------------------------------------------------|-----------------------------------------------------|
+| ![Screenshot](./Screenshots/Screenshot.png)         | ![Screenshot](./Screenshots/WinScreenshot.png)      |
+| ![Screenshot](./Screenshots/ScreenshotWithZoom.png) | ![Screenshot](./Screenshots/LossScreenshot.png)     |
