@@ -1,7 +1,5 @@
 **MINESWEEPER**
 
-Author: Robin DeBoer
-
 I couldn't easily find a minesweeper game on the store that allowed you to actually set the size of the field
 or the number of bombs or lives... 
 
