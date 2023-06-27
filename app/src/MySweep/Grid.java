@@ -46,7 +46,13 @@ public class Grid extends JPanel {
     private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
-    private boolean DarkMode = true;
+    private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
+    //--------------------get custom image files----------------------------------------------
+    private final String classpath = System.getProperty("java.class.path");//<-- added this for people who use the run command in their IDE
+    private final boolean inAJar = classpath.contains(".jar");//<-- this might make some bugs. I hope not though. Works fine for me.
+    //if you are down to just run the compile script and run it from the jar, you can replace the above 2 lines with: private boolean inAJar = true;
+    private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
+    private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
     private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
@@ -57,8 +63,9 @@ public class Grid extends JPanel {
     private int BombsFound = 0;
     private int livesLeft = 0;
     private Minefield answers;//<-- this one is the data class for game logic
-    private class CellButton extends JButton {//-----------------------------------CellButton();----------------------------------------------
-        private int borderWeight = 1;         //^created to allow the setting of color and thickness of cell borders, now it knows where it is.
+    //-----------------------------------CellButton();-----------------------------------------CellButton();-----------------------------------------
+    private class CellButton extends JButton {//these are our game board buttons. This class was created to allow the 
+        private int borderWeight = 1;         //^setting of color and thickness of cell borders, now it knows where it is.
         private Color borderColor = defaultBorderColor;//<--not defined inside class because that would mean creating a new color for each button, which is expensive.
         private int x, y;
         public CellButton() {//<-- -Constructor
@@ -88,8 +95,9 @@ public class Grid extends JPanel {
                 for(int i=0;i<top;i++)g.drawRect(i, i, getWidth() - i*2 - 1, getHeight() - i*2 -1);
             }
         }
-    }//--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
-    private class ScalableIcon implements Icon {
+    }
+    //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
+    private class ScalableIcon implements Icon {//currently only used in GameOver function
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
         public ScalableIcon(ImageIcon originalIcon) {//<-- Constructor
             this.originalIcon = originalIcon;
@@ -107,8 +115,6 @@ public class Grid extends JPanel {
             g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
         }//                                                        into a thing that doesnt look like it used to be square so thats cool.
     }
-    Image EXPicon = new ImageIcon(getClass().getResource("/src/Icons/GameOverExplosion.png")).getImage();
-    Image RVLicon = new ImageIcon(getClass().getResource("/src/Icons/MineSweeperIcon.png")).getImage();
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
     public Grid(int w, int h, int bombNum, int lives) {//INIT
@@ -225,7 +231,7 @@ public class Grid extends JPanel {
             for (int j = 0; j < Fieldy; j++) {
                 getButtonAt(i,j).setPreferredSize(newCellSize);
             }
-        }//Returns new mouse location over grid. I need it to recenter window on mouse. MUCH faster than using pack(); to update size before recenter
+        }//Returns old and new grid sizes. I need it to recenter window on mouse. MUCH faster than using pack(); to update size before recenter
         int[] gridSizesOldNew= new int[4];
         gridSizesOldNew[0] = currentCellSize.width*Fieldx;
         gridSizesOldNew[1] = currentCellSize.height*Fieldy;

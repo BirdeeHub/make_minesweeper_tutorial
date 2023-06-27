@@ -2,7 +2,7 @@ This folder contains the compile and package scripts in packaged installs.
 
 Application source code is in src/MySweep folder. 
 
-Icons are in src/Icons folder.
+Icons are in src/MySweep/Icons folder.
 
 minesweeper_linux_dist.zip creation script, and associated install scripts in Packaging/LinuxInstall.
 
@@ -15,8 +15,6 @@ This game comes from https://github.com/BirdeeHub/minesweeper
 ************************************************************************************
 
 ***MINESWEEPER***
-
-Author: Robin DeBoer
 
 I couldn't easily find a minesweeper game on the store that allowed you to actually set the size of the field
 or the number of bombs or lives...
@@ -69,6 +67,16 @@ It has plenty of comments, and most easy customizations can be changed at the to
 
 There is also a package script to make your own installable version using JPackage!
 
+**I only have the .jar**
+
+The entire repo app folder is actually included in the jar, so if all you have is that and a JDK, you can run jar xvf path/to/minesweeper.jar
+
+It will need to be in a folder named app in order for the scripts that package your own installer to work.
+
+You can remove the META-INF/ directory and MyClass/*.class files that appear in the main directory you extracted to if you wish because they are generated when you compile. It won't break anything if you don't they just wont ever be used again. 
+
+in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf minesweeper.jar && rm -r META-INF MySweep
+
 _____________________________________________________________________________________________________________________________________________
 
 **Compiling**
@@ -96,7 +104,6 @@ run the zipLinuxMinesweeper.sh script.
 then cd ../../.. and use ls and both the package and a distributable zip will be there for you. Again, just like in the git repo.
 
 ____________________________________________________________________________________________________________________________________
-
 
 **Quick code walkthrough:**
 

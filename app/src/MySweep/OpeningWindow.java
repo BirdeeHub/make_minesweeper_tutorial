@@ -19,49 +19,60 @@ import java.awt.event.KeyAdapter;
 
 
 public class OpeningWindow extends JFrame {
+    private JTextField WidthField;
+    private JTextField HeightField;
+    private JTextField BombNumber;
+    private JTextField LivesNumber;
+    private JButton Start = new JButton("Start!");
+    private JButton ScoreBoard = new JButton();
+    private JButton HelpWindow = new JButton();
+    private JLabel LifeFieldLabel = new JLabel();
+    private JLabel WidthFieldLabel = new JLabel();
+    private JLabel HeightFieldLabel = new JLabel();
+    private JLabel BombFieldLabel = new JLabel();
+    private JLabel TitleLabel = new JLabel();
+    private JLabel AuthorLabel = new JLabel();
     public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//called by scores window
-        JTextField WidthField = new JTextField(initialx);
-        JTextField HeightField = new JTextField(initialy);
-        JTextField BombNumber = new JTextField(initialbombno);
-        JTextField LivesNumber = new JTextField(initiallives);
-        initComponents(WidthField,HeightField,BombNumber,LivesNumber);
+        WidthField = new JTextField(initialx);
+        HeightField = new JTextField(initialy);
+        BombNumber = new JTextField(initialbombno);
+        LivesNumber = new JTextField(initiallives);
+        initComponents();
     }
     public OpeningWindow() {//called by the rest
-        JTextField WidthField = new JTextField();
-        JTextField HeightField = new JTextField();
-        JTextField BombNumber = new JTextField();
-        JTextField LivesNumber = new JTextField();
-        initComponents(WidthField,HeightField,BombNumber,LivesNumber);
+        WidthField = new JTextField();
+        HeightField = new JTextField();
+        BombNumber = new JTextField();
+        LivesNumber = new JTextField();
+        initComponents();
     }
-    private void initComponents(JTextField WidthField, JTextField HeightField, JTextField BombNumber, JTextField LivesNumber) {
-        //init components and listeners
-        JButton Start = new JButton();
-        JButton ScoreBoard = new JButton();
-        JButton HelpWindow = new JButton();
-        JLabel LifeFieldLabel = new JLabel();
-        JLabel WidthFieldLabel = new JLabel();
-        JLabel HeightFieldLabel = new JLabel();
-        JLabel BombFieldLabel = new JLabel();
-        JLabel TitleLabel = new JLabel();
-        JLabel AuthorLabel = new JLabel();
-
-        //add properties to pass to start listener
-        Start.setText("Start!");
-        Start.putClientProperty("WidthField", WidthField);
-        Start.putClientProperty("HeightField", HeightField);
-        Start.putClientProperty("BombNumber", BombNumber);
-        Start.putClientProperty("LivesNumber", LivesNumber);
-        Start.putClientProperty("TitleLabel", TitleLabel);
-        Start.putClientProperty("LifeFieldLabel", LifeFieldLabel);
-        Start.putClientProperty("HeightFieldLabel", HeightFieldLabel);
-        Start.putClientProperty("WidthFieldLabel", WidthFieldLabel);
-        Start.putClientProperty("BombFieldLabel", BombFieldLabel);
-
+    private void StartActionPerformed() {//runs MainGameWindow, performs error checking and displays errors
+        try{
+            int width =(int)(Integer.parseInt(WidthField.getText()));
+            int height =(int)(Integer.parseInt(HeightField.getText()));
+            int bombCount = (int)(Integer.parseInt(BombNumber.getText()));
+            int lives = (int)(Integer.parseInt(LivesNumber.getText()));
+            if(width*height<=bombCount||bombCount<0||lives<1||width<1||height<1){
+                if(lives<1)LifeFieldLabel.setText("no life");
+                if(width<1)WidthFieldLabel.setText("invalid width");
+                if(height<1)HeightFieldLabel.setText("invalid height");
+                if(width*height<=bombCount)BombFieldLabel.setText("Space<Bombs");
+                if(bombCount<0)BombFieldLabel.setText("Bombs<0");
+                return;
+            }
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new MainGameWindow(width,height,bombCount,lives).setVisible(true);
+                }
+            });
+            OpeningWindow.this.dispose();
+        }catch(NumberFormatException e){TitleLabel.setText("Invalid field(s)");}
+    } 
+    private void initComponents() {
         //add action Listeners
         Start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                JButton Start=(JButton)evt.getSource();
-                StartActionPerformed(Start);
+                StartActionPerformed();
             }
         });
         ScoreBoard.addActionListener(new ActionListener() {
@@ -93,10 +104,10 @@ public class OpeningWindow extends JFrame {
                 // Check if the Enter key is pressed
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
                     // get focused component source
-                Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-                if(!(CurrComp instanceof JButton)){
-                    StartActionPerformed(Start);
-                }else((JButton)CurrComp).doClick();
+                    Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                    if(!(CurrComp instanceof JButton)){
+                        StartActionPerformed();
+                    }else ((JButton)CurrComp).doClick();
                 }
             }
         };
@@ -231,36 +242,4 @@ public class OpeningWindow extends JFrame {
         pack();
         getContentPane().setVisible(true);
     }
-
-    private void StartActionPerformed(JButton Start) {//runs grid, performs error checking and displays errors
-        JTextField WidthField=(JTextField)(Start).getClientProperty("WidthField");
-        JTextField HeightField=(JTextField)(Start).getClientProperty("HeightField");
-        JTextField BombNumber=(JTextField)(Start).getClientProperty("BombNumber");
-        JTextField LivesNumber=(JTextField)(Start).getClientProperty("LivesNumber");
-        JLabel TitleLabel=(JLabel)(Start).getClientProperty("TitleLabel");
-        JLabel LifeFieldLabel=(JLabel)(Start).getClientProperty("LifeFieldLabel");
-        JLabel HeightFieldLabel=(JLabel)(Start).getClientProperty("HeightFieldLabel");
-        JLabel WidthFieldLabel=(JLabel)(Start).getClientProperty("WidthFieldLabel");
-        JLabel BombFieldLabel=(JLabel)(Start).getClientProperty("BombFieldLabel");
-        try{
-            int width =(int)(Integer.parseInt(WidthField.getText()));
-            int height =(int)(Integer.parseInt(HeightField.getText()));
-            int bombCount = (int)(Integer.parseInt(BombNumber.getText()));
-            int lives = (int)(Integer.parseInt(LivesNumber.getText()));
-            if(width*height<=bombCount||bombCount<0||lives<1||width<1||height<1){
-                if(lives<1)LifeFieldLabel.setText("no life");
-                if(width<1)WidthFieldLabel.setText("invalid width");
-                if(height<1)HeightFieldLabel.setText("invalid height");
-                if(width*height<=bombCount)BombFieldLabel.setText("Space<Bombs");
-                if(bombCount<0)BombFieldLabel.setText("Bombs<0");
-                return;
-            }
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new MainGameWindow(width,height,bombCount,lives).setVisible(true);
-                }
-            });
-            OpeningWindow.this.dispose();
-        }catch(NumberFormatException e){TitleLabel.setText("Invalid field(s)");}
-    } 
 }
