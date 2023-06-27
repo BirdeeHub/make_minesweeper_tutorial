@@ -469,10 +469,13 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileManager
-                //I was relying on the poor scaling to have my explode look good. uncomment if you have a better icon
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon)/*get rid of this ); too-->*/);//.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        
+        //I was relying on the poor scaling to have my explode look good. Swap to the commented-out version if you have a better icon
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon));
+        //ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        
         ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        for (int i = 0; i < Fieldx; i++) {
+        for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
                     if (won == false){
