@@ -109,9 +109,9 @@ ________________________________________________________________________________
 
 ______________________________________________________________________________________________________________________________________________
 
-Main game window is in charge of action listeners and the menu bar and scrolling. And being the window.
+Main game window is in charge of action listeners and the menu bar and scrolling. And being the window. It contains an instance of the Grid class
 
-Grid is a panel containing the grid of buttons
+Grid is a panel containing the grid of buttons for the board.
 
 Grid changes the displays of buttons based on the data in Minefield, and as such contains the main game logic.
 
@@ -123,27 +123,25 @@ One of these is to allow for scaling icons for end of game explosions and reveal
 
 the other is called CellButton. It was created to allow painting of custom border colors and weights for the buttons on the board, and then it absorbed its non-expensive client properties, such as where on the board it was located, or things that (I think) dont cause heap allocations.
 
-Grid also contains score saving logic at end of file because it is called by gameover function, but the file paths are defined at the top of the file.
-
 --
 
 Minefield contains the timer, and all the things you need to keep track of for game state and contains handy functions for updating and referencing the data.
 
 On each reset, Grid creates a new Minefield instance (which was designed to be as cheap as possible), and sets all the buttons back to their default appearances. The board is not yet initialized. Reset(clickedX,ClickedY) is passed in on first click to fill the cells to ensure safe first click.
 
-
-
-scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
-
 --
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window. 
+
+ScoresFileManager contains functions for reading and updating scores file.
+
+scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
 
 The rest of the source files are just the other windows.
 
 --
 
-**Random note** I play with scaling to make my terrible explosions look good. Go to Game Over Function near end of grid and do what it says if you want to use a real explosion icon
+**Random note** I play with scaling to make my terrible explosions look good. Go to Game Over Function at end of Grid and do what it says if you want to use a real explosion icon
 
 _______________________________________________________________________________________________________________________________________________
 

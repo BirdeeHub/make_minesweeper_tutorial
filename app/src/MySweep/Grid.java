@@ -9,13 +9,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.MouseListener;
 import java.util.Stack;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Scanner;
 import java.awt.Graphics;
 import javax.swing.SwingConstants;
 import javax.swing.Icon;
@@ -48,18 +41,18 @@ public class Grid extends JPanel {
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
     //--------------------get custom image files----------------------------------------------
-    private final String classpath = System.getProperty("java.class.path");//<-- added this for people who use the run command in their IDE
+    private final String classpath = System.getProperty("java.class.path").toLowerCase();//<-- added this for people who use the run command in their IDE
     private final boolean inAJar = classpath.contains(".jar");//<-- this might make some bugs. I hope not though. Works fine for me.
     //if you are down to just run the compile script and run it from the jar, you can replace the above 2 lines with: private boolean inAJar = true;
+    //inside a jar, the root directory is the root directory of the jar. When run from outside a jar, it is not.
     private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
-    private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
-    private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
+    private final ScoresFileManager scoresFileManager = new ScoresFileManager();//<-- we will be calling a function in this to update scores
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
-    private int GameOverMessageIndex = 3;
-    private int wonValue = 3;
+    private int GameOverMessageIndex = 3;//<-- 3 is the "off" state
+    private int wonValue = 3;//<-- 3 is the "off" state
     private int BombsFound = 0;
     private int livesLeft = 0;
     private Minefield answers;//<-- this one is the data class for game logic
@@ -475,7 +468,7 @@ public class Grid extends JPanel {
         }
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
-    private void GameOver(boolean won) {//reveals bombs on board then passes the work to UpdateLeaderboard
+    private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileManager
                 //I was relying on the poor scaling to have my explode look good. uncomment if you have a better icon
         ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon)/*get rid of this ); too-->*/);//.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
@@ -503,85 +496,8 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        if(Fieldx*Fieldy>bombCount&&bombCount>0)MessageIndex = updateLeaderboard(won);//<--
+        MessageIndex = scoresFileManager.addScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
-    }//---------------------------------------------updateLeaderboard()-------------------------------------------------------------------------
-    private int updateLeaderboard(boolean won){//Reads and writes scores from score file, returns index for win/loss message
-        String scoresFileName;
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            scoresFileName = scoresFileNameWindows;
-        } else {
-            scoresFileName = scoresFileNameOther;
-        }
-        String RemainingLives= String.valueOf(Math.max(0, lives-answers.cellsExploded()));
-        String timeString = answers.getTime();
-        boolean highscore = false;
-        boolean newBoardSize = false;
-        String answersString = String.valueOf(Fieldx) + ":" + String.valueOf(Fieldy) + ":" + String.valueOf(bombCount) + ":" + String.valueOf(lives);
-        String thisScore = (answersString +"-"+ RemainingLives +"-"+ timeString);  //format:"x:y:bombCount:lives-RemainingLives-time"
-        boolean fileFound = true;
-        String[] word = null;
-        try (Scanner in = new Scanner(new File(scoresFileName))) { //try to read
-            StringBuilder tFile = new StringBuilder();
-            while (in.hasNext()) {
-                tFile.append(in.next()).append(" ");
-            }
-            word = tFile.toString().split("\\s+");
-        } catch (IOException e) { // whoops. Could not.
-            fileFound = false;
-            try {
-                Files.createDirectories(Path.of(scoresFileName).getParent()); //<-- Create the directory
-                Files.writeString(Path.of(scoresFileName), thisScore + " ", StandardOpenOption.CREATE); //<-- Write the file
-            } catch (IOException ex) {ex.printStackTrace();}
-        }
-        if(fileFound){
-            if(1<=word.length && word[0].isEmpty()){
-                try (FileWriter out1 = new FileWriter(scoresFileName)) { //file found but empty. Writing.
-                    fileFound=false;
-                    out1.write(thisScore + " ");
-                } catch (IOException ex) {}
-             }else{
-                int c = 0;
-                String[] currentSavedScore;
-                while(c<word.length){
-                    currentSavedScore=word[c].split("-");
-                    if(currentSavedScore[0].equals(answersString)){
-                        if(won && (Integer.parseInt(currentSavedScore[2])>Integer.parseInt(timeString))){
-                            word[c]=thisScore;//                         ^did you beat the time?
-                            highscore=true;
-                        }else if(won && (Integer.parseInt(currentSavedScore[1])>Integer.parseInt(RemainingLives)) && (Integer.parseInt(currentSavedScore[2])==Integer.parseInt(timeString))){
-                            word[c]=thisScore;//                         ^is it same time but more lives?
-                            highscore=true;
-                        }else if(won && (Integer.parseInt(currentSavedScore[1])<1)){//was the entry created by dying on a new board configuration?
-                            word[c]=thisScore;
-                            highscore=true;
-                        }
-                        break;
-                    }
-                    c++;
-                }
-                if(c==word.length){//none were a match. New Board Size
-                    newBoardSize=true;
-                    String[] xUy = new String[word.length+1];
-                    int i=0;
-                    while(i<word.length){
-                        xUy[i]=word[i];
-                        i++;
-                    }
-                    xUy[i]=thisScore;
-                    word=xUy;
-                }
-            }
-            if(highscore || newBoardSize){//save file
-                try (FileWriter out2 = new FileWriter(scoresFileName)) {
-                    for(int i=0; i<word.length; i++){
-                        out2.write(word[i]+" ");
-                    }
-                }catch(IOException e){}
-            }
-        }
-        return (highscore)?2:((newBoardSize || !fileFound)?1:0);
     }
 }

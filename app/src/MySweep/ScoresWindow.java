@@ -1,4 +1,5 @@
 package MySweep;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -15,27 +16,96 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalToggleButtonUI;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.GridLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 
 public class ScoresWindow extends JFrame {
+    private final ScoresFileManager scoresFileManager = new ScoresFileManager();
     private final String thisBoard;
     private JToggleButton clickableToggle = new JToggleButton("click?");
     private boolean clickable;
     private JFrame ParentFrame;
     private boolean FileIssue = false;//<-- used to stop it from becoming a button when you use the toggle button if file issue
     private final Dimension defaultwindowsize = new Dimension(280, 500);
-    private JPanel BoardPanel;//these ones are globally initialized to create buttons with small load time
+    private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to create buttons with small load time
     private JLabel[] BoardLabel;
     private JButton[] BoardButton;
+    private boolean isControlDown;
+    private boolean isShiftDown;
+    private boolean isDeleteMode;
+    private ActionListener BoardButtonListener = new ActionListener(){
+        public void actionPerformed(ActionEvent evt) {
+            if(clickableToggle.isSelected()==true){
+                if(!(isControlDown&&isShiftDown))BoardButtonPressedAction(((JButton) evt.getSource()), ParentFrame);
+                if(isControlDown&&isShiftDown)BoardButtonDeleteAction((JButton) evt.getSource());
+            }
+        }
+    };
+    private KeyAdapter keyAdapter = new KeyAdapter() {
+        public void keyPressed(KeyEvent evt) {
+            // Check if control key is pressed
+            if(evt.getKeyCode() == KeyEvent.VK_CONTROL){
+                isControlDown = true;
+            }
+            if(evt.getKeyCode() == KeyEvent.VK_SHIFT){
+                isShiftDown = true;
+            }
+            if(isControlDown&&isShiftDown){
+                isDeleteMode=true;
+                clickableToggle.setText("delete?");
+            }
+            // Check if the Enter key is pressed
+            if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                // get focused component source
+                Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                if(CurrComp == clickableToggle){//this one is a JToggleButton
+                    clickableToggle.doClick();
+                }else ((JButton)CurrComp).doClick();
+            }
+        }
+        public void keyReleased(KeyEvent evt) {
+            if(evt.getKeyCode() == KeyEvent.VK_CONTROL){
+                isControlDown = false;
+
+            }
+            if(evt.getKeyCode() == KeyEvent.VK_SHIFT){
+                isShiftDown = false;
+            }
+            if(!isControlDown||!isShiftDown){
+                isDeleteMode=false;
+                clickableToggle.setText("click?");
+            }
+        }
+    };
+    private void BoardButtonPressedAction(JButton BoardPressed, JFrame ParentFrame){
+        String fullboardtext=((String)BoardPressed.getClientProperty("BoardTarget"));
+        String[] splitboardtext=fullboardtext.split(":");
+        if(splitboardtext.length>3){//dont worry, we check the validity of these inputs later. but we need at least 4
+            ParentFrame.dispose();
+            EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new OpeningWindow(splitboardtext[0],splitboardtext[1],splitboardtext[2],splitboardtext[3]).setVisible(true);
+                }
+            });
+            ScoresWindow.this.dispose();
+        }
+    }
+    private void BoardButtonDeleteAction(JButton BoardPressed){
+        scoresFileManager.deleteScoreEntry(((String)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
+        BoardPanel.removeAll();//remove items in the panels because we are going to readd from file.
+        LivesPanel.removeAll();
+        TimePanel.removeAll();
+        leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//reset text for main scores display
+        revalidate();
+    }
     //----------Constructor---------------------------------
     public ScoresWindow(int Fieldx, int  Fieldy, int bombCount, int lives, JFrame ParentFrame) {
         thisBoard = Fieldx+":"+Fieldy+":"+bombCount + ":" + lives;//this is how it knows what score to highlight
@@ -43,6 +113,12 @@ public class ScoresWindow extends JFrame {
         this.clickable = clickableToggle.isSelected();
         this.ParentFrame=ParentFrame;//we need this to close it later if new board is chosen
         initComponents();
+        clickableToggle.setUI(new MetalToggleButtonUI() {
+            @Override
+            protected Color getSelectColor() {
+                return (isDeleteMode)?Color.RED:super.getSelectColor();
+            }
+        });
     }
     private void initComponents() {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); //Initialize our nested gridbaglayout panels
@@ -53,10 +129,10 @@ public class ScoresWindow extends JFrame {
         GridBagConstraints HeadingConstraints = new GridBagConstraints();
         JPanel ScoresPanel = new JPanel(new GridBagLayout());
         GridBagConstraints ScoresConstraints = new GridBagConstraints();
-        JScrollPane scrollPane = new JScrollPane(containerGridBag);
+        JScrollPane scrollPane = new JScrollPane(ScoresPanel);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        getContentPane().add(scrollPane);//add scroll pane to frame
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        getContentPane().add(containerGridBag);//add scroll pane to frame
 
         containerConstraints.fill = GridBagConstraints.BOTH;//add our other panels into the main panel which is inside a scroll pane
         containerConstraints.gridx = 0;
@@ -70,7 +146,7 @@ public class ScoresWindow extends JFrame {
         containerConstraints.gridheight = GridBagConstraints.REMAINDER;
         containerConstraints.weightx = 1.0;
         containerConstraints.weighty = 1.0;
-        containerGridBag.add(ScoresPanel, containerConstraints);
+        containerGridBag.add(scrollPane, containerConstraints);
 
         JButton Back = new JButton("Back");              //initialize HeadingPanel items
         Back.addActionListener(new ActionListener(){
@@ -93,23 +169,6 @@ public class ScoresWindow extends JFrame {
                 }
             }
         });
-        ActionListener BoardButtonListener = new ActionListener(){
-            public void actionPerformed(ActionEvent evt) {
-                if(clickableToggle.isSelected()==true)BoardButtonPressedAction(((JButton) evt.getSource()), ParentFrame);
-            }
-        };
-        KeyAdapter keyAdapter = new KeyAdapter() {
-            public void keyPressed(KeyEvent evt) {
-                // Check if the Enter key is pressed
-                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                    // get focused component source
-                    Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-                    if(CurrComp == clickableToggle){//this one is a JToggleButton
-                        clickableToggle.doClick();
-                    }else ((JButton)CurrComp).doClick();
-                }
-            }
-        };
         clickableToggle.addKeyListener(keyAdapter);
         Back.addKeyListener(keyAdapter);
         JLabel TitleLabel = new JLabel();
@@ -170,11 +229,11 @@ public class ScoresWindow extends JFrame {
         BoardPanel.setLayout(new GridLayout(0, 1)); 
         JLabel BoardSpacer = new JLabel(" ");
         BoardSpacer.setBorder(new EmptyBorder(10, 10, 10, 10));
-        JPanel LivesPanel = new JPanel();
+        LivesPanel = new JPanel();
         LivesPanel.setLayout(new GridLayout(0, 1));
         JLabel BoardSpacer2 = new JLabel(" ");
         BoardSpacer2.setBorder(new EmptyBorder(10, 5, 10, 5));
-        JPanel TimePanel = new JPanel();
+        TimePanel = new JPanel();
         TimePanel.setLayout(new GridLayout(0, 1));
         leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//set text for main scores display
         JLabel BoardSpacer3 = new JLabel(" ");
@@ -205,39 +264,40 @@ public class ScoresWindow extends JFrame {
         //if(components[1] instanceof JButton)System.out.println("Button height: " + ((JButton)components[1]).getHeight());
     }
     //----------------------------------------------leaderboardText()-----------Reads files, creates components based on contents-----------------
-    private void leaderboardText(JPanel BoardPanel, JPanel LivesPanel, JPanel TimePanel, ActionListener BoardButtonListener, KeyAdapter keyAdapter){ //sets JLabel text from file input
-        String os = System.getProperty("os.name").toLowerCase();
-        String scoresFileName;
-        if (os.contains("win")) {
-            scoresFileName = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
-        } else {
-            scoresFileName = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-        }
+    private void leaderboardText(JPanel BoardPanel, JPanel LivesPanel, JPanel TimePanel, ActionListener BoardButtonListener, KeyAdapter keyAdapter){
+        //creates components with text and properties recieved from scoresFileManager
         String SHL="<u>"; //StartHighLight variable for easily changing tags
         String EHL="</u>";//EndHighLight
         String Shtml="<html>";
         String Ehtml="</html>";
-        try(Scanner in = new Scanner(new File(scoresFileName))) {
-            String tFile = "";
-            while(in.hasNext()){
-                tFile += in.next()+" ";
-            }
-            String[] word = tFile.split("\\s+");
-            if(word.length==1 && word[0].isEmpty()){
-                FileIssue=true;
-                BoardButton = new JButton[1];
-                BoardLabel = new JLabel[1];
-                JLabel[] LivesLabel = new JLabel[1];
-                JLabel[] TimeLabel = new JLabel[1];
-                BoardLabel[0] = new JLabel("File");
-                BoardButton[0] = new JButton("File");
-                LivesLabel[0] = new JLabel("is");
-                TimeLabel[0] = new JLabel("empty.");
-                BoardPanel.add(BoardLabel[0]);
-                LivesPanel.add(LivesLabel[0]);
-                TimePanel.add(TimeLabel[0]);
-                return;
-            }
+        String[] word = scoresFileManager.readLeaderboard();
+        if(word==null){//<-- no file was present
+            FileIssue=true;
+            BoardLabel = new JLabel[1];
+            BoardButton = new JButton[1];
+            JLabel[] LivesLabel = new JLabel[1];
+            JLabel[] TimeLabel = new JLabel[1];
+            BoardLabel[0] = new JLabel("File");
+            BoardButton[0] = new JButton("File");
+            LivesLabel[0] = new JLabel("not");
+            TimeLabel[0] = new JLabel("found.");
+            BoardPanel.add(BoardLabel[0]);
+            LivesPanel.add(LivesLabel[0]);
+            TimePanel.add(TimeLabel[0]);
+        }else if(word.length==1 && word[0].isEmpty()){//<-- file was present but empty
+            FileIssue=true;
+            BoardButton = new JButton[1];
+            BoardLabel = new JLabel[1];
+            JLabel[] LivesLabel = new JLabel[1];
+            JLabel[] TimeLabel = new JLabel[1];
+            BoardLabel[0] = new JLabel("File");
+            BoardButton[0] = new JButton("File");
+            LivesLabel[0] = new JLabel("is");
+            TimeLabel[0] = new JLabel("empty.");
+            BoardPanel.add(BoardLabel[0]);
+            LivesPanel.add(LivesLabel[0]);
+            TimePanel.add(TimeLabel[0]);
+        }else{//<-- score file with entries was found
             String[] current;//initialize the stuff we read the values to
             String[] BoardText = new String[word.length];
             String[] LivesText = new String[word.length];
@@ -309,32 +369,6 @@ public class ScoresWindow extends JFrame {
                 LivesPanel.add(LivesLabel[i]);
                 TimePanel.add(TimeLabel[i]);
             }
-        }catch(FileNotFoundException e){
-            FileIssue=true;
-            BoardLabel = new JLabel[1];
-            BoardButton = new JButton[1];
-            JLabel[] LivesLabel = new JLabel[1];
-            JLabel[] TimeLabel = new JLabel[1];
-            BoardLabel[0] = new JLabel("File");
-            BoardButton[0] = new JButton("File");
-            LivesLabel[0] = new JLabel("not");
-            TimeLabel[0] = new JLabel("found.");
-            BoardPanel.add(BoardLabel[0]);
-            LivesPanel.add(LivesLabel[0]);
-            TimePanel.add(TimeLabel[0]);
-        }
-    }
-    private void BoardButtonPressedAction(JButton BoardPressed, JFrame ParentFrame){
-        String fullboardtext=((String)BoardPressed.getClientProperty("BoardTarget"));
-        String[] splitboardtext=fullboardtext.split(":");
-        if(splitboardtext.length>3){//dont worry, we check the validity of these inputs later. but we need at least 4
-            ParentFrame.dispose();
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new OpeningWindow(splitboardtext[0],splitboardtext[1],splitboardtext[2],splitboardtext[3]).setVisible(true);
-                }
-            });
-            ScoresWindow.this.dispose();
         }
     }
 }
