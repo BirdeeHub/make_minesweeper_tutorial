@@ -32,6 +32,7 @@ public class OpeningWindow extends JFrame {
     private JLabel BombFieldLabel = new JLabel();
     private JLabel TitleLabel = new JLabel();
     private JLabel AuthorLabel = new JLabel();
+    //-----------------------------------------constructors----------------------------------------------------------
     public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//called by scores window
         WidthField = new JTextField(initialx);
         HeightField = new JTextField(initialy);
@@ -45,7 +46,7 @@ public class OpeningWindow extends JFrame {
         BombNumber = new JTextField();
         LivesNumber = new JTextField();
         initComponents();
-    }
+    }//----------------------------------------------------------Start Action-------------------------------------------------
     private void StartActionPerformed() {//runs MainGameWindow, performs error checking and displays errors
         try{
             int width =(int)(Integer.parseInt(WidthField.getText()));
@@ -67,7 +68,7 @@ public class OpeningWindow extends JFrame {
             });
             OpeningWindow.this.dispose();
         }catch(NumberFormatException e){TitleLabel.setText("Invalid field(s)");}
-    } 
+    } //----------------------------------------------------------initComponents-----------------------------------------------
     private void initComponents() {
         //add action Listeners
         Start.addActionListener(new ActionListener() {

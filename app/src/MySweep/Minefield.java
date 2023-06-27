@@ -16,8 +16,8 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     private final Timer currentTimeTimer = new Timer();
     private TimerTask timeTask = new TimerTask() {
         public void run() {
-            time = String.valueOf((System.currentTimeMillis() - startTime) / 1000);//if you want to add a time format you can do that here, or in minefield.
-        }
+            time = String.valueOf((System.currentTimeMillis() - startTime) / 1000);//dont add a time format here. This gets saved to scores file
+        }//                                                                           It may not compare for highscore correctly after doing that
     };
     //----------Constructor---------------------------------
     Minefield(int w, int h, int bombCount){

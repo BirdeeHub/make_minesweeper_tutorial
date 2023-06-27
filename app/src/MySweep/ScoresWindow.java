@@ -33,12 +33,13 @@ public class ScoresWindow extends JFrame {
     private JFrame ParentFrame;
     private boolean FileIssue = false;//<-- used to stop it from becoming a button when you use the toggle button if file issue
     private final Dimension defaultwindowsize = new Dimension(280, 500);
-    private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to create buttons with small load time
-    private JLabel[] BoardLabel;
+    private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to allow leaderboardText(...) to be called anywhere in the file
+    private JLabel[] BoardLabel;//                                                              ^leaderboardText(...) defined at end of file.
     private JButton[] BoardButton;
     private boolean isControlDown;
     private boolean isShiftDown;
-    private boolean isDeleteMode;
+    private boolean isDeleteMode;//<-- controls toggle button background color WHILE SELECTED (see constructor)
+    //-----------------------action listeners for leaderboardText(...)------------------
     private ActionListener BoardButtonListener = new ActionListener(){
         public void actionPerformed(ActionEvent evt) {
             if(clickableToggle.isSelected()==true){
@@ -49,14 +50,13 @@ public class ScoresWindow extends JFrame {
     };
     private KeyAdapter keyAdapter = new KeyAdapter() {
         public void keyPressed(KeyEvent evt) {
-            // Check if control key is pressed
-            if(evt.getKeyCode() == KeyEvent.VK_CONTROL){
+            if(evt.getKeyCode() == KeyEvent.VK_CONTROL){// Check if control key is pressed
                 isControlDown = true;
             }
-            if(evt.getKeyCode() == KeyEvent.VK_SHIFT){
+            if(evt.getKeyCode() == KeyEvent.VK_SHIFT){// Check if shift key is pressed
                 isShiftDown = true;
             }
-            if(isControlDown&&isShiftDown){
+            if(isControlDown&&isShiftDown){//update display to show we are in delete mode
                 isDeleteMode=true;
                 clickableToggle.setText("delete?");
             }
@@ -69,10 +69,9 @@ public class ScoresWindow extends JFrame {
                 }else ((JButton)CurrComp).doClick();
             }
         }
-        public void keyReleased(KeyEvent evt) {
+        public void keyReleased(KeyEvent evt) {//if you release a key, let the program know
             if(evt.getKeyCode() == KeyEvent.VK_CONTROL){
                 isControlDown = false;
-
             }
             if(evt.getKeyCode() == KeyEvent.VK_SHIFT){
                 isShiftDown = false;
@@ -95,30 +94,30 @@ public class ScoresWindow extends JFrame {
             });
             ScoresWindow.this.dispose();
         }
-    }
+    }//-----------------------This one isnt required for leaderboardText(...) but it uses it---------------------------------------
     private void BoardButtonDeleteAction(JButton BoardPressed){
         scoresFileManager.deleteScoreEntry(((String)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
-        BoardPanel.removeAll();//remove items in the panels because we are going to readd from file.
+        BoardPanel.removeAll();//remove items in the panels because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
         leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//reset text for main scores display
         revalidate();
     }
-    //----------Constructor---------------------------------
+    //------------------------------------Constructor------------Constructor-------------Constructor---------------------------------
     public ScoresWindow(int Fieldx, int  Fieldy, int bombCount, int lives, JFrame ParentFrame) {
         thisBoard = Fieldx+":"+Fieldy+":"+bombCount + ":" + lives;//this is how it knows what score to highlight
         clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//get default state of clickable
         this.clickable = clickableToggle.isSelected();
-        this.ParentFrame=ParentFrame;//we need this to close it later if new board is chosen
+        this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
         initComponents();
-        clickableToggle.setUI(new MetalToggleButtonUI() {
+        clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
             @Override
             protected Color getSelectColor() {
                 return (isDeleteMode)?Color.RED:super.getSelectColor();
             }
         });
     }
-    private void initComponents() {
+    private void initComponents() {//-----------------------------------initComponents()------------------------------------------
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); //Initialize our nested gridbaglayout panels
         getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
         JPanel containerGridBag = new JPanel(new GridBagLayout());
@@ -127,12 +126,12 @@ public class ScoresWindow extends JFrame {
         GridBagConstraints HeadingConstraints = new GridBagConstraints();
         JPanel ScoresPanel = new JPanel(new GridBagLayout());
         GridBagConstraints ScoresConstraints = new GridBagConstraints();
-        JScrollPane scrollPane = new JScrollPane(ScoresPanel);
+        JScrollPane scrollPane = new JScrollPane(ScoresPanel);//<-- add the scores panel to scroll pane to scroll without losing back and toggle button
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        getContentPane().add(containerGridBag);//add scroll pane to frame
+        getContentPane().add(containerGridBag);//add panel to frame
 
-        containerConstraints.fill = GridBagConstraints.BOTH;//add our other panels into the main panel which is inside a scroll pane
+        containerConstraints.fill = GridBagConstraints.BOTH;//add our HeadingPanel and scrollPane into the containerGridBag panel
         containerConstraints.gridx = 0;
         containerConstraints.gridy = 0;
         containerConstraints.gridwidth = 1;
@@ -146,7 +145,15 @@ public class ScoresWindow extends JFrame {
         containerConstraints.weighty = 1.0;
         containerGridBag.add(scrollPane, containerConstraints);
 
-        JButton Back = new JButton("Back");              //initialize HeadingPanel items
+        //-----------------------------------------------Heading Panel----------------------------------------------------------
+
+        JLabel TitleLabel = new JLabel();              //initialize HeadingPanel items
+        TitleLabel.setFont(new Font("Tahoma", 0, 36));
+        TitleLabel.setText("High Scores!");
+        TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JButton Back = new JButton("Back");
+        clickableToggle.addKeyListener(keyAdapter);
+        Back.addKeyListener(keyAdapter);
         Back.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent evt) {
                 ScoresWindow.this.dispose();
@@ -157,22 +164,16 @@ public class ScoresWindow extends JFrame {
                 clickable = clickableToggle.isSelected();
                 getContentPane().setPreferredSize(ScoresWindow.this.getContentPane().getSize());
                 if(!FileIssue){
-                    BoardPanel.removeAll();//remove
-                    if(clickable){
+                    BoardPanel.removeAll();//remove so we can add new ones without weirdness
+                    if(clickable){//add the correct components to BoardPanel
                         for(int i=0;i<BoardButton.length;i++)BoardPanel.add(BoardButton[i]);
                     }else for(int i=0;i<BoardLabel.length;i++)BoardPanel.add(BoardLabel[i]);
-                    ScoresWindow.this.pack();
+                    ScoresWindow.this.pack();//make it display right
                     ScoresWindow.this.setVisible(true);
                     ScoresWindow.this.getContentPane().revalidate();
                 }
             }
         });
-        clickableToggle.addKeyListener(keyAdapter);
-        Back.addKeyListener(keyAdapter);
-        JLabel TitleLabel = new JLabel();
-        TitleLabel.setFont(new Font("Tahoma", 0, 36));
-        TitleLabel.setText("High Scores!");
-        TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         HeadingConstraints.gridx = 0;
         HeadingConstraints.gridy = 0;
@@ -191,6 +192,8 @@ public class ScoresWindow extends JFrame {
         HeadingConstraints.gridwidth = GridBagConstraints.REMAINDER;
         HeadingConstraints.weightx = 1.0;
         HeadingPanel.add(TitleLabel, HeadingConstraints);
+
+        //-----------------------------------------------Scores Panel-------------------------------------------------
 
         JLabel ColumnHeadingLabel1 = new JLabel("<html><u>Board:</u></html>");         //initialize row 1 of ScoresPanel
         JLabel ColumnHeadingSpacer = new JLabel(" ");
@@ -257,18 +260,16 @@ public class ScoresWindow extends JFrame {
 
         pack();
         getContentPane().setVisible(true);
-        //Component[] components = BoardPanel.getComponents();
-        //if(components[1] instanceof JLabel)System.out.println("Label height: " + ((JLabel)components[1]).getHeight());
-        //if(components[1] instanceof JButton)System.out.println("Button height: " + ((JButton)components[1]).getHeight());
     }
+    //---------------------------leaderboardText()---------------leaderboardText()------------------leaderboardText()-------------leaderboardText()--------
     //----------------------------------------------leaderboardText()-----------Reads files, creates components based on contents-----------------
     private void leaderboardText(JPanel BoardPanel, JPanel LivesPanel, JPanel TimePanel, ActionListener BoardButtonListener, KeyAdapter keyAdapter){
-        //creates components with text and properties recieved from scoresFileManager
+        //creates components with info from string array recieved from scoresFileManager
         String SHL="<u>"; //StartHighLight variable for easily changing tags
         String EHL="</u>";//EndHighLight
         String Shtml="<html>";
         String Ehtml="</html>";
-        String[] word = scoresFileManager.readLeaderboard();
+        String[] word = scoresFileManager.readLeaderboard();//<-- read scores file to string array
         if(word==null){//<-- no file was present
             FileIssue=true;
             BoardLabel = new JLabel[1];
@@ -295,7 +296,7 @@ public class ScoresWindow extends JFrame {
             BoardPanel.add(BoardLabel[0]);
             LivesPanel.add(LivesLabel[0]);
             TimePanel.add(TimeLabel[0]);
-        }else{//<-- score file with entries was found
+        }else{//     <----------------------------- score file with entries was found
             String[] current;//initialize the stuff we read the values to
             String[] BoardText = new String[word.length];
             String[] LivesText = new String[word.length];
@@ -346,7 +347,7 @@ public class ScoresWindow extends JFrame {
                 }
             }
             BoardLabel = new JLabel[word.length];//initialize all the labels and button 
-            JLabel[] LivesLabel = new JLabel[word.length];//properties that we didnt need to add pre-read.
+            JLabel[] LivesLabel = new JLabel[word.length];//properties that we didnt need to add during read.
             JLabel[] TimeLabel = new JLabel[word.length];
             for(int i=0; i<word.length; i++){
                 BoardButton[i].setMargin(new Insets(-1, 0, -1, 0));
@@ -359,7 +360,7 @@ public class ScoresWindow extends JFrame {
                 LivesLabel[i].setBorder(new EmptyBorder(0, 0, 0, 0));
                 TimeLabel[i] = new JLabel(TimeText[i]);
                 TimeLabel[i].setBorder(new EmptyBorder(0, 0, 0, 10));
-                if(clickable){
+                if(clickable){//then add correct ones to panel
                     BoardPanel.add(BoardButton[i]);
                 }else{
                     BoardPanel.add(BoardLabel[i]);

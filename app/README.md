@@ -133,7 +133,7 @@ On each reset, Grid creates a new Minefield instance (which was designed to be a
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window. 
 
-ScoresFileManager contains functions for reading and updating scores file.
+ScoresFileManager contains functions for reading and updating scores file. (but not displaying it correctly. thats in ScoresWindow)
 
 scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
 

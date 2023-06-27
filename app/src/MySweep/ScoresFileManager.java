@@ -104,10 +104,12 @@ class ScoresFileManager{
                     }
                 }
                 if(highscore || newBoardSize){//save edited version of file
+                    StringBuilder fileOutString = new StringBuilder();
+                    for(int i=0; i<entryWords.length; i++){
+                        fileOutString.append(entryWords[i]).append(" ");
+                    }
                     try (FileWriter out2 = new FileWriter(scoresFileName)) {
-                        for(int i=0; i<entryWords.length; i++){
-                            out2.write(entryWords[i]+" ");
-                        }
+                        out2.write(fileOutString.toString());
                     }catch(IOException e){e.printStackTrace();}
                 }
             }
