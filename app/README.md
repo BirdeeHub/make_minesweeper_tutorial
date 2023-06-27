@@ -75,7 +75,7 @@ It will need to be in a folder named app in order for the scripts that package y
 
 You can remove the META-INF/ directory and MyClass/*.class files that appear in the main directory you extracted to if you wish because they are generated when you compile. It won't break anything if you don't they just wont ever be used again. 
 
-in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf minesweeper.jar && rm -r META-INF MySweep
+in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf ../minesweeper.jar && rm -r META-INF MySweep
 
 _____________________________________________________________________________________________________________________________________________
 

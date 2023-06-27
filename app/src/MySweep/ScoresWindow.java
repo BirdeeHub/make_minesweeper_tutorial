@@ -1,5 +1,4 @@
 package MySweep;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -18,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.metal.MetalToggleButtonUI;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.GridLayout;
