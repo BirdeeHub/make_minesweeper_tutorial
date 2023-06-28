@@ -131,15 +131,17 @@ On each reset, Grid creates a new Minefield instance (which was designed to be a
 
 --
 
-MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window. 
+ScoresFileIO contains functions directly pertaining to reading and writing to the scores file. 
 
-ScoresFileIO contains functions directly pertaining to reading and writing to the scores file. It turns the scores file into ScoreEntry instances, and can update or delete them.
+ScoresFileIO turns the scores file into ScoreEntry instances, and can update or delete them.
 
 scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
 
 ScoresWindow displays ScoreEntry instances correctly and allows for deletion, and relaunching a new opening window with a pre populated score.
 
 --
+
+MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window.
 
 The rest of the source files are just the other windows.
 

@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ class ScoresFileIO{
         } catch (IOException e) {System.out.println(e.getClass()+" @ "+scoresFileName);}
         try{
             Files.createFile(Path.of(scoresFileName));//<-- Create the file if not created.
-        }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
+        }catch(IOException e){if(!(e instanceof FileAlreadyExistsException))System.out.println(e.getClass()+" @ "+scoresFileName);}
         try (FileWriter out2 = new FileWriter(scoresFileName, append)) {
             out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
         }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
