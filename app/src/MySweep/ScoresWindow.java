@@ -26,8 +26,8 @@ import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 
 public class ScoresWindow extends JFrame {
-    private final ScoresFileManager scoresFileManager = new ScoresFileManager();
-    private final String thisBoard;
+    private final ScoresFileIO scoresFileIO = new ScoresFileIO();
+    private final ScoreEntry thisBoard;
     private JToggleButton clickableToggle = new JToggleButton("click?");
     private boolean clickable;
     private JFrame ParentFrame;
@@ -83,20 +83,19 @@ public class ScoresWindow extends JFrame {
         }
     };
     private void BoardButtonPressedAction(JButton BoardPressed, JFrame ParentFrame){
-        String fullboardtext=((String)BoardPressed.getClientProperty("BoardTarget"));
-        String[] splitboardtext=fullboardtext.split(":");
-        if(splitboardtext.length>3){//dont worry, we check the validity of these inputs later. but we need at least 4
+        ScoreEntry buttonEntry=((ScoreEntry)BoardPressed.getClientProperty("BoardTarget"));
+        if(buttonEntry.isValid()){
             ParentFrame.dispose();
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new OpeningWindow(splitboardtext[0],splitboardtext[1],splitboardtext[2],splitboardtext[3]).setVisible(true);
+                    new OpeningWindow(Integer.toString(buttonEntry.getX()),Integer.toString(buttonEntry.getY()),Integer.toString(buttonEntry.getBombCount()),Integer.toString(buttonEntry.getLives())).setVisible(true);
                 }
             });
             ScoresWindow.this.dispose();
         }
     }//-----------------------This one isnt required for leaderboardText(...) but it uses it---------------------------------------
     private void BoardButtonDeleteAction(JButton BoardPressed){
-        scoresFileManager.deleteScoreEntry(((String)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
+        scoresFileIO.deleteScoreEntry(((ScoreEntry)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
         BoardPanel.removeAll();//remove items in the panels because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
@@ -105,7 +104,7 @@ public class ScoresWindow extends JFrame {
     }
     //------------------------------------Constructor------------Constructor-------------Constructor---------------------------------
     public ScoresWindow(int Fieldx, int  Fieldy, int bombCount, int lives, JFrame ParentFrame) {
-        thisBoard = Fieldx+":"+Fieldy+":"+bombCount + ":" + lives;//this is how it knows what score to highlight
+        thisBoard = new ScoreEntry(Fieldx, Fieldy, bombCount, lives, 0, 0);//this is how it knows what score to highlight
         clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//get default state of clickable
         this.clickable = clickableToggle.isSelected();
         this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
@@ -269,8 +268,8 @@ public class ScoresWindow extends JFrame {
         String EHL="</u>";//EndHighLight
         String Shtml="<html>";
         String Ehtml="</html>";
-        String[] word = scoresFileManager.readLeaderboard();//<-- read scores file to string array
-        if(word==null){//<-- no file was present
+        ScoreEntry[] entries = scoresFileIO.readLeaderboard();//<-- read scores file to ScoreEntry array
+        if(entries==null){//<-- no file was present
             FileIssue=true;
             BoardLabel = new JLabel[1];
             BoardButton = new JButton[1];
@@ -283,7 +282,7 @@ public class ScoresWindow extends JFrame {
             BoardPanel.add(BoardLabel[0]);
             LivesPanel.add(LivesLabel[0]);
             TimePanel.add(TimeLabel[0]);
-        }else if(word.length==1 && word[0].isEmpty()){//<-- file was present but empty
+        }else if(entries.length==0){//<-- file was present but empty
             FileIssue=true;
             BoardButton = new JButton[1];
             BoardLabel = new JLabel[1];
@@ -297,29 +296,20 @@ public class ScoresWindow extends JFrame {
             LivesPanel.add(LivesLabel[0]);
             TimePanel.add(TimeLabel[0]);
         }else{//     <----------------------------- score file with entries was found
-            String[] current;//initialize the stuff we read the values to
-            String[] BoardText = new String[word.length];
-            String[] LivesText = new String[word.length];
-            String[] TimeText = new String[word.length];
-            BoardButton = new JButton[word.length];
-            for(int c=0; c<word.length; c++){//initialize board buttons
+            String[] BoardText = new String[entries.length];
+            String[] LivesText = new String[entries.length];
+            String[] TimeText = new String[entries.length];
+            BoardButton = new JButton[entries.length];
+            for(int c=0; c<entries.length; c++){//initialize board buttons
                 BoardButton[c] = new JButton();
                 BoardButton[c].putClientProperty("BoardTarget", "");
-            }//Board String will be its own property so that we can change how it displays as we wish
-            for(int c=0; c<word.length; c++){
-                current=word[c].split("-"); //now, current[x] for x=(0,1,2)=(board,lives,time)
-                if(current.length>1)try{
-                    if(Integer.parseInt(current[1])==0)current[1]="DIED AT";//lives=0 RIP in pieces
-                }catch(NumberFormatException e){}
-                String[] BoardDisplayStrings = current[0].split(":");//create the format for only the display of the values
-                String finalBoardDisplayString;
-                if(BoardDisplayStrings.length>3){
-                    finalBoardDisplayString = BoardDisplayStrings[0]+"x"+BoardDisplayStrings[1]+" B:"+BoardDisplayStrings[2]+" L:"+BoardDisplayStrings[3];
-                }else{finalBoardDisplayString = current[0];}
-                if(current.length >= 3){
-                    if(current[0].equals(thisBoard)){//This is us! add to start
-                        if(word.length>1 && c!=0){
-                            for(int add=word.length-1; add>0; add--){//move all values up 1 so we dont overwrite when we place at start
+            }//Board String will be its own property so that we can change how it displays as we wish-----------------------------------------------------------------------------
+            for(int c=0; c<entries.length; c++){
+                if(entries[c].isValid()){
+                    String finalBoardDisplayString = entries[c].getX()+"x"+entries[c].getY()+" B:"+entries[c].getBombCount()+" L:"+entries[c].getLives();
+                    if(entries[c].equals(thisBoard)){//This is us! add to start
+                        if(entries.length>1 && c!=0){
+                            for(int add=entries.length-1; add>0; add--){//move all values up 1 so we dont overwrite when we place at start
                                 BoardButton[add].putClientProperty("BoardTarget",BoardButton[add-1].getClientProperty("BoardTarget"));
                                 BoardButton[add].setText(BoardButton[add-1].getText());
                                 BoardText[add]=BoardText[add-1];
@@ -327,29 +317,30 @@ public class ScoresWindow extends JFrame {
                                 TimeText[add]=TimeText[add-1];
                             }
                         }//place our board at start
-                        BoardButton[0].putClientProperty("BoardTarget", current[0]);
+                        BoardButton[0].putClientProperty("BoardTarget", entries[c]);
                         BoardButton[0].setText(Shtml+SHL+finalBoardDisplayString+EHL+Ehtml);
                         BoardText[0] = Shtml+SHL+finalBoardDisplayString+EHL+Ehtml;
-                        LivesText[0] = Shtml+SHL+current[1]+EHL+Ehtml;
-                        TimeText[0] = Shtml+SHL+current[2]+EHL+Ehtml;
+                        LivesText[0] = Shtml+SHL+((entries[c].getRemainingLives()==0)?"DIED AT":entries[c].getRemainingLives())+EHL+Ehtml;
+                        TimeText[0] = Shtml+SHL+entries[c].getTime()+EHL+Ehtml;
                     } else{//add scores that arent us to end
-                        BoardButton[c].putClientProperty("BoardTarget", current[0]);
+                        BoardButton[c].putClientProperty("BoardTarget", entries[c]);
                         BoardButton[c].setText(Shtml+finalBoardDisplayString+Ehtml);
                         BoardText[c] = Shtml+finalBoardDisplayString+Ehtml;
-                        LivesText[c] = Shtml+current[1]+Ehtml;
-                        TimeText[c] = Shtml+current[2]+Ehtml;
+                        LivesText[c] = Shtml+((entries[c].getRemainingLives()==0)?"DIED AT":entries[c].getRemainingLives())+Ehtml;
+                        TimeText[c] = Shtml+entries[c].getTime()+Ehtml;
                     }
                 } else {
+                    BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());
                     BoardButton[c].setText("entry");
                     BoardText[c] = "entry";
-                    LivesText[c] = "length";
+                    LivesText[c] = "is";
                     TimeText[c] = "invalid";
                 }
             }
-            BoardLabel = new JLabel[word.length];//initialize all the labels and button 
-            JLabel[] LivesLabel = new JLabel[word.length];//properties that we didnt need to add during read.
-            JLabel[] TimeLabel = new JLabel[word.length];
-            for(int i=0; i<word.length; i++){
+            BoardLabel = new JLabel[entries.length];//initialize all the labels and button 
+            JLabel[] LivesLabel = new JLabel[entries.length];//properties that we didnt need to add during read.
+            JLabel[] TimeLabel = new JLabel[entries.length];
+            for(int i=0; i<entries.length; i++){
                 BoardButton[i].setMargin(new Insets(-1, 0, -1, 0));
                 BoardButton[i].setBorderPainted(false);
                 BoardButton[i].addActionListener(BoardButtonListener);

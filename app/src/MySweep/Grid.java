@@ -63,7 +63,7 @@ public class Grid extends JPanel {
     private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
-    private final ScoresFileManager scoresFileManager = new ScoresFileManager();//<-- we will be calling a function in this to update scores
+    private final ScoresFileIO scoresFileIO = new ScoresFileIO();//<-- we will be calling a function in this to update scores
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
     private int GameOverMessageIndex = 3;//<-- 3 is the "off" state
     private int wonValue = 3;//<-- 3 is the "off" state
@@ -513,7 +513,14 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        MessageIndex = scoresFileManager.addScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        int endTime = -1;
+        try{
+            endTime = Integer.parseInt(answers.getTime());
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            System.out.println("your time was not able to evaluate to an integer for saving your score");
+        }
+        MessageIndex = scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }

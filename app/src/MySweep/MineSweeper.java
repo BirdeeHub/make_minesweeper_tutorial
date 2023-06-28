@@ -28,14 +28,14 @@ class MineSweeper {
                 height = (int)(Integer.parseInt(args[1]));
                 bombCount = (int)(Integer.parseInt(args[2]));
                 lives = (int)(Integer.parseInt(args[3]));
-                if(width > 0 && height > 0){
+                if(width > 0 && height > 0 && bombCount > 0 && lives > 0){
                     EventQueue.invokeLater(new Runnable(){public void run(){new MainGameWindow(width, height, bombCount, lives).setVisible(true);}});
                 }else{
-                    System.out.println("integer arguments only: width, height, BombCount, lives (where width and height are > 0)");
+                    System.out.println("integer arguments only: width, height, BombCount, lives (where all are > 0)");
                     EventQueue.invokeLater(new Runnable(){public void run(){new OpeningWindow().setVisible(true);}});
                 }
             }catch(NumberFormatException e){
-                System.out.println("integer arguments only: width, height, BombCount, lives (where width and height are > 0)");
+                System.out.println("integer arguments only: width, height, BombCount, lives (where all are > 0)");
                 EventQueue.invokeLater(new Runnable(){public void run(){new OpeningWindow().setVisible(true);}});
             }
         }else{
