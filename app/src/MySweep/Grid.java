@@ -41,7 +41,9 @@ public class Grid extends JPanel {
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
     //--------------------get custom image files----------------------------------------------
-    private final boolean inAJar = MineSweeper.isJarFile();//<-- are we running from a .jar?
+    private final boolean inAJar = MineSweeper.isJarFile();//<-- was it a jar?
+    //if you are down to just run the compile script and run it from the jar, you can replace the above section with: private boolean inAJar = true;
+    //inside a jar, the root directory is the root directory of the jar. When run from outside a jar, it is not.
     private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
@@ -464,8 +466,12 @@ public class Grid extends JPanel {
         }
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
-    private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+    private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileManager
+
+        //I was relying on the poor scaling to have my explode look good. Swap to the commented-out version if you have a better icon
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon));
+        //ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        
         ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
@@ -498,7 +504,7 @@ public class Grid extends JPanel {
             e.printStackTrace();
             System.out.println("your time was not able to evaluate to an integer for saving your score");
         }
-        MessageIndex = ScoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        MessageIndex = MineSweeper.getIOmanager().updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }

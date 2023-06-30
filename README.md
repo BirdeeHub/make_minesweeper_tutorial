@@ -11,15 +11,14 @@ You can learn too! Source code is included with the installer, as well as a comp
 which will update your actual installed version of the game that you can run from your start menu.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
-**version 1.0** is the normal version
+**Attention:** This version is kinda dumb. Its also kinda cool. It exists as a proof of concept and because I wanted to try.
 
-**version 2.0** contains a compiler you can use, but is an extra 10MB.
+Why is it so dumb? It saves by writing a new jar containing updated scores, and then overwriting itself on exit. 
+This means I can't make a linux package because all locations linux could install it to with dpkg are not writeable, 
+so linux needs to use the jar for this one.
+It also means I need a native java executable in the windows package until I learn to mess with a system class loader, so the package installer is an extra 10 MB.
 
-if you have 1.0 you will need a version of Java Development Kit to recompile if you wish to edit.
-
-including the compiler on linux made it over 100MB for some reason so I couldnt add an installer with an included compiler.
-
-regardless of version, you will need a JDK to make your own installer.
+Is it better? No it's worse. But its also significantly cooler in my opinion.
 
 |                                                     |                                                     |
 |-----------------------------------------------------|-----------------------------------------------------|
@@ -45,41 +44,6 @@ It will have source code and compile scripts inside the game folder after instal
 (Also, it will give you a windows defender warning because I didnt pay for it to be a signed installer.
 If that worries you, the source code and scripts used to build it are available right here,
 and instructions are below. Or get a jdk and use the jar file.)
-
-************************************************************************************
-
-**LINUX USERS:**
-
-____________________________________________________________________________________
-
-Also contains the source code and compile and package scripts with the package.
-
-Use the script and not the .deb file to install to add to path and make it background itself when run from terminal,
-otherwise some package launchers like dmenu (the default on i3) cant find it.
-
-It would work fine though if you used the .deb other than being less convenient to use it from the command line
-
-move to a writeable directory and run the following command (requires wget):
-```bash
-wget -O minesweeper_linux_dist.zip https://github.com/BirdeeHub/minesweeper/raw/main/minesweeper_linux_dist.zip && \
-unzip minesweeper_linux_dist.zip -d minesweeper_linux_dist && \
-sudo ./minesweeper_linux_dist/installLinuxMinesweeper.sh
-```
-
-```bash
-##and, optionally, you can run these to move the install scripts to the folder scores save in after the install
-[ ! -d ~/.minesweeper/ ] && mkdir ~/.minesweeper; \
-mv ./minesweeper_linux_dist/installLinuxMinesweeper.sh ~/.minesweeper/ && \
-mv ./minesweeper_linux_dist/uninstallLinuxMinesweeper.sh ~/.minesweeper/ && \
-rm -r ./minesweeper_linux_dist/ ./minesweeper_linux_dist.zip
-```
-
-and then to uninstall if installed this way (assuming you ran the optional commands):
-```bash
-sudo ~/.minesweeper/uninstallLinuxMinesweeper.sh
-```
-
-the uninstall script will cleanup the script from /usr/local/bin, but will not delete ~/.minesweeper/ or its contents
 
 **********************************************************************************************************************
 
@@ -122,29 +86,11 @@ ________________________________________________________________________________
 
 *Windows:*
 
-If on windows, just run the installer unless you just wanna use the jar.
+If on windows, run the installer unless you just wanna use the jar and have a java version.
 
-*Linux:*
+*Linux or Mac:*
 
-either unzip the zip folder, *OR* copy the installLinuxMinesweeper.sh file in Packaging/LinuxInstall into the same directory as the .deb file.
-
-(its designed to get zipped with the .deb and installed that way so it would be in the same folder. 
-In the repo, it is not in the right folder. but the zip folder is right there for you.)
-
-Run the install script in LinuxInstall USING SUDO (needs permission to run dpkg and to copy launcher script to /usr/local/bin)
-
-Install directory is /usr/local/games, scores save in ~/.minesweeper/
-
-It will create short script called minesweeper in /usr/local/bin so that you can run the game from terminal without it freezing your terminal.
-
-To run, use command "minesweeper" or find it in your start menu equivalent.
-
-(the script in your /usr/local/bin directory runs \<install_directory\>/minesweeper/bin/Minesweeper $@ >/dev/null 2>&1 < /dev/null &)
-
-**ATTENTION:** I was unfortunately unable to make a mac .pkg file with the system i had access to.
-Until I can spend an extended time on a mac or get around to trying a mac vm, 
-there will be no further mac support than what is here already.
-If you want to run it on mac, use the .jar file. You will need to download a JDK for Mac.
+use platform independent instructions above.
 
 *************************************************************************************************************************************************
 

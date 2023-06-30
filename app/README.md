@@ -1,10 +1,8 @@
-This folder contains the compile and package scripts in packaged installs. 
+This folder contains the compile and package scripts along with:
 
-Application source code is in src/MySweep folder. 
+Application source code is in src/MySweep folder (other than OverwriteJar.java which is in src/)
 
 Icons are in src/MySweep/Icons folder.
-
-minesweeper_linux_dist.zip creation script, and associated install scripts in Packaging/LinuxInstall.
 
 The application binary runs the .jar in this file using the associated Java Runtime Environment.
 
@@ -22,6 +20,15 @@ or the number of bombs or lives...
 So I made one! 
 
 Mostly I just wanted to learn some Java.
+
+**Attention:** This version is kinda dumb. Its also kinda cool. It exists as a proof of concept and because I wanted to try.
+
+Why is it so dumb? It saves by writing a new jar containing updated scores, and then overwriting itself on exit. 
+This means I can't make a linux package because all locations linux could install it to with dpkg are not writeable, 
+so linux needs to use the jar for this one.
+It also means I need a native java executable in the windows package until I learn to mess with a system class loader, so the package installer is an extra 10 MB.
+
+Is it better? No it's worse. But its also significantly cooler in my opinion.
 
 *************************************************************************************************************************
 
@@ -51,7 +58,7 @@ You might need to add it to your path.
 
 If you wish to make your own installer, you will still need a JDK regardless of if your game version includes compiler.
 
-You will also need your own JDK if you wish to include modules not included in java.base or java.desktop (you probably wont though, unless maybe you want to mess with how saving works)
+You will also need your own JDK if you wish to include modules not included in java.base or java.desktop or java.management (you probably wont though)
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -59,13 +66,13 @@ After making sure you have a jdk, edit whatever you want in the src folder.
 
 Then you can use the appropriate compile script for your OS to make a new jar.
 
-Doing so will update the actual version of the program you installed.
+Doing so will update the actual version of the program you installed. (assuming you used the windows package installer)
 
 I.e. you can run it using the same icon in your start menu when you are done editing.
 
 It has plenty of comments, and most easy customizations can be changed at the top of the files. (including the directory it saves scores to.)
 
-There is also a package script to make your own installable version using JPackage!
+There is also a package script to make your own installable version using JPackage! (windows only for this version)
 
 **I only have the .jar**
 
@@ -73,9 +80,9 @@ The entire repo app folder is actually included in the jar, so if all you have i
 
 It will need to be in a folder named app in order for the scripts that package your own installer to work.
 
-You can remove the META-INF/ directory and MyClass/*.class files that appear in the main directory you extracted to if you wish because they are generated when you compile. It won't break anything if you don't they just wont ever be used again. 
+You can remove the META-INF/ directory and MyClass/*.class and OverwriteJar.class files that appear in the main directory you extracted to if you wish because they are generated when you compile. It won't break anything if you don't they just wont ever be used again. 
 
-in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf ../minesweeper.jar && rm -r META-INF MySweep
+in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf ../minesweeper.jar && rm -r META-INF MySweep OverwriteJar.class
 
 _____________________________________________________________________________________________________________________________________________
 
@@ -85,7 +92,7 @@ If you have a mac, only bashcompile.sh will work for you.
 
 Compiling is easy. Go to Compiling folder. Run the script.
 
-**Packaging (requires jdk regardless of game version)**
+**Packaging (requires Windows for this version)**
 
 Packaging is also easy if you have jpackage and its dependency. For windows this is WIX, for debian linux, dpkg
 
@@ -93,15 +100,7 @@ It is not necessary to do this to update your game, it just makes a version you 
 
 After you compile, go to Packaging folder and run the package script!
 
-If you are on windows, you are done! the installer program is 1 level up from where you are. Just like in the git repo.
-
-**on Linux? just 1 more step.**
-
-cd to Packaging/LinuxInstall, and without moving the .deb file from where the package script put it, 
-
-run the zipLinuxMinesweeper.sh script.
-
-then cd ../../.. and use ls and both the package and a distributable zip will be there for you. Again, just like in the git repo.
+You are done! the installer program is 1 level up from where you are. Just like in the git repo.
 
 ____________________________________________________________________________________________________________________________________
 
@@ -143,9 +142,11 @@ ScoresWindow displays ScoreEntry instances correctly and allows for deletion, an
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window.
 
-The rest of the source files are just the other windows.
+MineSweeper.java also contains the hook to copy OverwriteJar.class to a temp directory and run it upon exiting.
 
-**Random note** I play with scaling to make my terrible explosions look good. Go to Game Over Function at end of Grid and do what it says if you want to use a real explosion icon
+OverwriteJar.java overwrites the main jar with the jar from the temp directory, and then cleans up the extra jar in the temp directory and then deletes itself.
+
+The rest of the source files are just the other windows.
 
 _______________________________________________________________________________________________________________________________________________
 
