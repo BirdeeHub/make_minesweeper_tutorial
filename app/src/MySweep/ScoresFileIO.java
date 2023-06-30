@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class ScoresFileIO{
-    private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
-    private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-    private final String scoresFileName;
+    private static String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
+    private static String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
+    private static String scoresFileName;
     public ScoresFileIO(){
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -22,58 +22,61 @@ class ScoresFileIO{
         }
     }
     //----------------------------------WRITE------------------------------------------------------WRITE-------
-    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
-        StringBuilder scoresFileString = new StringBuilder();// create string
+    private static void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
+        StringBuilder scoresFileString = new StringBuilder();// create string from entries
         if(append)scoresFileString.append(" ");
         for(int i = 0; i < allEntries.length; i++){
             scoresFileString.append(allEntries[i].toString()).append(" ");
         }
-        try {//-----write string-------------
+        //-------------------------write string----------------------write string-------------
+        try {
             Files.createDirectories(Path.of(scoresFileName).getParent()); //<-- Create the directory.
         } catch (IOException e) {System.out.println(e.getClass()+" @ "+scoresFileName);}
         try{
             Files.createFile(Path.of(scoresFileName));//<-- Create the file if not created.
         }catch(IOException e){if(!(e instanceof FileAlreadyExistsException))System.out.println(e.getClass()+" @ "+scoresFileName);}
+
         try (FileWriter out2 = new FileWriter(scoresFileName, append)) {
             out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
         }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
     }
     //-----------------------------------READ-------------------------------------READ---
-    public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
-        ArrayList<ScoreEntry> tFile = new ArrayList<>();
-        ScoreEntry[] entries;
+    public static ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
+        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
+        ScoreEntry[] fileEntries;
         try(Scanner in = new Scanner(new File(scoresFileName))) {
             while (in.hasNext()) {
                 ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
-                if(currentEntry.isValid())tFile.add(currentEntry);//<-- only read out valid scores
+                if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
             }
-            entries = tFile.toArray(new ScoreEntry[0]);
+            fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
         }catch(FileNotFoundException e){
-            entries=null; 
+            fileEntries=null; 
             System.out.println(e.getClass()+" @ "+scoresFileName);
         }
-        return entries;
+        return fileEntries;
+
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
-    public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
-        ScoreEntry[] entries = readLeaderboard();// <-- read
-        ArrayList<ScoreEntry> newFile = new ArrayList<>();
-        if(entries!=null){
+    public static void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
+        ScoreEntry[] deletries = readLeaderboard();// <-- read
+        ArrayList<ScoreEntry> newFileBuilder = new ArrayList<>();
+        if(deletries!=null){
             int c = 0;
-            while(c<entries.length){
+            while(c<deletries.length){
                 if(thisEntry.isValid()){//<-- only write back valid entries
-                    if(!(entries[c].equals(thisEntry) && thisEntry.getRemainingLives()==entries[c].getRemainingLives() && thisEntry.getTime()==entries[c].getTime())){
-                        newFile.add(entries[c]);//only add back entries that arent the exact entry in thisEntry (equals() only finds if same board)
+                    if(!(deletries[c].equals(thisEntry) && thisEntry.getRemainingLives()==deletries[c].getRemainingLives() && thisEntry.getTime()==deletries[c].getTime())){
+                        newFileBuilder.add(deletries[c]);//only add back entries that arent the exact entry in thisEntry (equals() only finds if same board)
                     }
                 }
                 c++;
             }
-            entries = newFile.toArray(new ScoreEntry[0]);
-            writeLeaderboard(entries, false);// <-- overwrite with new
+            deletries = newFileBuilder.toArray(new ScoreEntry[0]);
+            writeLeaderboard(deletries, false);// <-- overwrite with new
         }
     }
-    public int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    public static int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
         boolean highscore = false;

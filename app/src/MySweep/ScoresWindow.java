@@ -26,7 +26,6 @@ import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 
 public class ScoresWindow extends JFrame {
-    private final ScoresFileIO scoresFileIO = new ScoresFileIO();
     private final ScoreEntry thisBoard;
     private JToggleButton clickableToggle = new JToggleButton("click?");
     private boolean clickable;
@@ -95,7 +94,7 @@ public class ScoresWindow extends JFrame {
         }
     }//-----------------------This one isnt required for leaderboardText(...) but it uses it---------------------------------------
     private void BoardButtonDeleteAction(JButton BoardPressed){
-        scoresFileIO.deleteScoreEntry(((ScoreEntry)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
+        ScoresFileIO.deleteScoreEntry(((ScoreEntry)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
         BoardPanel.removeAll();//remove items in the panels because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
@@ -268,7 +267,7 @@ public class ScoresWindow extends JFrame {
         String EHL="</u>";//EndHighLight
         String Shtml="<html>";
         String Ehtml="</html>";
-        ScoreEntry[] entries = scoresFileIO.readLeaderboard();//<-- read scores file to ScoreEntry array
+        ScoreEntry[] entries = ScoresFileIO.readLeaderboard();//<-- read scores file to ScoreEntry array
         if(entries==null){//<-- no file was present
             FileIssue=true;
             BoardLabel = new JLabel[1];
