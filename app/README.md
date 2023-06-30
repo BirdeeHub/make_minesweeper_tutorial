@@ -145,8 +145,6 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 The rest of the source files are just the other windows.
 
-**Random note** I play with scaling to make my terrible explosions look good. Go to Game Over Function at end of Grid and do what it says if you want to use a real explosion icon
-
 _______________________________________________________________________________________________________________________________________________
 
 Enjoy the game! Maybe change what you don't like and learn along the way! New colors is the easiest place to start. You can do it!
