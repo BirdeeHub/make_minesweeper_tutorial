@@ -28,7 +28,7 @@ import java.util.jar.Manifest;
 class ScoresFileIO{
     private final String scoresFromMySweep= "scores.txt";
     private final String MySweepFromClassPath = "src/MySweep/";
-    private ScoreEntry[] runtimeEntries;
+    private ScoreEntry[] runtimeEntries;//<-- IT NOW NEEDS TO INTERNALLY SAVE STATE BECAUSE THE NEW SAVES ARE IN THE OTHER JAR. THIS IS BAD.
     public ScoresFileIO(){}//<-- CONSTRUCTOR
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
     private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file or jar
@@ -73,17 +73,18 @@ class ScoresFileIO{
             }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFile.toPath().toString());e.printStackTrace();}
         }
     }
+    //----------------------------------------------HELPERS FOR WRITE----------------------------HELPERS FOR WRITE------------------------------------
     //-------------------------------------------extract and create jar files------------------------------------------------
     private static void extractJar(String jarFile, String outputDirectory) {//extracts jar to a specified directory minus the manifest
-        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {
+        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {//start our jar writer
             JarEntry entry;
-            while ((entry = jis.getNextJarEntry()) != null) {
+            while ((entry = jis.getNextJarEntry()) != null) {//if there is stuff
                 String entryName = entry.getName();
 
-                if (entry.isDirectory()){
+                if (entry.isDirectory()){//if its a directory, call on contents
                     File dir = new File(outputDirectory, entryName);
                     dir.mkdirs();
-                } else {
+                } else {//otherwise, write it.
                     File file = new File(outputDirectory, entryName);
                     file.getParentFile().mkdirs();
 
@@ -95,7 +96,7 @@ class ScoresFileIO{
                         }
                     }
                 }
-                jis.closeEntry();
+                jis.closeEntry();//yay we're done.
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,7 +123,7 @@ class ScoresFileIO{
         }
     }
     private static void addFilesToJar(File file, String root, JarOutputStream jos) throws IOException {//adds the files
-        if (file.isDirectory()) {
+        if (file.isDirectory()) {//if it is a directory, call addfiles on the children of the directory
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f : files) {
@@ -130,23 +131,23 @@ class ScoresFileIO{
                 }
             }
         } else {
-            String entryName = file.getAbsolutePath().substring(root.length() + 1).replace("\\", "/");
-            JarEntry jarEntry = new JarEntry(entryName);
-            jos.putNextEntry(jarEntry);
+            String entryName = file.getAbsolutePath().substring(root.length() + 1).replace("\\", "/");//if windows, swap \ to /
+            JarEntry jarEntry = new JarEntry(entryName);//create new entry
+            jos.putNextEntry(jarEntry);//add new entry
             
-            try (InputStream is = new FileInputStream(file)) {
+            try (InputStream is = new FileInputStream(file)) {// add stuff to new entry
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = is.read(buffer)) != -1) {
                     jos.write(buffer, 0, bytesRead);
                 }
             }
-            jos.closeEntry();
+            jos.closeEntry();//close to prepare next item.
         }
     }
     //-------------------------remove a directory----------------------------------------------------
-    private static void removeDirectory(String directoryPath) throws IOException {
-        Files.walkFileTree(Paths.get(directoryPath), new SimpleFileVisitor<Path>() {
+    private static void removeDirectory(String directoryPath) throws IOException {//walk through and remove directory and its contents
+        Files.walkFileTree(Paths.get(directoryPath), new SimpleFileVisitor<Path>() {//This is better than recursion
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);

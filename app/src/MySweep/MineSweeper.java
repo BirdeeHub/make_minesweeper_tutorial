@@ -41,14 +41,14 @@ class MineSweeper {
      * @param args int width, int height, int BombCount, int lives
      */
     public static void main(String[] args) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
             if(isJarFile()){
-                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){
+                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){//<-- copy our program that overwrites
                     File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
                     Files.copy(inputStream, Paths.get(tempPath.toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {e.printStackTrace();}
-            	try {
+            	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
                     OvrightJarPro.command().add("\""+Paths.get(System.getProperty("java.home")).resolve(Paths.get("bin","java")).toString()+"\"");
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
@@ -66,32 +66,36 @@ class MineSweeper {
         /*Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this version is an experiment that hasnt paid off yet.
             if(isJarFile()){
                 try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){
+                    //copy the class file to run
                     File destinationDir = MineSweeper.getTempPath().toFile();
                     destinationDir.mkdirs();
                     Files.copy(inputStream, Paths.get(MineSweeper.getTempPath().toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
-                    String additionalClasspath = tempPath.toString()+File.separator;
-                    String[] entries = additionalClasspath.split(System.getProperty("path.separator"));
-                    URL[] urls = new URL[entries.length];
-                    for (int i = 0; i < entries.length; i++) {
-                        urls[i] = new URL("file://" + entries[i]);
-                    }
-                    URLClassLoader additionalClassLoader = new URLClassLoader(urls);
                     try{
-                        Class<?> systemClassLoaderClass = ClassLoader.getSystemClassLoader().getClass();
-                        Field parentField = systemClassLoaderClass.getDeclaredField("parent");
-                        parentField.setAccessible(true);
-                        parentField.set(ClassLoader.getSystemClassLoader(), additionalClassLoader);
-                    }catch(Exception e){e.printStackTrace();}
+                        //if no exception, run the class with our system classloader so that it can run without having java binary.
+                        String additionalClasspath = tempPath.toString()+File.separator;
+                        String[] entries = additionalClasspath.split(System.getProperty("path.separator"));
+                        URL[] urls = new URL[entries.length];
+                        for (int i = 0; i < entries.length; i++) {
+                            urls[i] = new URL("file://" + entries[i]);
+                        }
+                        URLClassLoader additionalClassLoader = new URLClassLoader(urls);
+                        try{
+                            Class<?> systemClassLoaderClass = ClassLoader.getSystemClassLoader().getClass();
+                            Field parentField = systemClassLoaderClass.getDeclaredField("parent");
+                            parentField.setAccessible(true);
+                            parentField.set(ClassLoader.getSystemClassLoader(), additionalClassLoader);
+                            try{
+                                String [] newArgs = new String[2];
+                                newArgs[0]="\""+minesweeperclasspath.toAbsolutePath().toString()+"\"";
+                                newArgs[1]="\""+tempPath.toString()+"\"";
+                                ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+                                Class<?> newAppClass = systemClassLoader.loadClass("OverwriteJar");
+                                Method mainMethod = newAppClass.getMethod("main", String[].class);
+                                mainMethod.invoke(null, (Object) newArgs);
+                            }catch (Exception e){e.printStackTrace();}
+                        }catch(Exception e){e.printStackTrace();}
+                    } catch (IOException e) {e.printStackTrace();}
                 } catch (IOException e) {e.printStackTrace();}
-                try{
-                    String [] newArgs = new String[2];
-                    newArgs[0]="\""+minesweeperclasspath.toAbsolutePath().toString()+"\"";
-                    newArgs[1]="\""+tempPath.toString()+"\"";
-                    ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                    Class<?> newAppClass = systemClassLoader.loadClass("OverwriteJar");
-                    Method mainMethod = newAppClass.getMethod("main", String[].class);
-                    mainMethod.invoke(null, (Object) newArgs);
-                }catch (Exception e){e.printStackTrace();}
             }
         }));*/
         try {
