@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class ScoresFileIO{
-    private static String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
-    private static String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-    private static String scoresFileName;
+    private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
+    private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
+    private final String scoresFileName;
     public ScoresFileIO(){
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -22,7 +22,7 @@ class ScoresFileIO{
         }
     }
     //----------------------------------WRITE------------------------------------------------------WRITE-------
-    private static void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
+    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
         StringBuilder scoresFileString = new StringBuilder();// create string from entries
         if(append)scoresFileString.append(" ");
         for(int i = 0; i < allEntries.length; i++){
@@ -41,7 +41,7 @@ class ScoresFileIO{
         }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
     }
     //-----------------------------------READ-------------------------------------READ---
-    public static ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
+    public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries;
         try(Scanner in = new Scanner(new File(scoresFileName))) {
@@ -59,7 +59,7 @@ class ScoresFileIO{
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
-    public static void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
+    public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read
         ArrayList<ScoreEntry> newFileBuilder = new ArrayList<>();
         if(deletries!=null){
@@ -76,7 +76,7 @@ class ScoresFileIO{
             writeLeaderboard(deletries, false);// <-- overwrite with new
         }
     }
-    public static int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    public int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
         boolean highscore = false;

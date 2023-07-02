@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
 class MineSweeper {
+    public static ScoresFileIO scoresFileIO = new ScoresFileIO();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
         try (FileInputStream fileInputStream = new FileInputStream(Paths.get(System.getProperty("java.class.path")).toFile())) {
             byte[] magicNumber = new byte[4];

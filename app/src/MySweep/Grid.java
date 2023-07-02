@@ -498,7 +498,7 @@ public class Grid extends JPanel {
             e.printStackTrace();
             System.out.println("your time was not able to evaluate to an integer for saving your score");
         }
-        MessageIndex = ScoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }
