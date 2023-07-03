@@ -16,9 +16,8 @@ class MineSweeper {
     private static Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
     private static Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
     private static Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
-    private static ScoresFileIO scoresFileIO = new ScoresFileIO();
+    public static ScoresFileIO scoresFileIO = new ScoresFileIO();
     //---public static methods-------------------------------------------------
-    public static ScoresFileIO getIOmanager(){return scoresFileIO;}
     public static Path getTempJarPath(){return tempJarPath;}
     public static Path getClassPath(){return minesweeperclasspath;}
     public static Path getTempPath(){return tempPath;}
