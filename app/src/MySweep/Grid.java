@@ -491,6 +491,7 @@ public class Grid extends JPanel {
                         getButtonAt(i,j).setIcon(RVLiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }
+                    getButtonAt(i,j).setText("");
                     answers.check(i,j);//check the exploded bomb so you cant mess it up by toggling dark mode
                 }
             }
