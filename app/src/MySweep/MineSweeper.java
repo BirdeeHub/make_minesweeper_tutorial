@@ -16,6 +16,7 @@ class MineSweeper {
     private static Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
     private static Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
     private static Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
+    private static String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static ScoresFileIO scoresFileIO = new ScoresFileIO();
     //---public static methods-------------------------------------------------
     public static Path getTempJarPath(){return tempJarPath;}
@@ -45,13 +46,13 @@ class MineSweeper {
                 } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
-                    OvrightJarPro.command().add("\""+Paths.get(System.getProperty("java.home")).resolve(Paths.get("bin","java")).toString()+"\"");
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+Paths.get(System.getProperty("java.home")).resolve(Paths.get("bin","java")).toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
-                    OvrightJarPro.command().add("\""+tempPath.toString()+"\"");
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add("OverwriteJar");
-                    OvrightJarPro.command().add("\""+minesweeperclasspath.toAbsolutePath().toString()+"\"");
-                    OvrightJarPro.command().add("\""+tempPath.toString()+"\"");
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
              	    Runtime.getRuntime().exec(OvrightJarCommand);
