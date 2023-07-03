@@ -29,7 +29,7 @@ import java.util.jar.Manifest;
 class ScoresFileIO{
     private final String scoresFileName= "scores.txt";
     private final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
-    private final String jarName = MineSweeper.getClassPath().getFileName().toString();
+    private final String jarName = (MineSweeper.isJarFile())?MineSweeper.getClassPath().getFileName().toString():"";
     public ScoresFileIO(){}//<-- CONSTRUCTOR
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
     private void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
@@ -40,7 +40,7 @@ class ScoresFileIO{
             }
             extractJar(MineSweeper.getClassPath().toString(), MineSweeper.getTempJarPath().toString());
             try{
-            copyManifestToDirectory(MineSweeper.getClassPath().toString(),MineSweeper.getTempJarPath().toString());
+                copyManifestToDirectory(MineSweeper.getClassPath().toString(),MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
             try (FileWriter scoreWriter = new FileWriter(Paths.get(MineSweeper.getTempJarPath().toString()+"/"+scoresFromClassPath).toFile())){
                 scoreWriter.write(jarFileScoresStringBuilder.toString());//<-- overwrite the file with new contents.
@@ -49,12 +49,12 @@ class ScoresFileIO{
                 e.printStackTrace();
             }
             File loaderFiles = MineSweeper.getTempPath().toFile();
-            loaderFiles.mkdirs();
+            loaderFiles.mkdirs(); 
             createJar(MineSweeper.getTempJarPath().toString(), MineSweeper.getTempPath().toString()+File.separator+jarName);
             try{
                 removeDirectory(MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
-        }else{//---------------------------------------------------------NOT IN A JAR---------------------------
+        }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
             File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
             StringBuilder scoresFileString = new StringBuilder();// create string from entries
             for(int i = 0; i < allEntries.length; i++){
@@ -149,7 +149,7 @@ class ScoresFileIO{
             }
         });
     }//----------------------------------Helper for READ-------------------------Helper for READ---------------------------------------------------
-    private static String extractAJarFileToString(String jarFile, String elementName, String outputDirectory) {
+    private static String extractAJarElementToString(String jarFile, String elementName) {
         try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
@@ -177,7 +177,7 @@ class ScoresFileIO{
         ScoreEntry[] fileEntries=null;
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR-------------------------------------------
             if(Path.of(MineSweeper.getTempPath().toString()+File.separator+jarName).toFile().exists()){
-                String fileContents = extractAJarFileToString(MineSweeper.getTempPath().toString()+File.separator+jarName, scoresFromClassPath, MineSweeper.getTempJarPath().toString());
+                String fileContents = extractAJarElementToString(MineSweeper.getTempPath().toString()+File.separator+jarName, scoresFromClassPath);
                 if(fileContents!=null){
                     String[] words = fileContents.split("\\s+");
                     for(String word : words){
@@ -187,8 +187,7 @@ class ScoresFileIO{
                     fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
                 }
             }else{
-                InputStream inputStream=null;
-                inputStream = ClassLoader.getSystemResourceAsStream(scoresFromClassPath);
+                InputStream inputStream = ClassLoader.getSystemResourceAsStream(scoresFromClassPath);
                 InputStreamReader streamReader = new InputStreamReader(inputStream);
                 BufferedReader in = new BufferedReader(streamReader);
                 try{
@@ -203,7 +202,7 @@ class ScoresFileIO{
                 }catch(IOException e){e.printStackTrace();}
             }
             return fileEntries;
-        }else{//------------------------------------------------------------------NOT IN A JAR------------------------------------------
+        }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
             try{
                 File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
                 try(Scanner in = new Scanner(scoresFile)) {

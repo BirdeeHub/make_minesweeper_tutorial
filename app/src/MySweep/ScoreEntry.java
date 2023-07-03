@@ -2,7 +2,7 @@ package MySweep;
 public class ScoreEntry{//This exists because i was converting from string way more times than my brain wanted to do.
     private int x, y, bombCount, lives;//creates a standardized object for entries so you can change score saving formats without changing a ton of code
     private int RemainingLives;//as long as it converts to string for write and read, change it however.
-    private boolean validScore = true;//JSON? sure. I didnt do that though. Also, scanner reads by word, so you would have to change write and read in IO
+    private boolean validScore = true;//JSON? sure. Scanner separates by whitespace though, so you would have to change write and read in IO slightly
     private long time;
     public ScoreEntry(){//--Constructors
         this.validScore=false;
