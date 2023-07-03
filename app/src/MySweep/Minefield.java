@@ -127,7 +127,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         if(firstClick){
             firstClick=false;
             startTime = System.currentTimeMillis();
-            currentTimeTimer.scheduleAtFixedRate(timeTask, 0, 200);
+            currentTimeTimer.scheduleAtFixedRate(timeTask, 0, 200);//<-- change timer precision here
         }
     }
     boolean isFirstClick(){return firstClick;}
