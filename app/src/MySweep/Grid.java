@@ -26,8 +26,8 @@ public class Grid extends JPanel {
     private final Color DarkModeTextColor = new Color(255, 255, 255);//<-- DarkMode button foreground
     private final Color BLACK = new Color(0);//<-- default button background color in dark mode
     private final Color GRASS = new Color(31, 133, 28);//<-- grass
-    private final Color MAGENTA = new Color(255,0,255);//<-- game over marked status color 1
-    private final Color BLUE = new Color(0,0,255);//<-- game over marked status color 2
+    private final Color MAGENTA = new Color(255,0,255);//<-- unmarked status color on win
+    private final Color GREEN = new Color(0,255,0);//<-- marked status color on loss
     private final Color RED = new Color(255,0,0);//<-- in game exploded bomb background
     private final Color ChGO_RED = new Color(255,0,0);//<-- game over indicator on chord number foreground
     private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
@@ -57,6 +57,7 @@ public class Grid extends JPanel {
         private int borderWeight = 1;         //^setting of color and thickness of cell borders, now it knows where it is.
         private Color borderColor = defaultBorderColor;//<--not defined inside class because that would mean creating a new color for each button, which is expensive.
         private int x, y;
+        private boolean dynamicWidth=false;
         public CellButton() {//<-- -Constructor
             this.setFocusable(false);//<-- made unfocusable because i didnt like hitting tab for 3 years
             this.setHorizontalAlignment(SwingConstants.CENTER);//<-- they used to be in their own loop but this is the same thing
@@ -66,6 +67,9 @@ public class Grid extends JPanel {
         public void setBorderColor(Color borderColor, int borderWeight) {
             this.borderColor = borderColor;
             this.borderWeight = borderWeight;
+        }
+        public void setDynamicBorderWidth(boolean value){
+            dynamicWidth = value;
         }
         public void setXY(int x, int y){
             this.x = x;//<-- this used to be a putClientProperty item
@@ -79,7 +83,7 @@ public class Grid extends JPanel {
             if(borderColor!=null){
                 g.setColor(borderColor);
                 int top;
-                if(borderColor == defaultBorderColor){top = borderWeight;
+                if(!dynamicWidth){top = borderWeight;
                 }else top = borderWeight*(1+(this.getSize().height/23));
                 for(int i=0;i<top;i++)g.drawRect(i, i, getWidth() - i*2 - 1, getHeight() - i*2 -1);
             }
@@ -98,11 +102,11 @@ public class Grid extends JPanel {
             int height = c.getHeight();
             Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);//<-- RenderingHints
-            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that i couldnt remember the name of
-            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());// but im sure
-            g2d.drawImage(originalIcon.getImage(), transform, null);// if i get used to it it could be powerful
-            g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
-        }//                                                        into a thing that doesnt look like it used to be square so thats cool.
+            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that I couldnt remember the name of
+            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());
+            g2d.drawImage(originalIcon.getImage(), transform, null);
+            g2d.dispose();
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
@@ -201,6 +205,7 @@ public class Grid extends JPanel {
             for (int j = 0; j < Fieldy; j++) {// and then reset appearances.
                 getButtonAt(i,j).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                 getButtonAt(i,j).setBorderColor(defaultBorderColor, 1);
+                getButtonAt(i, j).setDynamicBorderWidth(false);
                 getButtonAt(i,j).setText("");
                 if(DarkMode){
                     getButtonAt(i,j).setBackground(BLACK);
@@ -451,6 +456,7 @@ public class Grid extends JPanel {
         };
     }//---------------------------------------setBorderBasedOnAdj()------------------------------------------------------------------------------
     private void setBorderBasedOnAdj(int x, int y){//it does setBorderBasedOnAdj
+        getButtonAt(x, y).setDynamicBorderWidth(true);
         if( answers.adjCount(x, y)<=1 ){ 
             getButtonAt(x,y).setBorderColor(defaultBorderColor, 1); 
         }else if(answers.adjCount(x, y)<=2 ){ 
@@ -472,20 +478,19 @@ public class Grid extends JPanel {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
                     if (won == false){
                         if(answers.marked(i,j)){
-                            getButtonAt(i,j).setForeground(BLUE);
-                            getButtonAt(i,j).setText("@");
+                            getButtonAt(i,j).setDynamicBorderWidth(false);
+                            getButtonAt(i,j).setBorderColor(GREEN, 2);
                         }else{getButtonAt(i,j).setText("");}
                         getButtonAt(i,j).setIcon(EXPiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }else{
                         if(!answers.marked(i,j)){
-                            getButtonAt(i,j).setForeground(MAGENTA);
-                            getButtonAt(i,j).setText("@");
+                            getButtonAt(i,j).setDynamicBorderWidth(false);
+                            getButtonAt(i,j).setBorderColor(MAGENTA, 2);
                         }else{getButtonAt(i,j).setText("");}
                         getButtonAt(i,j).setIcon(RVLiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }
-                    getButtonAt(i,j).setIconTextGap(-((getButtonAt(0,0).getWidth()*2)/3));
                     answers.check(i,j);//check the exploded bomb so you cant mess it up by toggling dark mode
                 }
             }
