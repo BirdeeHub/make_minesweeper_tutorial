@@ -16,7 +16,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     private final Timer currentTimeTimer = new Timer();
     private TimerTask timeTask = new TimerTask() {
         public void run() {
-            time = System.currentTimeMillis();//dont add a time format here. This gets saved to scores file
+            time = System.currentTimeMillis()-startTime;//dont add a time format here. This gets saved to scores file
         }//                                                                           It may not compare for highscore correctly after doing that
     };
     //----------Constructor---------------------------------
@@ -127,12 +127,12 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         if(firstClick){
             firstClick=false;
             startTime = System.currentTimeMillis();
-            currentTimeTimer.scheduleAtFixedRate(timeTask, 0, 200);
+            currentTimeTimer.scheduleAtFixedRate(timeTask, 0, 200);//<-- change timer precision here
         }
     }
     boolean isFirstClick(){return firstClick;}
 
-    long getTime(){return time-startTime;}//get time
+    long getTime(){return time;}//get time
 
     //GameOver & stop timer (which then cannot be started again)
     void setGameOver(){

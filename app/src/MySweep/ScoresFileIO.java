@@ -29,6 +29,7 @@ import java.util.jar.Manifest;
 class ScoresFileIO{
     private final String scoresFileName= "scores.txt";
     private final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
+    private final String jarName = MineSweeper.getClassPath().getFileName().toString();
     public ScoresFileIO(){}//<-- CONSTRUCTOR
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
     private void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
@@ -49,7 +50,7 @@ class ScoresFileIO{
             }
             File loaderFiles = MineSweeper.getTempPath().toFile();
             loaderFiles.mkdirs();
-            createJar(MineSweeper.getTempJarPath().toString(), MineSweeper.getTempPath().toString()+File.separator+"minesweeper.jar");
+            createJar(MineSweeper.getTempJarPath().toString(), MineSweeper.getTempPath().toString()+File.separator+jarName);
             try{
                 removeDirectory(MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
@@ -175,8 +176,8 @@ class ScoresFileIO{
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries=null;
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR-------------------------------------------
-            if(Path.of(MineSweeper.getTempPath().toString()+File.separator+"minesweeper.jar").toFile().exists()){
-                String fileContents = extractAJarFileToString(MineSweeper.getTempPath().toString()+File.separator+"minesweeper.jar", scoresFromClassPath, MineSweeper.getTempJarPath().toString());
+            if(Path.of(MineSweeper.getTempPath().toString()+File.separator+jarName).toFile().exists()){
+                String fileContents = extractAJarFileToString(MineSweeper.getTempPath().toString()+File.separator+jarName, scoresFromClassPath, MineSweeper.getTempJarPath().toString());
                 if(fileContents!=null){
                     String[] words = fileContents.split("\\s+");
                     for(String word : words){
