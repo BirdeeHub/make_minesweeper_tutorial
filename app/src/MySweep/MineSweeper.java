@@ -6,10 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-//import java.lang.reflect.Field;
-//import java.lang.reflect.Method;
-//import java.net.URL;
-//import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,7 +43,7 @@ class MineSweeper {
                     File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
                     Files.copy(inputStream, Paths.get(tempPath.toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {e.printStackTrace();}
+                } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
                     OvrightJarPro.command().add("\""+Paths.get(System.getProperty("java.home")).resolve(Paths.get("bin","java")).toString()+"\"");
@@ -63,34 +59,6 @@ class MineSweeper {
            	    } catch (IOException e) {e.printStackTrace();}
             }
         }));
-        /*Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this version is an experiment that hasnt paid off yet.
-            if(isJarFile()){
-                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){
-                    //copy the class file to run
-                    File destinationDir = MineSweeper.getTempPath().toFile();
-                    destinationDir.mkdirs();
-                    Files.copy(inputStream, Paths.get(MineSweeper.getTempPath().toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
-                    try {
-                        String additionalClasspath = tempPath.toString() + File.separator;
-                        String[] entries = additionalClasspath.split(System.getProperty("path.separator"));
-                        URL[] urls = new URL[entries.length];
-                        for (int i = 0; i < entries.length; i++) {
-                            urls[i] = new URL("file://" + entries[i]);
-                        }
-
-                        URLClassLoader additionalClassLoader = new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
-
-                        Class<?> newAppClass = additionalClassLoader.loadClass("OverwriteJar");
-                        Method mainMethod = newAppClass.getDeclaredMethod("main", String[].class);
-                        mainMethod.setAccessible(true); // Make the method accessible
-                        String[] newArgs = {minesweeperclasspath.toAbsolutePath().toString(), tempPath.toString()};
-                        mainMethod.invoke(newAppClass, (Object) newArgs);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {e.printStackTrace();}
-            }
-        }));*/
         try {
             // Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());

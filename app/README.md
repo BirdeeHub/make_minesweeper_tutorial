@@ -30,7 +30,7 @@ It also means I need a native java executable in the windows package until I lea
 
 **Attention:** Is it better? No it's worse. Force quitting might mean you have to copy the jar yourself and it no longer works with multiple open. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
-**Attention:** Don't install this version unless you are curious about running other processes and, when I figure out how, how to add it to our system loaders classpath and run it that way rather than needing to include the java native binary with our application.
+**Attention:** Don't install this version unless you are curious.
 
 *************************************************************************************************************************
 
