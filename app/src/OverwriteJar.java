@@ -16,12 +16,13 @@ class OverwriteJar {
             String thisDirectory = args[1];
             try{Thread.sleep(300);
             }catch(InterruptedException e){}
+            boolean copySucceeded = true;
             try(InputStream inputStream = new FileInputStream(Paths.get(thisDirectory+File.separator+"minesweeper.jar").toFile())){
                 File destinationDir = Paths.get(originalJarPath).toFile();
                 destinationDir.mkdirs();
                 Files.copy(inputStream, Paths.get(originalJarPath), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {}
-            Paths.get(thisDirectory+File.separator+"minesweeper.jar").toFile().delete();
+            } catch (IOException e) {copySucceeded = false;}
+            if(copySucceeded)Paths.get(thisDirectory+File.separator+"minesweeper.jar").toFile().delete();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 String pathToProgram = thisDirectory+File.separator+"OverwriteJar.class"; // Specify the path to the program's file
                 File programFile = new File(pathToProgram);

@@ -1,5 +1,6 @@
 package MySweep;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -26,33 +27,24 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 class ScoresFileIO{
-    private final String scoresFromMySweep= "scores.txt";
-    private final String MySweepFromClassPath = "src/MySweep/";
-    private ScoreEntry[] runtimeEntries;//<-- IT NOW NEEDS TO INTERNALLY SAVE STATE BECAUSE THE NEW SAVES ARE IN THE OTHER JAR. THIS IS BAD.
+    private final String scoresFileName= "scores.txt";
+    private final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
     public ScoresFileIO(){}//<-- CONSTRUCTOR
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
-    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file or jar
-        if(append){
-            ArrayList<ScoreEntry> newRuntimeEntries = new ArrayList<>();
-            newRuntimeEntries.addAll(Arrays.asList(runtimeEntries));
-            for(int i = 0; i<allEntries.length; i++){
-                newRuntimeEntries.add(allEntries[i]);
-            }
-            runtimeEntries=newRuntimeEntries.toArray(new ScoreEntry[0]);
-        } else {runtimeEntries=allEntries;}
+    private void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
         if(MineSweeper.isJarFile()){//-------------------------------------------------------IN A JAR----------------------------
             StringBuilder jarFileScoresStringBuilder = new StringBuilder();// create string from entries
-            for(int i = 0; i < runtimeEntries.length; i++){
-                jarFileScoresStringBuilder.append(runtimeEntries[i].toString()).append(" ");
+            for(int i = 0; i < allEntries.length; i++){
+                jarFileScoresStringBuilder.append(allEntries[i].toString()).append(" ");
             }
             extractJar(MineSweeper.getClassPath().toString(), MineSweeper.getTempJarPath().toString());
             try{
             copyManifestToDirectory(MineSweeper.getClassPath().toString(),MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
-            try (FileWriter scoreWriter = new FileWriter(Paths.get(MineSweeper.getTempJarPath().toString()+"/"+MySweepFromClassPath+scoresFromMySweep).toFile())){
+            try (FileWriter scoreWriter = new FileWriter(Paths.get(MineSweeper.getTempJarPath().toString()+"/"+scoresFromClassPath).toFile())){
                 scoreWriter.write(jarFileScoresStringBuilder.toString());//<-- overwrite the file with new contents.
             }catch(IOException e){
-                System.out.println(e.getClass()+" @ "+Paths.get(MineSweeper.getTempJarPath().toString()+"/"+MySweepFromClassPath+scoresFromMySweep).toString());
+                System.out.println(e.getClass()+" @ "+Paths.get(MineSweeper.getTempJarPath().toString()+"/"+scoresFromClassPath).toString());
                 e.printStackTrace();
             }
             File loaderFiles = MineSweeper.getTempPath().toFile();
@@ -62,32 +54,29 @@ class ScoresFileIO{
                 removeDirectory(MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
         }else{//---------------------------------------------------------NOT IN A JAR---------------------------
-            File scoresFile = new File(getClass().getResource(scoresFromMySweep).getPath().toString());
+            File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
             StringBuilder scoresFileString = new StringBuilder();// create string from entries
-            if(append)scoresFileString.append(" ");
             for(int i = 0; i < allEntries.length; i++){
               scoresFileString.append(allEntries[i].toString()).append(" ");
             }
-            try (FileWriter out2 = new FileWriter(scoresFile, append)) {// write string
+            try (FileWriter out2 = new FileWriter(scoresFile)) {// write string
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
             }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFile.toPath().toString());e.printStackTrace();}
         }
     }
-    //----------------------------------------------HELPERS FOR WRITE----------------------------HELPERS FOR WRITE------------------------------------
-    //-------------------------------------------extract and create jar files------------------------------------------------
+    //--------------------JAR STUFF------------HELPERS FOR WRITE----------------------------HELPERS FOR WRITE------------------------------------
+    //--------------------JAR STUFF--------------extract and create jar files------------------------------------------------
     private static void extractJar(String jarFile, String outputDirectory) {//extracts jar to a specified directory minus the manifest
         try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {//start our jar writer
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {//if there is stuff
                 String entryName = entry.getName();
-
                 if (entry.isDirectory()){//if its a directory, call on contents
                     File dir = new File(outputDirectory, entryName);
                     dir.mkdirs();
                 } else {//otherwise, write it.
                     File file = new File(outputDirectory, entryName);
                     file.getParentFile().mkdirs();
-
                     try (OutputStream os = new FileOutputStream(file)) {
                         byte[] buffer = new byte[4096];
                         int bytesRead;
@@ -98,9 +87,7 @@ class ScoresFileIO{
                 }
                 jis.closeEntry();//yay we're done.
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {e.printStackTrace();}
     }
     private static void copyManifestToDirectory(String jarPath, String outputDirectory) throws IOException {//copies manifest into new jar
         File thisJarFile = new File(jarPath);
@@ -160,15 +147,51 @@ class ScoresFileIO{
                 return FileVisitResult.CONTINUE;
             }
         });
+    }//----------------------------------
+    private static String extractAJarFileToString(String jarFile, String elementName, String outputDirectory) {
+        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {
+            JarEntry entry;
+            while ((entry = jis.getNextJarEntry()) != null) {
+                String entryName = entry.getName();
+                if (!entry.isDirectory() && entryName.equals(elementName)) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = jis.read(buffer)) != -1) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+                    baos.close();
+
+                    return baos.toString(); // Convert the byte array to a string
+
+                }
+                jis.closeEntry();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null; // If the element is not found or an error occurs
     }
     //---------------------------------------------------------functions used by other windows---------------------------------------
     //-----------------------------------READ-------------------------------------READ----------------------READ--------------------
     public ScoreEntry[] readLeaderboard(){ //reads from internal file by word to Score Entries
-        if(runtimeEntries==null){
-            ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
-            ScoreEntry[] fileEntries;
-            if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR-------------------------------------------
-                InputStream inputStream = ClassLoader.getSystemResourceAsStream(MySweepFromClassPath+scoresFromMySweep);
+        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
+        ScoreEntry[] fileEntries=null;
+        if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR-------------------------------------------
+            if(Path.of(MineSweeper.getTempPath().toString()+File.separator+"minesweeper.jar").toFile().exists()){
+                String fileContents = extractAJarFileToString(MineSweeper.getTempPath().toString()+File.separator+"minesweeper.jar", scoresFromClassPath, MineSweeper.getTempJarPath().toString());
+                if(fileContents!=null){
+                    String[] words = fileContents.split("\\s+");
+                    for(String word : words){
+                        ScoreEntry currentEntry = new ScoreEntry(word);
+                        if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
+                    }
+                    fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
+                }
+            }else{
+                InputStream inputStream=null;
+                inputStream = ClassLoader.getSystemResourceAsStream(scoresFromClassPath);
                 InputStreamReader streamReader = new InputStreamReader(inputStream);
                 BufferedReader in = new BufferedReader(streamReader);
                 try{
@@ -180,28 +203,25 @@ class ScoresFileIO{
                         }
                     }
                     fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
-                }catch(IOException e){e.printStackTrace();fileEntries=null;}
-                runtimeEntries = fileEntries;
-                return fileEntries;
-            }else{//------------------------------------------------------------------NOT IN A JAR------------------------------------------
-                try{
-                    File scoresFile = new File(getClass().getResource(scoresFromMySweep).getPath().toString());
-                    try(Scanner in = new Scanner(scoresFile)) {
-                        while (in.hasNext()) {
-                            ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
-                            if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
-                        }
-                        fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
-                    }catch(FileNotFoundException e){
-                        fileEntries=null; 
-                        System.out.println(e.getClass()+" @ "+scoresFile.toPath().toString());
-                        e.printStackTrace();
-                    }
-                    runtimeEntries = fileEntries;
-                    return fileEntries;
-                }catch(NullPointerException e){e.printStackTrace();return runtimeEntries;}
+                }catch(IOException e){e.printStackTrace();}
             }
-        }else return runtimeEntries;
+            return fileEntries;
+        }else{//------------------------------------------------------------------NOT IN A JAR------------------------------------------
+            try{
+                File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
+                try(Scanner in = new Scanner(scoresFile)) {
+                    while (in.hasNext()) {
+                        ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
+                        if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
+                    }
+                    fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
+                }catch(FileNotFoundException e){
+                    System.out.println(e.getClass()+" @ "+scoresFile.toPath().toString());
+                    e.printStackTrace();
+                }
+            }catch(NullPointerException e){e.printStackTrace();}
+            return fileEntries;
+        }
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
@@ -219,7 +239,7 @@ class ScoresFileIO{
                 c++;
             }
             deletries = newFileBuilder.toArray(new ScoreEntry[0]);
-            writeLeaderboard(deletries, false);// <-- overwrite with new
+            writeLeaderboard(deletries);// <-- overwrite with new
         }
     }
     public int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
@@ -231,43 +251,39 @@ class ScoresFileIO{
             if(entries == null){//<-- file not found
                 entries = new ScoreEntry[1];
                 entries[0] = thisEntry;
-                writeLeaderboard(entries, false);
+                writeLeaderboard(entries);
                 return 1;
             }else{
                 if(0==entries.length){//<-- file found but empty. Writing.
                     entries = new ScoreEntry[1];
                     entries[0] = thisEntry;
-                    writeLeaderboard(entries, false);
+                    writeLeaderboard(entries);
                     return 1;
                 }else{//<---------------------- file found and not empty
                     int c = 0;
-                    boolean highscore = false;
                     while(c<entries.length){//loop through entries in file
                         if(entries[c].isValid() && entries[c].equals(thisEntry)){//<-- board identifier matches
                             if(won && entries[c].getTime()>time){
                                 entries[c]=thisEntry;//                         ^did you beat the time?
-                                highscore=true;
                             }else if(won && entries[c].getRemainingLives()>RemainingLives && entries[c].getTime()==time){
                                 entries[c]=thisEntry;//                         ^is it same time but more lives?
-                                highscore=true;
                             }else if(won && entries[c].getRemainingLives()<1){//was the entry created by dying on a new board configuration?
                                 entries[c]=thisEntry;
-                                highscore=true;
                             }
                             break;
                         }
                         c++;
                     }
-                    if(c==entries.length && highscore == false){//none were a match. New Board Size
-                                            //   ^i dont actually need to check for high score here, but it cant hurt?
-                        ScoreEntry[] newEntries = new ScoreEntry[1];
-                        newEntries[0] = thisEntry;
-                        writeLeaderboard(newEntries, true);
-                        return 1;
-                    }
-                    if(highscore){//Was a high score! save edited version of file
-                        writeLeaderboard(entries, false);
+                    if(c!=entries.length){//Was a high score! save edited version of file
+                        writeLeaderboard(entries);
                         return 2;
+                    }else{//none were a match. New Board Size
+                        ArrayList<ScoreEntry> newEntriesBuilder = new ArrayList<>();
+                        newEntriesBuilder.addAll(Arrays.asList(entries));
+                        newEntriesBuilder.add(thisEntry);
+                        entries=newEntriesBuilder.toArray(new ScoreEntry[0]);
+                        writeLeaderboard(entries);
+                        return 1;
                     }
                 }
             }
