@@ -151,7 +151,7 @@ public class Grid extends JPanel {
     }
     //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
     //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    String getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
+    long getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
     int[] getGameOverIndex(){//     <--    text
@@ -456,16 +456,19 @@ public class Grid extends JPanel {
         };
     }//---------------------------------------setBorderBasedOnAdj()------------------------------------------------------------------------------
     private void setBorderBasedOnAdj(int x, int y){//it does setBorderBasedOnAdj
-        getButtonAt(x, y).setDynamicBorderWidth(true);
         if( answers.adjCount(x, y)<=1 ){ 
             getButtonAt(x,y).setBorderColor(defaultBorderColor, 1); 
-        }else if(answers.adjCount(x, y)<=2 ){ 
+        }else if(answers.adjCount(x, y)<=2 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERYELLOW, 2); 
-        }else if(answers.adjCount(x, y)<=3 ){ 
+        }else if(answers.adjCount(x, y)<=3 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERORANGE, 2); 
-        }else if(answers.adjCount(x, y)<=5 ){ 
+        }else if(answers.adjCount(x, y)<=5 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERORANGERED, 2); 
-        }else if(answers.adjCount(x, y)<=8 ){ 
+        }else if(answers.adjCount(x, y)<=8 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERRED, 2); 
         }
     }
@@ -497,13 +500,10 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        int endTime = -1;
+        long endTime = -1;
         try{
-            endTime = Integer.parseInt(answers.getTime());
-        }catch(NumberFormatException e){
-            e.printStackTrace();
-            System.out.println("your time was not able to evaluate to an integer for saving your score");
-        }
+            endTime = answers.getTime();
+        }catch(NumberFormatException e){e.printStackTrace();}
         MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;

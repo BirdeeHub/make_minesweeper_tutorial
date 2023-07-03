@@ -21,7 +21,7 @@ class ScoresFileIO{
             scoresFileName = scoresFileNameOther;
         }
     }
-    //----------------------------------WRITE------------------------------------------------------WRITE-------
+    //----------------------------------WRITE------------------------------------------------------WRITE-------------------------------------------
     private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
         StringBuilder scoresFileString = new StringBuilder();// create string from entries
         if(append)scoresFileString.append(" ");
@@ -40,7 +40,7 @@ class ScoresFileIO{
             out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
         }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
     }
-    //-----------------------------------READ-------------------------------------READ---
+    //-----------------------------------READ-------------------------------------READ----------------------------------------------------------------
     public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries;
@@ -58,7 +58,7 @@ class ScoresFileIO{
 
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
-    //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
+    //-----------------------------Everything below here uses only ScoreEntries to do its work------------deleteScoreEntry----------------------
     public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read
         ArrayList<ScoreEntry> newFileBuilder = new ArrayList<>();
@@ -75,57 +75,51 @@ class ScoresFileIO{
             deletries = newFileBuilder.toArray(new ScoreEntry[0]);
             writeLeaderboard(deletries, false);// <-- overwrite with new
         }
-    }
-    public int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    }//-------------------------------------------------------------------------update score entry-------------------------------------------
+    public int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
-        boolean highscore = false;
-        boolean newBoardSize = false;
-        boolean fileFound = true;
         ScoreEntry thisEntry = new ScoreEntry(Fieldx,Fieldy,bombCount,lives,RemainingLives,time);
         if(thisEntry.isValid()){
             ScoreEntry[] entries = readLeaderboard();
             if(entries == null){//<-- file not found
-                fileFound = false;
                 entries = new ScoreEntry[1];
                 entries[0] = thisEntry;
                 writeLeaderboard(entries, false);
+                return 1;//<-- score not found index
             }else{
                 if(0==entries.length){//<-- file found but empty. Writing.
-                    fileFound=false;
                     entries = new ScoreEntry[1];
                     entries[0] = thisEntry;
                     writeLeaderboard(entries, false);
+                    return 1;
                 }else{//<---------------------- file found and not empty
                     int c = 0;
                     while(c<entries.length){//loop through entries in file
                         if(entries[c].isValid() && entries[c].equals(thisEntry)){//<-- board identifier matches
                             if(won && entries[c].getTime()>time){
                                 entries[c]=thisEntry;//                         ^did you beat the time?
-                                highscore=true;
                             }else if(won && entries[c].getRemainingLives()>RemainingLives && entries[c].getTime()==time){
                                 entries[c]=thisEntry;//                         ^is it same time but more lives?
-                                highscore=true;
                             }else if(won && entries[c].getRemainingLives()<1){//was the entry created by dying on a new board configuration?
                                 entries[c]=thisEntry;
-                                highscore=true;
                             }
                             break;
                         }
                         c++;
                     }
-                    if(c==entries.length && highscore == false){//none were a match. New Board Size
-                        newBoardSize=true;//   ^i dont actually need to check for high score here, but it cant hurt?
+                    if(c==entries.length){//none were a match. New Board Size
                         ScoreEntry[] newEntries = new ScoreEntry[1];
                         newEntries[0] = thisEntry;
                         writeLeaderboard(newEntries, true);
-                    }
-                    if(highscore){//Was a high score! save edited version of file
+                        return 1;
+                    }else{//Was a high score! save edited version of file
                         writeLeaderboard(entries, false);
+                        return 2;
                     }
                 }
             }
         }
-        return (highscore)?2:((newBoardSize || !fileFound)?1:0);//<-- return index for setting display label
+        return 0;//<-- board size was found, score was not better.
     }
 }
