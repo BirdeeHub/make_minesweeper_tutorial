@@ -35,15 +35,15 @@ import java.awt.GridBagLayout;
 //This is the main game board display window. contains action listeners and displays control buttons, and a Grid instance, which is the game board.
 public class MainGameWindow extends javax.swing.JFrame {
     //--------------Initialize-----------------------------
-    private final int Fieldx, Fieldy, bombCount, lives;//you may wonder why I have 3 classes (and 1 private) for the main window. This is because, well...
+    private final int Fieldx, Fieldy, bombCount, lives;//you may wonder why I have so many classes. This is because, well...
     private final Color PURPLE = new Color(58, 0, 82);//its java what did you expect. so you create a new minefield to store mutable game state.
     private final Color GREEN = new Color(0, 255, 0);//Then the file got long so I put the grid display in grid and then split the rest of the window here.
-    private final Dimension DefaultWindowSize = new Dimension(830, 830);//also i needed a private cellbutton class for border painting
-    private JLabel timeDisplay = new JLabel();// Create Timer Displayer
-    private final Timer displayTimer = new Timer();
+    private final Dimension DefaultWindowSize = new Dimension(830, 830);//also i needed a private cellbutton class for border painting, etc...
+    private JLabel timeDisplay = new JLabel();//                                       super easy to refactor in my opinion though.
+    private final Timer displayTimer = new Timer();// Create Timer Displayer
     private final TimerTask timeDisplayTask = new TimerTask() {
         public void run() {
-            timeDisplay.setText(grid.getTime());//if you want to add a time format you can do that here.
+            timeDisplay.setText(Long.toString(grid.getTime()/1000));//if you want to add a time format you can do that here.
         }//                            we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
     };
     private JLabel GameOverDisplay = new JLabel();

@@ -41,9 +41,7 @@ public class Grid extends JPanel {
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
     //--------------------get custom image files----------------------------------------------
-    private final boolean inAJar = MineSweeper.isJarFile();//<-- was it a jar?
-    //if you are down to just run the compile script and run it from the jar, you can replace the above section with: private boolean inAJar = true;
-    //inside a jar, the root directory is the root directory of the jar. When run from outside a jar, it is not.
+    private final boolean inAJar = MineSweeper.isJarFile();//<-- are we running from a .jar?
     private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
@@ -104,11 +102,11 @@ public class Grid extends JPanel {
             int height = c.getHeight();
             Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);//<-- RenderingHints
-            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that i couldnt remember the name of
-            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());// but im sure
-            g2d.drawImage(originalIcon.getImage(), transform, null);// if i get used to it it could be powerful
-            g2d.dispose();//<--                                      BUT. it turned my low effort 25 pixel explosion made in paint
-        }//                                                        into a thing that doesnt look like it used to be square so thats cool.
+            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that I couldnt remember the name of
+            transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());
+            g2d.drawImage(originalIcon.getImage(), transform, null);
+            g2d.dispose();
+        }
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
@@ -153,7 +151,7 @@ public class Grid extends JPanel {
     }
     //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
     //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    String getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
+    long getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
     int[] getGameOverIndex(){//     <--    text
@@ -458,21 +456,24 @@ public class Grid extends JPanel {
         };
     }//---------------------------------------setBorderBasedOnAdj()------------------------------------------------------------------------------
     private void setBorderBasedOnAdj(int x, int y){//it does setBorderBasedOnAdj
-        getButtonAt(x, y).setDynamicBorderWidth(true);
         if( answers.adjCount(x, y)<=1 ){ 
             getButtonAt(x,y).setBorderColor(defaultBorderColor, 1); 
-        }else if(answers.adjCount(x, y)<=2 ){ 
+        }else if(answers.adjCount(x, y)<=2 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERYELLOW, 2); 
-        }else if(answers.adjCount(x, y)<=3 ){ 
+        }else if(answers.adjCount(x, y)<=3 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERORANGE, 2); 
-        }else if(answers.adjCount(x, y)<=5 ){ 
+        }else if(answers.adjCount(x, y)<=5 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERORANGERED, 2); 
-        }else if(answers.adjCount(x, y)<=8 ){ 
+        }else if(answers.adjCount(x, y)<=8 ){
+            getButtonAt(x, y).setDynamicBorderWidth(true);
             getButtonAt(x,y).setBorderColor(BORDERRED, 2); 
         }
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
-    private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileManager
+    private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
         ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
@@ -499,13 +500,10 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        int endTime = -1;
+        long endTime = -1;
         try{
-            endTime = Integer.parseInt(answers.getTime());
-        }catch(NumberFormatException e){
-            e.printStackTrace();
-            System.out.println("your time was not able to evaluate to an integer for saving your score");
-        }
+            endTime = answers.getTime();
+        }catch(NumberFormatException e){e.printStackTrace();}
         MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;

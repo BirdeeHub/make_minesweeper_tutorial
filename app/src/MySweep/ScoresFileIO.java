@@ -238,7 +238,7 @@ class ScoresFileIO{
             writeLeaderboard(deletries);// <-- overwrite with new
         }
     }
-    public int updateScoreEntry(boolean won, int time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    public int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
         ScoreEntry thisEntry = new ScoreEntry(Fieldx,Fieldy,bombCount,lives,RemainingLives,time);

@@ -320,13 +320,13 @@ public class ScoresWindow extends JFrame {
                         BoardButton[0].setText(Shtml+SHL+finalBoardDisplayString+EHL+Ehtml);
                         BoardText[0] = Shtml+SHL+finalBoardDisplayString+EHL+Ehtml;
                         LivesText[0] = Shtml+SHL+((entries[c].getRemainingLives()==0)?"DIED AT":entries[c].getRemainingLives())+EHL+Ehtml;
-                        TimeText[0] = Shtml+SHL+entries[c].getTime()+EHL+Ehtml;
+                        TimeText[0] = Shtml+SHL+Long.toString(entries[c].getTime()/1000)+EHL+Ehtml;
                     } else{//add scores that arent us to end
                         BoardButton[c].putClientProperty("BoardTarget", entries[c]);
                         BoardButton[c].setText(Shtml+finalBoardDisplayString+Ehtml);
                         BoardText[c] = Shtml+finalBoardDisplayString+Ehtml;
                         LivesText[c] = Shtml+((entries[c].getRemainingLives()==0)?"DIED AT":entries[c].getRemainingLives())+Ehtml;
-                        TimeText[c] = Shtml+entries[c].getTime()+Ehtml;
+                        TimeText[c] = Shtml+Long.toString(entries[c].getTime()/1000)+Ehtml;
                     }
                 } else {
                     BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());
