@@ -147,7 +147,7 @@ class ScoresFileIO{
                 return FileVisitResult.CONTINUE;
             }
         });
-    }//----------------------------------
+    }//----------------------------------Helper for READ-------------------------Helper for READ---------------------------------------------------
     private static String extractAJarFileToString(String jarFile, String elementName, String outputDirectory) {
         try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFile))) {
             JarEntry entry;
@@ -157,24 +157,20 @@ class ScoresFileIO{
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     byte[] buffer = new byte[4096];
                     int bytesRead;
-                    while ((bytesRead = jis.read(buffer)) != -1) {
+                    while ((bytesRead = jis.read(buffer)) != -1) {//same as extract but to a ByteArrayOutputStream and a string instead of file
                         baos.write(buffer, 0, bytesRead);
                     }
                     baos.close();
-
                     return baos.toString(); // Convert the byte array to a string
-
                 }
                 jis.closeEntry();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        } catch (IOException e) {e.printStackTrace();}
         return null; // If the element is not found or an error occurs
     }
-    //---------------------------------------------------------functions used by other windows---------------------------------------
-    //-----------------------------------READ-------------------------------------READ----------------------READ--------------------
+    //----------------------------functions used by other windows---------------------------------------functions used by other windows-------------
+    //---------------------------------------------------------------functions used by other windows---------------------------------------
+    //-----------------------------------READ-------------------------------------READ----------------------READ---------READ--------------------
     public ScoreEntry[] readLeaderboard(){ //reads from internal file by word to Score Entries
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries=null;
