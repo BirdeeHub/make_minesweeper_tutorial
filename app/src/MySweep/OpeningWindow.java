@@ -18,15 +18,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 
 
-public class OpeningWindow extends JFrame {
-    private JTextField WidthField;
+public class OpeningWindow extends JFrame {//<-- its a JFrame
+    private JTextField WidthField;//<-- user input goes into these.
     private JTextField HeightField;
     private JTextField BombNumber;
     private JTextField LivesNumber;
-    private JButton Start = new JButton("Start!");
+    private JButton Start = new JButton("Start!");//<-- the start button
     private JButton ScoreBoard = new JButton();
     private JButton HelpWindow = new JButton();
-    private JLabel LifeFieldLabel = new JLabel();
+    private JLabel LifeFieldLabel = new JLabel();//<-- these display stuff
     private JLabel WidthFieldLabel = new JLabel();
     private JLabel HeightFieldLabel = new JLabel();
     private JLabel BombFieldLabel = new JLabel();
@@ -46,10 +46,10 @@ public class OpeningWindow extends JFrame {
         BombNumber = new JTextField();
         LivesNumber = new JTextField();
         initComponents();
-    }//----------------------------------------------------------Start Action-------------------------------------------------
+    }//----------------------------------------------------------Start Action----called by action listener on start button-------------------
     private void StartActionPerformed() {//runs MainGameWindow, performs error checking and displays errors
         try{
-            int width =(int)(Integer.parseInt(WidthField.getText()));
+            int width =(int)(Integer.parseInt(WidthField.getText()));//(int) makes sure it is read as an integer
             int height =(int)(Integer.parseInt(HeightField.getText()));
             int bombCount = (int)(Integer.parseInt(BombNumber.getText()));
             int lives = (int)(Integer.parseInt(LivesNumber.getText()));
@@ -68,9 +68,9 @@ public class OpeningWindow extends JFrame {
             });
             OpeningWindow.this.dispose();
         }catch(NumberFormatException e){TitleLabel.setText("Invalid field(s)");}
-    } //----------------------------------------------------------initComponents-----------------------------------------------
+    } //----------------------------------------------------------initComponents-----called by constructor------------------------------
     private void initComponents() {
-        //add action Listeners
+        //--------------------------------------add action Listeners to components
         Start.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 StartActionPerformed();
@@ -142,13 +142,15 @@ public class OpeningWindow extends JFrame {
         AuthorLabel.setFont(new Font("Tahoma", 0, 12));
         AuthorLabel.setText("-Birdee");
         AuthorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-
+        //--------------------------now to add our stuff to our content pane----------------
         //Layout Managing:
+        //layout managers allow you to tell the program where to put the stuff without specifying actual pixels.
+        //this greatly simplifies making stuff be the right size in the right places on different screens and window sizes
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(300, 200));
-        getContentPane().setLayout(new GridBagLayout());
-        GridBagConstraints containerConstraints = new GridBagConstraints();
-
+        getContentPane().setLayout(new GridBagLayout());//<-- add the layout manager
+        GridBagConstraints containerConstraints = new GridBagConstraints();//<-- you modify this, and add a thing to the pane with it
+                        //when you do that, it imbues that thing with its position and size attributes. You then modify it and do it again with a new thing
         containerConstraints.gridx =2;
         containerConstraints.gridy =0;
         containerConstraints.gridwidth =3;
@@ -240,7 +242,7 @@ public class OpeningWindow extends JFrame {
         containerConstraints.fill = GridBagConstraints.BOTH;
         getContentPane().add(Start, containerConstraints);
 
-        pack();
-        getContentPane().setVisible(true);
+        pack();//<-- this causes it to evaluate sizes and paint the contents of the pane
+        getContentPane().setVisible(true);//<-- then this displays the pane
     }
 }

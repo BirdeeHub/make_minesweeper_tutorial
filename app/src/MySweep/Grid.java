@@ -134,7 +134,7 @@ public class Grid extends JPanel {
     }
     //--------------------getButtonAt(int x, int y) Became necessary after getting rid of 2d array to reference cells by location-------------------------
     private CellButton getButtonAt(int x, int y) {
-        return (CellButton) Grid.this.getComponent(y * Fieldx + x);
+        return (CellButton) Grid.this.getComponent(y * Fieldx + x); //<-- this works because of integer division. Explained in fillZeroes.
     }
     //-----------------------------------function for adding mouse Listener to cells in Grid-------------------------------------------------
     void addCellListener(MouseListener mouseListener){//----------addCellListener()--------------------------------------------------

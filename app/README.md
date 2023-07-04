@@ -109,6 +109,8 @@ ________________________________________________________________________________
 
 ______________________________________________________________________________________________________________________________________________
 
+You should read MineSweeper.java first if you are a total beginner and then return here for reference when needed later.
+
 Main game window is in charge of action listeners and the menu bar and scrolling. And being the window. It contains an instance of the Grid class
 
 Grid is a panel containing the grid of buttons for the board.

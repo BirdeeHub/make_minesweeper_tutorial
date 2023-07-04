@@ -229,7 +229,7 @@ public class ScoresWindow extends JFrame {
         JLabel BoardSpacer = new JLabel(" ");
         BoardSpacer.setBorder(new EmptyBorder(10, 10, 10, 10));
         LivesPanel = new JPanel();
-        LivesPanel.setLayout(new GridLayout(0, 1));
+        LivesPanel.setLayout(new GridLayout(0, 1));//each one of these is going to be a column of the display after leaderboardText adds the entries
         JLabel BoardSpacer2 = new JLabel(" ");
         BoardSpacer2.setBorder(new EmptyBorder(10, 5, 10, 5));
         TimePanel = new JPanel();

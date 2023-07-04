@@ -57,7 +57,7 @@ public class MainGameWindow extends javax.swing.JFrame {
     private final String wonAndNotHighScoreMessage = "Cleared!";//compiler will treat it the same as having it actually in setGameOverDisplay()
     private final String diedButNewBoardMessage = "1st Board Death";//so having these here is just for readability
     private final String diedAndNotNewBoardMessage = "Exploded...";
-    private void setBombsFoundDisplay(){
+    private void setBombsFoundDisplay(){//<-- the values are read from the Grid instance because the logic is there and the display for this is here.
         BombsFoundDisplay.setText("M:" + Integer.toString(grid.getBombsFound()) + "/" + Integer.toString(bombCount));
     }
     private void setLivesLostDisplay(){
@@ -97,7 +97,7 @@ public class MainGameWindow extends javax.swing.JFrame {
         initComponentsAndMiscListeners();
     }
     private void addGridActionListeners(){//i would have needed to pass in the toggle buttons for click action, and scrolls for zoom. this is better.
-        grid.addCellListener(new MouseAdapter() {//add our listener to each cell.
+        grid.addCellListener(new MouseAdapter() {//function in grid to add our listener to each cell.
             @Override
             public void mouseEntered(MouseEvent e){//allows the 1.5 click trick by actually getting the component the mouse is over rather than just
                 currentButton=(JButton)e.getSource();// getting the component that fired the mousePressed and released actions which will always be the same
@@ -142,7 +142,7 @@ public class MainGameWindow extends javax.swing.JFrame {
                 }
             }
         });
-        grid.addMouseWheelListener(new MouseWheelListener() {//zoom and scroll (only active over grid)
+        grid.addMouseWheelListener(new MouseWheelListener() {//zoom and scroll (only active over grid because it is added to the JPanel, i.e. the grid instance itself)
             JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
             JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
             int rotationAmount = 0;
