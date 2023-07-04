@@ -94,26 +94,30 @@ class ScoresFileIO{
                     writeLeaderboard(entries, false);
                     return 1;
                 }else{//<---------------------- file found and not empty
-                    int c = 0;
-                    while(c<entries.length){//loop through entries in file
+                    boolean thisScoreFound=false;
+                    boolean isHighscore=false;
+                    for(int c = 0;c<entries.length;c++){//loop through entries in file
                         if(entries[c].isValid() && entries[c].equals(thisEntry)){//<-- board identifier matches
+                            thisScoreFound=true;
                             if(won && entries[c].getTime()>time){
                                 entries[c]=thisEntry;//                         ^did you beat the time?
+                                isHighscore=true;
                             }else if(won && entries[c].getRemainingLives()>RemainingLives && entries[c].getTime()==time){
                                 entries[c]=thisEntry;//                         ^is it same time but more lives?
+                                isHighscore=true;
                             }else if(won && entries[c].getRemainingLives()<1){//was the entry created by dying on a new board configuration?
                                 entries[c]=thisEntry;
+                                isHighscore=true;
                             }
-                            break;
                         }
-                        c++;
                     }
-                    if(c==entries.length){//none were a match. New Board Size
+                    if(!thisScoreFound){//none were a match. New Board Size
                         ScoreEntry[] newEntries = new ScoreEntry[1];
                         newEntries[0] = thisEntry;
                         writeLeaderboard(newEntries, true);
                         return 1;
-                    }else{//Was a high score! save edited version of file
+                    }
+                    if(isHighscore){//Was a high score! save edited version of file
                         writeLeaderboard(entries, false);
                         return 2;
                     }
