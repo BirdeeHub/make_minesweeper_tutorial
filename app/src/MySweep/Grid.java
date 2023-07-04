@@ -500,11 +500,7 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        long endTime = -1;
-        try{
-            endTime = answers.getTime();
-        }catch(NumberFormatException e){e.printStackTrace();}
-        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }
