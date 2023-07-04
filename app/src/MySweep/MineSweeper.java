@@ -8,20 +8,20 @@
     Because humans want humans to understand the way humans should talk to a computer, it all comes down to just a few concepts. So:
 
     Commputers know:
-    how to store a type of thing, that we can access by a variable name. You must tell it what type of thing.
-    a certain number of things you can do on those things. The language you use dictates you what words and operators to use to tell it to do those things.
-    you can store a true or false, called a boolean, which is basically a single byte with a couple bytes to identify it as a boolean
-    a number of several sizes, i.e. a long is just like an integer (called an int going forward) that is able to store a bigger number than a basic integer can
-    or with a decimal point (called a float)
-    a single byte (0 or 1)
-    how to refer to a specific piece of memory by an address(called a pointer)
-    an array of things, which is a pointer to a list of things where you access each item by index starting at 0 (myarray[0]) and can get myarray.length
+    How to store a type of thing, that we can access by a variable name. You must tell it what type of thing.
+    A certain number of things you can do on those things. The language you use dictates you what words and operators to use to tell it to do those things.
+    You can store a true or false, called a boolean, which is basically a single byte with a couple bytes to identify it as a boolean
+    A number of several sizes, i.e. a long is just like an integer (called an int going forward) that is able to store a bigger number than a basic integer can
+        or with a decimal point (called a float)
+    A single byte (0 or 1)
+    How to refer to a specific piece of memory by an address(called a pointer)
+    An array of things, which is a pointer to a list of things where you access each item by index starting at 0 (myarray[0]) and can get myarray.length
         (and if you choose an index above the max you crash the program. also you can have arrays of arrays)
-    in some languages you must tell it to create a physical place to store it before you tell it what variable name to store the value in.
+    in some languages you must tell it to create a physical place to store things before you tell it what variable name to store the value in.
 
     You can tell it to read a thing it stored
     You can tell it to perform a thing on a thing you stored, including checking it against the value of another thing.
-    You can tell it to do one set of things or another based on checking a comparison (the main way to do this is called an if statement)
+    You can tell it to do one set of things or another based on checking a comparison between things (the main way to do this is called an if statement)
     You can tell it to do a set of things until a comparison becomes false which is called a loop
         (declared with "for(variable; condition; thing to change on each loop){your stuff here}", or "while(comparison){your stuff here}")
     You can add a comment, like this one, or by using // for 1 line comments
@@ -29,9 +29,10 @@
     There is 1 fundamental way of both dictating and grouping what things should be stored and what things should be done on those things.
     It is called a function. A function has a name, and you can call it later. 
     It also returns a new thing to you so that you can do something with the result (as long as you give it a place to put it!)
-    Things declared inside functions cannot be seen by things outside of them by default unless you return it. This is called scope. Sees out but not in.
+    Things declared inside functions cannot be seen by things outside of them by default unless you return it. This is called scope. It sees out but not in.
     
-    int addTwoIntegerUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- this is how we declare a function. it returns an int, it is called addTwoIntegers, and it recieves 2 integers
+    //This is how we declare a function. it returns an int, it is called addTwoIntegers, and it recieves 2 integers
+    int addTwoIntegerUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){
         int c;//<-- it then creates a new integer to store the value of a + b
         if(c != 3){//<-- if not equal to 3
             c = a + b;
@@ -41,20 +42,20 @@
         return c;//<-- we then return that value
     }
 
-    and this is how we call it and store the result:
+    //and this is how we call it and store the result:
     int result;
     int firstNumber = 1;
     int secondNumber = 2;
     result = addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
 
-    which would make the value of result be 2.
+    //which would make the value of result be 2.
 
     to know what operators you have and what they can do (like + for example can append strings or add numbers. 
     / is also worth looking up. It will not work like you think for integers 
     the assign operator is = and is equal to is == and you can use ++ next to an integer to add 1 to it. ! means not on its own also)
     google operators for your language after reading this. Know how these work.
     
-    this while loop will execute 4 times:
+    //this while loop will execute 4 times:
     int theAnswer=42;
     int i = 0;
     while(i<12)
@@ -70,7 +71,8 @@
             }
         }
     }
-    first with i == 0, then i == 1, then 3, then 6 and then when it becomes 12, it will fail the check in the while loop and not execute again.
+    
+    First with i == 0, then i == 1, then 3, then 6 and then when it becomes 12, it will fail the check in the while loop and not execute again.
     Try to read through it like the computer does. It's very good theAnswer == 42 otherwise it would loop forever!
 
     Theres also a weird thing that is nice sometimes that looks like "int x = (comparison)?numberone:numbertwo;""
@@ -155,14 +157,15 @@
     But dont worry about what any of those things mean exactly just yet while looking through this program. 
     For now, assume doing it with a different library is basically the same just different function and class names. It wouldn't be a lie.
 
-    1 more thing. Recommended reading order. Play the game a couple times. Then, this file, then opening window, 
-    then main window but dont worry about zoom listener for now unless you want a headache, 
+    1 more thing. Recommended reading order:
+    Play the game a couple times. Then MineSweeper, then OpeningWindow, 
+    then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
     then Grid up through the end of the constructor except dont worry too much about the scaleable icon stuff,
-    then Minefield, then the rest of Grid except the zoom function, 
-    now read the zoom function on both main game window and grid, and the scaleable icon stuff. 
-    or skip it and go straight to scores and go back to it later
-    Then scoresFileIO, then scoreEntry, then ScoresWindow. 
-    InstructionsWindow is really better viewed in the game.
+    then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
+    now read the zoom function on both MainGameWindow and Grid, and the scaleable icon stuff in Grid. 
+    Or skip it and go straight to scores and go back to it later.
+    Then ScoresFileIO, then ScoreEntry, then ScoresWindow. 
+    instructionsWindow is really better viewed in the game.
  */
 //This class contains the main function and launches the opening window (or the main game window with optional command line arguments).
 //It also contains 2 static references so that I can easily access them from anywhere in the game code. 
@@ -218,7 +221,11 @@ class MineSweeper {
                 }
             }catch(NumberFormatException e){
                 System.out.println("integer arguments only: width, height, BombCount, lives (where all are > 0)");
-                EventQueue.invokeLater(new Runnable(){public void run(){new OpeningWindow().setVisible(true);}});
+                EventQueue.invokeLater(new Runnable(){//this is called a lambda or anonymous function
+                    public void run(){//you cant reference them outside of the fact that that they are now a property of what you added them to.
+                        new OpeningWindow().setVisible(true);//you can also write this like this, but i put them on 1 line if its 1 command to save space
+                    }
+                });
             }
         }else if(args.length == 5){
             if(args[0].equals("o")||args[0].equals("m")){

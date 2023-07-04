@@ -147,6 +147,22 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 The rest of the source files are just the other windows.
 
+    1 more thing. Recommended reading order for beginners. Or anyone really, but theres a whole coding tutorial at the start of MineSweeper.java
+    
+    Play the game a couple times. Then MineSweeper, then OpeningWindow, 
+
+    then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
+
+    then Grid up through the end of the constructor except dont worry too much about the scaleable icon stuff,
+
+    then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
+
+    now read the zoom function on both MainGameWindow and Grid, and the scaleable icon stuff in Grid. Or skip it and go straight to scores and go back to it later.
+
+    Then ScoresFileIO, then ScoreEntry, then ScoresWindow. 
+
+    instructionsWindow is really better viewed in the game.
+
 _______________________________________________________________________________________________________________________________________________
 
 Enjoy the game! Maybe change what you don't like and learn along the way! New colors is the easiest place to start. You can do it!
