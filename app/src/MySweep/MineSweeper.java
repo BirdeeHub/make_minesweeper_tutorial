@@ -67,7 +67,7 @@
             if(theAnswer==42){
                 i=i*2;
             }else{
-                i==i;
+                i=i;
             }
         }
     }
@@ -91,11 +91,11 @@
         (a constructor is just a function with the name of the class that automatically returns an instance of that class)
     you can then access functions and data inside of it from outside of the class (unless said item is declared as private) by using the dot operator '.'
 
-    If you had a class named MyClass that took a String as input:
+    //If you had a class named MyClass that took a String as input:
     String inputString = "some sort of data";
     MyClass instanceOfMyClass = new MyClass(inputString);
 
-    And if it contained our function addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply, we could do this:
+    //And if it contained our function addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply, we could do this:
     String inputString = "some sort of data";
     MyClass instanceOfMyClass = new MyClass(inputString);
     int result;
@@ -103,15 +103,15 @@
     int secondNumber = 2;
     result = instanceOfMyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
 
-    which would make the value of result be 4.
+    //which would make the value of result be 4.
 
-    if our weird add function was declared as static, we wouldnt need to create an instance of MyClass, we could use it directly.
+    //if our weird add function was declared as static, we wouldnt need to create an instance of MyClass, we could use it directly.
 
     int firstNumber = 6;
     int secondNumber = -3;
     int result = MyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
 
-    which would make the value of result be -18, (because (6 + (-3)) == 3 of course!)
+    //which would make the value of result be -18, (because (6 + (-3)) == 3 of course!)
 
     Classes can also extend other classes. This means that they have all the functions the class they extend has. 
     They can change them if they want with @Override
