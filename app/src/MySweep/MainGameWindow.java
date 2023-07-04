@@ -43,7 +43,10 @@ public class MainGameWindow extends javax.swing.JFrame {
     private final Timer displayTimer = new Timer();// Create Timer Displayer
     private final TimerTask timeDisplayTask = new TimerTask() {
         public void run() {
-            timeDisplay.setText(Long.toString(grid.getTime()/1000));//if you want to add a time format you can do that here.
+            long time = grid.getTime();
+            if(time == -1){
+                timeDisplay.setText("");
+            }else timeDisplay.setText(Long.toString(time/1000));//if you want to add a time format you can do that here.
         }//                            we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
     };
     private JLabel GameOverDisplay = new JLabel();

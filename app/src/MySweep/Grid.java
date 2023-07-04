@@ -151,7 +151,7 @@ public class Grid extends JPanel {
     }
     //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
     //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    long getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
+    long getTime(){return (answers.isFirstClick())?(-1):answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
     int[] getGameOverIndex(){//     <--    text
