@@ -50,7 +50,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     private void StartActionPerformed() {//runs MainGameWindow, performs error checking and displays errors
         try{
             int width =(int)(Integer.parseInt(WidthField.getText()));//(int) makes sure it is read as an integer
-            int height =(int)(Integer.parseInt(HeightField.getText()));
+            int height =(int)(Integer.parseInt(HeightField.getText()));//Integer.parseInt(String) converts strings to integers
             int bombCount = (int)(Integer.parseInt(BombNumber.getText()));
             int lives = (int)(Integer.parseInt(LivesNumber.getText()));
             if(width*height<=bombCount||bombCount<0||lives<1||width<1||height<1){
