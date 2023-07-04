@@ -256,30 +256,34 @@ class ScoresFileIO{
                     writeLeaderboard(entries);
                     return 1;
                 }else{//<---------------------- file found and not empty
-                    int c = 0;
-                    while(c<entries.length){//loop through entries in file
+                    boolean thisScoreFound=false;
+                    boolean isHighscore=false;
+                    for(int c = 0;c<entries.length;c++){//loop through entries in file
                         if(entries[c].isValid() && entries[c].equals(thisEntry)){//<-- board identifier matches
+                            thisScoreFound=true;
                             if(won && entries[c].getTime()>time){
                                 entries[c]=thisEntry;//                         ^did you beat the time?
+                                isHighscore=true;
                             }else if(won && entries[c].getRemainingLives()>RemainingLives && entries[c].getTime()==time){
                                 entries[c]=thisEntry;//                         ^is it same time but more lives?
+                                isHighscore=true;
                             }else if(won && entries[c].getRemainingLives()<1){//was the entry created by dying on a new board configuration?
                                 entries[c]=thisEntry;
+                                isHighscore=true;
                             }
-                            break;
                         }
-                        c++;
                     }
-                    if(c!=entries.length){//Was a high score! save edited version of file
-                        writeLeaderboard(entries);
-                        return 2;
-                    }else{//none were a match. New Board Size
+                    if(!thisScoreFound){//none were a match. New Board Size
                         ArrayList<ScoreEntry> newEntriesBuilder = new ArrayList<>();
                         newEntriesBuilder.addAll(Arrays.asList(entries));
                         newEntriesBuilder.add(thisEntry);
                         entries=newEntriesBuilder.toArray(new ScoreEntry[0]);
                         writeLeaderboard(entries);
                         return 1;
+                    }
+                    if(isHighscore){//Was a high score! save edited version of file
+                        writeLeaderboard(entries);
+                        return 2;
                     }
                 }
             }

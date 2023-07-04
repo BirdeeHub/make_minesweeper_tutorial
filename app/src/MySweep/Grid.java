@@ -151,7 +151,7 @@ public class Grid extends JPanel {
     }
     //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
     //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    long getTime(){return answers.getTime();}//<-- i passed this through here to keep surface area small for brain, but compiler might know this is dum.
+    long getTime(){return (answers.isFirstClick())?(-1):answers.getTime();}//<-- i passed this through here to keep surface area small for brain
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
     int[] getGameOverIndex(){//     <--    text
@@ -500,11 +500,7 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        long endTime = -1;
-        try{
-            endTime = answers.getTime();
-        }catch(NumberFormatException e){e.printStackTrace();}
-        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, endTime, answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }
