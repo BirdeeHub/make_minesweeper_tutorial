@@ -147,9 +147,11 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 The rest of the source files are just the other windows.
 
-    1 more thing. Recommended reading order for beginners. Or anyone really, but theres a whole coding tutorial at the start of MineSweeper.java
+    1 more thing. Recommended reading order.
+
+    For the beginner, start with HowToCodeJava.txt
     
-    Play the game a couple times. Then MineSweeper, then OpeningWindow, 
+    Play the game a couple times and think about how stuff might be done. Then MineSweeper, then OpeningWindow, 
 
     then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
 
