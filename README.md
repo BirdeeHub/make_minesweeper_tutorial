@@ -18,7 +18,7 @@ This means I can't make a linux package because all locations linux could instal
 so linux needs to use the jar for this one.
 It also means I need a native java executable in the windows package until I learn to mess with a system class loader, so the package installer is an extra 10 MB.
 
-**Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again without making any actions to copy the jar file from the temp directory to the correct one. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
+**Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again without making any actions to move the jar file from the temp directory over the main one. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
 **Attention:** Don't install this version unless you are curious.
 
