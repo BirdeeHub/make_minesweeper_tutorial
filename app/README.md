@@ -109,7 +109,7 @@ ________________________________________________________________________________
 
 ______________________________________________________________________________________________________________________________________________
 
-You should read MineSweeper.java first if you are a total beginner and then return here for reference when needed later.
+You should read HowToCodeJava.txt in src/MySweep first if you are a total beginner and then return here for reference when needed later.
 
 Main game window is in charge of action listeners and the menu bar and scrolling. And being the window. It contains an instance of the Grid class
 
@@ -133,37 +133,47 @@ On each reset, Grid creates a new Minefield instance (which was designed to be a
 
 --
 
-ScoresFileIO contains functions directly pertaining to reading and writing to the scores file. 
+ScoresFileIO turns the scores file into ScoreEntry instances by splitting them by whitespace and using score entry constructor
 
-ScoresFileIO turns the scores file into ScoreEntry instances, and can update or delete them.
+ScoresFileIO contains functions directly pertaining to reading and writing to the scores file, which includes delete and update(save) as well.
+
+ScoreEntry are for processing and scores window
+
+Most importantly, ScoreEntry contain the conversion information to turn the scores into a string for saving and back again.
+
+ScoresFileIO contains functions 
 
 scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
 
-ScoresWindow displays ScoreEntry instances correctly and allows for deletion, and relaunching a new opening window with a pre populated score.
+ScoresWindow displays ScoreEntry instances correctly and allows for deletion, and relaunching a new opening window with a pre populated score so that you can just hit enter and go.
 
 --
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window.
 
-The rest of the source files are just the other windows.
+--
 
-    1 more thing. Recommended reading order.
+1 more thing. Recommended reading order.
 
-    For the beginner, start with HowToCodeJava.txt
-    
-    Play the game a couple times and think about how stuff might be done. Then MineSweeper, then OpeningWindow, 
+For the beginner, start with HowToCodeJava.txt
 
-    then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
+Then play the game a couple times. When the code says JButton, it means theres a button for it, so see the button first, and it will make more sense.
 
-    then Grid up through the end of the constructor except dont worry too much about the scaleable icon stuff,
+Then read MineSweeper but dont think about what an EventQueue.invokeLater is too hard yet if you dont know what an interface is,
 
-    then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
+then OpeningWindow, 
 
-    now read the zoom function on both MainGameWindow and Grid, and the scaleable icon stuff in Grid. Or skip it and go straight to scores and go back to it later.
+then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
 
-    Then ScoresFileIO, then ScoreEntry, then ScoresWindow. 
+then Grid up through the end of the constructor,
 
-    instructionsWindow is really better viewed in the game.
+then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
+
+now read the zoom function on both MainGameWindow and Grid. Or skip it and go straight to scores and go back to it later.
+
+Then ScoresFileIO, then ScoreEntry, then ScoresWindow. IO and Entry together are kinda like their own plugin that grid and scores window use.
+
+instructionsWindow is really better viewed in the game.
 
 _______________________________________________________________________________________________________________________________________________
 

@@ -9,12 +9,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class ScoresFileIO{
+class ScoresFileIO{//reads from file, creates scoreEntry instances based on the file contents. ScoresWindow uses read and delete, maingame uses update. write is private
     private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
     private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
     private final String scoresFileName;
     public ScoresFileIO(){
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperty("os.name").toLowerCase();//<-- set our file path based on system
         if (os.contains("win")) {
             scoresFileName = scoresFileNameWindows;
         } else {
@@ -26,7 +26,7 @@ class ScoresFileIO{
         StringBuilder scoresFileString = new StringBuilder();// create string from entries
         if(append)scoresFileString.append(" ");
         for(int i = 0; i < allEntries.length; i++){
-            scoresFileString.append(allEntries[i].toString()).append(" ");
+            scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function
         }
         //-------------------------write string----------------------write string-------------
         try {
@@ -42,7 +42,7 @@ class ScoresFileIO{
     }
     //-----------------------------------READ-------------------------------------READ----------------------------------------------------------------
     public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
-        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
+        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();//Array lists also have a good append function.
         ScoreEntry[] fileEntries;
         try(Scanner in = new Scanner(new File(scoresFileName))) {
             while (in.hasNext()) {
@@ -55,9 +55,8 @@ class ScoresFileIO{
             System.out.println(e.getClass()+" @ "+scoresFileName);
         }
         return fileEntries;
-
     }
-    //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
+    //--------------------------------------------Everything below here uses only ScoreEntries to do its work---and uses read and write---------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work------------deleteScoreEntry----------------------
     public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read

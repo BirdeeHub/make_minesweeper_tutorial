@@ -111,8 +111,8 @@ public class ScoresWindow extends JFrame {
         clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
             @Override
             protected Color getSelectColor() {
-                return (isDeleteMode)?Color.RED:super.getSelectColor();
-            }
+                return (isDeleteMode)?Color.RED:super.getSelectColor();//<-- "super" allows us to refer to the default behavior
+            }                                                          // of the class we are overriding a function from
         });
     }
     private void initComponents() {//-----------------------------------initComponents()------------------------------------------
@@ -329,7 +329,7 @@ public class ScoresWindow extends JFrame {
                         TimeText[c] = Shtml+Long.toString(entries[c].getTime()/1000)+Ehtml;
                     }
                 } else {
-                    BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());
+                    BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());//<--assign an empty one in case we try to do isValid and it crashes
                     BoardButton[c].setText("entry");
                     BoardText[c] = "entry";
                     LivesText[c] = "is";
