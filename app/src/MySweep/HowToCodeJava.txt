@@ -47,7 +47,7 @@
     
     -You can tell it to store a thing (see above)
     -You can tell it to read a thing it stored
-    -You can tell it to perform a thing on a thing you stored, including  changing it (usually) and checking it against the value of another thing.
+    -You can tell it to perform a thing on a thing you stored, including changing it (usually) and checking it against the value of another thing.
     -You can tell it to do one set of things or another based on checking a comparison between things (the main way to do this is called an if statement)
     -You can tell it to do a set of things until a comparison becomes false which is called a loop.
         (declared with "for(variable; condition; thing to change on each loop){your stuff here}", or "while(comparison){your stuff here}")
@@ -65,16 +65,19 @@
     This is called scope. It sees out but not in. {you}me <-- here, you can see me but I cant see you
     
     //This is how we declare a function in Java. it returns an int, it is called addTwoIntegers...etc.., and it recieves 2 integers as input
+
     int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets a and b from input
-        int c;  //<-- it then creates a new integer to store the value of a + b
-        if(c != 3){  //<---------- if not equal to 3
-            c = a + b;  //<------- do this
+        int c;  //<-- it then creates a new integer c to store the value of a + b or a * b
+        if((a+b) != 3){  //<---------- if not equal to 3
+            c = a + b;  //<-- do this
         }else{  //<--------------- in this case, else{} would be equivalent to if(c == 3){}
             c = a * b;  //<-- else do this
         }
-        a = c;   //<---- this will not change 'a' outside of the function. only inside.
-        return a;  //<----------- we then return that value
+        a = c;//<---- this will not change 'a' outside of the function. only inside.
+        return a;  //<----------- we then return that value 
     }
+    //(I assigned the value of c to a in order to demonstrate scope, so a has our answer, but that does not affect our original a that we passed in)
+    
 
     //and this is how we call it and store the result:
     int result;
