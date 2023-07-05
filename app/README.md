@@ -109,7 +109,7 @@ ________________________________________________________________________________
 
 ______________________________________________________________________________________________________________________________________________
 
-You should read HowToCodeJava.txt in src/MySweep first if you are a total beginner and then return here for reference when needed later.
+You should read HowToCodeJava.txt in src/MySweep first if you are a beginner in java and then return here for reference when needed later.
 
 Main game window is in charge of action listeners and the menu bar and scrolling. And being the window. It contains an instance of the Grid class
 
