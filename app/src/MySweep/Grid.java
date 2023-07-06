@@ -47,8 +47,8 @@ public class Grid extends JPanel {
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
-    private int GameOverMessageIndex = 3;//<-- 3 is the "off" state
-    private int wonValue = 3;//<-- 3 is the "off" state
+    private int GameOverMessageIndex = -1;//<-- -1 is the "off" state
+    private int wonValue = -1;//<-- -1 is the "off" state
     private int BombsFound = 0;
     private int livesLeft = 0;
     private Minefield answers;//<-- this one is the data class for game logic
@@ -176,13 +176,13 @@ public class Grid extends JPanel {
     }
     boolean isDarkMode(){return DarkMode;}//<-- this is a function
 
+        //Shhhhh.... I fixed it.
     void toggleDarkMode(){//<-- and so is this
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
             for (int y = 0; y < Fieldy; y++) {
-                if(!answers.exploded(x, y)&&(!answers.checked(x, y)||answers.adjCount(x, y)>0)){//these are the 2 conditions in which i set background
-                    //                                                                            ^so i check to prevent overwriting it
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0)||(answers.isGameOver()&&answers.isBomb(x, y)))){
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);                                                             //^new check
                     }else{
                         getButtonAt(x,y).setBackground(null);
                         getButtonAt(x,y).setIcon(DefaultButtonIcon);
@@ -191,15 +191,33 @@ public class Grid extends JPanel {
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
                 }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
+                if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- then make the background for the revealed bombs at end of game changing logic
+                    if(wonValue == 0){
+                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode set the background black
+                        }else{                                          //else
+                            getButtonAt(x,y).setBackground(null);//<-- set the background null
+                            getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
+                        }//THEN set the custom icon again
+                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                    }else if(wonValue == 1){
+                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//And then the same thing but for if you won.
+                        }else{
+                            getButtonAt(x,y).setBackground(null);
+                            getButtonAt(x,y).setIcon(DefaultButtonIcon);
+                        }
+                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                    }
+                }
             }
         }
         Grid.this.repaint();
     }
+
     void ResetBoard(){//<-- for when you want new but not like, new new. Just like, sorta new. Refreshed.
         BombsFound = 0;
         livesLeft = lives;
-        GameOverMessageIndex = 3;
-        wonValue = 3;
+        GameOverMessageIndex = -1;
+        wonValue = -1;
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- get a new minefield, thus resetting the timer and everything else
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {// and then reset appearances.
@@ -495,7 +513,6 @@ public class Grid extends JPanel {
                         getButtonAt(i,j).revalidate();
                     }
                     getButtonAt(i,j).setText("");
-                    answers.check(i,j);//check the exploded bomb so you cant mess it up by toggling dark mode
                 }
             }
         }

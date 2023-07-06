@@ -65,7 +65,7 @@ public class MainGameWindow extends javax.swing.JFrame {
     }
     private void setGameOverDisplay(){
         int[] GOIndex = new int[2];//GOIndex[0] is message index, GOIndex[1] is won value.
-        GOIndex = grid.getGameOverIndex();//if not in game over state, these will both be 3.
+        GOIndex = grid.getGameOverIndex();//if not in game over state, these will both be -1.
         if(GOIndex[1]==1){ GameOverDisplay.setText((GOIndex[0]==2)?highScoreMessage:((GOIndex[0]==1)?newBoardSizeAndWonMessage:wonAndNotHighScoreMessage));
         }else if(GOIndex[1]==0){ GameOverDisplay.setText((GOIndex[0]==1)?diedButNewBoardMessage:diedAndNotNewBoardMessage);
         }else GameOverDisplay.setText("");
