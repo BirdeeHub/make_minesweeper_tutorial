@@ -211,6 +211,8 @@ public class Grid extends JPanel {
 
     //This one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
     //You could probably fix this by the end of reading these game files. It will be a little challenging though!
+    //This is part of the thing that makes coding frustrating sometimes, 
+    //but it also will teach you a lot about how things are connected quickly
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
