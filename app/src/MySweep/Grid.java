@@ -246,6 +246,12 @@ public class Grid extends JPanel {
 
     //It is definitely doable without advanced techniques though. 
     //Just have to figure out the right things to check from minefield to achieve what you want.
+
+    //NECESSARY HINTS: 
+    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself. 
+    //Dont forget to remove that. In fact, go to game over function and remove it right now after testing it as is. 
+    //It will make the error much more clear.
+    //After that, you can fix it entirely inside this function.
     
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;//<-- toggle the variable
@@ -267,15 +273,13 @@ public class Grid extends JPanel {
         Grid.this.repaint();
         //after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
     }
-    //NECESSARY HINTS: 
-    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself. 
-    //Dont forget to remove that. In fact, go to game over function and remove it right now after testing it as is. 
-    //It will make the error much more clear.
-    
     //HELPFUL HINTS:
     //Think about what things in minefield you can check for. 
     //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
 
+
+
+    
     //SUPER HINTS:
     //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
 
