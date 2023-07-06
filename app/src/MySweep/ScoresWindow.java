@@ -375,18 +375,22 @@ public class ScoresWindow extends JFrame {
     On that note, could you debug my toggle dark mode button? The button is in help window. 
     The function is in Grid and it only does weird stuff on game over screen.
     I never use it (I made it how I like it already) so I wasn't planning on improving it myself, but its great practice for you!
-    If you get it working you could add it to the main game window buttons too!
-    This would involve creating a new function you make that changes the buttons of the main game window.
-    And then making sure it can see your buttons.
-    And then place a call to it inside the function that is called when the toggle button is pressed. The info was on the way to grid anyway so it exists.
+    If you get it working you could add one to the main game window buttons and attach it to the same button too!
+    doing it for the main window would involve creating a new function you make that changes the buttons of the main game window. 
+    And then place a call to it inside the function that is called when the toggle button is pressed. The info was on the way to grid anyway so it exists. 
     You can't easily mess up game logic in that function, just if the button changes the display correctly, so its the perfect candidate.
     The game is designed like that as much as possible, where changing stuff shouldnt change stuff you wouldnt expect it to change.
+    (dont forget to make sure your function can see your buttons somehow)
 
     The toggle ? error is quite hard for a beginner in a new code base. If you figure it out, you did a good job.
     Think about what things in minefield you can check for and exclude. Also, a new icon will overwrite the old one so you have to then put the icon back on it
+    
+    After all that:
     I would suggest going and doing one of those python learn to code courses now that you can see how data flows around a program in an object oriented language.
     It will be super easy now that you know all of this, and you will be making cool stuff in no time!
     Python is pretty similar, except you dont have to explicitly say a lot of the stuff you can specify in java, it figures it out based on context.
+
+    I do have answers for it in the other branch where I fixed the function if you get real stuck but want to copy it in and make your game work better. you will also need to remove 1 thing from game over function.
 
     Good Luck!!
 */

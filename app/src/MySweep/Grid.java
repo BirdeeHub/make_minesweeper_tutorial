@@ -205,44 +205,14 @@ public class Grid extends JPanel {
         }
     }
 
-    //----------------you can skip these next 3 functions for now.-----------------------------------------------------
-
-    boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
-
-    //This one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
-    //You could probably fix this by the end of reading these game files. It will be a little challenging though!
-    //This is part of the thing that makes coding frustrating sometimes, 
-    //but it also will teach you a lot about how things are connected quickly
-    //Dont worry if you cant figure it out. I didnt really try too hard, but I didn't figure it out. 
-    //after all, why. I dont like the non darkmode version. So I kinda just left it. I didnt even notice it had the bug until I started rewriting all these comments.
-    //It is definitely doable without advanced techniques though. Just have to figure out the right things to check for here.
-    
-    void toggleDarkMode(){//<-- this toggles it for the board.
-        this.DarkMode = !DarkMode;
-        for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {
-                if(!answers.exploded(x, y) && (!answers.checked(x, y)||answers.adjCount(x, y)>0)){//<- these are the 2 conditions in which i set background 
-                    //                                                                            ^during game so i check to prevent overwriting it
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
-                    }else{
-                        getButtonAt(x,y).setBackground(null);
-                        getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- the light mode background is an icon (you can put the other icon back over it)
-                    }
-                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
-                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
-                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
-                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
-            }
-        }
-        Grid.this.repaint();
-    }
-    //Edit: after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
-    //Think about what things in minefield you can check for. 
-    //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
-    //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
-    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself.
 
 
+
+
+
+    //----------------you should skip these next 3 functions for now.-----------------------------------------------------
+
+//            ZOOM FUNCTION
     //this is called from the zoom listener in main game window
     int[] doZoom(int rotation, int mouseX1, int mouseY1){//<-- it makes the cells bigger. The main window is in a scroll pane. does not set font
         Dimension currentCellSize = Grid.this.getComponent(0).getSize();//get the first buttons size (theyre all the same)
@@ -259,6 +229,69 @@ public class Grid extends JPanel {
         gridSizesOldNew[3] = (newCellSize.height*Fieldy);
         return gridSizesOldNew;
     }
+
+    boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
+
+
+    //Excercise:
+    //This next one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
+    //You could probably fix this by the end of reading these game files. It will be a little challenging though!
+    //I have hints for you if you get stuck.
+    //This can be part of the thing that makes coding frustrating sometimes, 
+    //but it also will teach you a lot about how things are connected very quickly.
+    //Dont worry if you cant figure it out. I didnt really try too hard the first time necessarily, 
+    //but I didn't actually figure it out until after I made it an excercise. 
+    //I didnt even notice it until right before all these tutorial comments.
+    //I dont like the non darkmode version. So I kinda just left it. It wasnt super important.
+
+    //It is definitely doable without advanced techniques though. 
+    //Just have to figure out the right things to check from minefield to achieve what you want.
+    
+    void toggleDarkMode(){//<-- this toggles it for the board.
+        this.DarkMode = !DarkMode;//<-- toggle the variable
+        for (int x = 0; x < Fieldx; x++) {//<-- step through the grid
+            for (int y = 0; y < Fieldy; y++) {
+                if(!answers.exploded(x, y) && (!answers.checked(x, y)||answers.adjCount(x, y)>0)){//<- these are the 2 conditions in which i set background 
+                    //                                                                            ^during game so i check to prevent overwriting it
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    }else{
+                        getButtonAt(x,y).setBackground(null);
+                        getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- the light mode background is an icon (you can put the other icon back over it)
+                    }
+                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
+                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
+                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
+            }
+        }
+        Grid.this.repaint();
+        //after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
+    }
+    //NECESSARY HINTS: 
+    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself. 
+    //Dont forget to remove that. In fact, go to game over function and remove it right now after testing it as is. 
+    //It will make the error much more clear.
+    
+    //HELPFUL HINTS:
+    //Think about what things in minefield you can check for. 
+    //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
+
+    //SUPER HINTS:
+    //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
+
+    //SPOILERS
+    //Also, I added the answer to Jarred branch if you get really stuck. 
+    //That branch is kinda dumb but I wanted to preserve this excercise here but still have the answers somewhere. 
+    //So there is a better version of this function there.
+//------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+//---------------------START READING AGAIN HERE. Zoom Function and toggle DarkMode OVER--------------------------------------------------------------
 
 //----------------------------------------and then start reading again here-----------------------------------------------------------------------------
 //----GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW-------GAME-LOGIC-BELOW----------
