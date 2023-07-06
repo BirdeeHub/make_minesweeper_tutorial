@@ -210,7 +210,7 @@ public class Grid extends JPanel {
     boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
 
     //This one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
-    //You could probably fix this by the end of reading these game files.
+    //You could probably fix this by the end of reading these game files. It will be a little challenging though!
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
