@@ -176,14 +176,34 @@ public class Grid extends JPanel {
     }
     boolean isDarkMode(){return DarkMode;}//<-- this is a function
 
-        //Shhhhh.... I fixed it.
-    void toggleDarkMode(){//<-- and so is this
+
+
+////////////////////////////////////////////////////////////////////////////
+
+
+
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+             //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+    void toggleDarkMode(){
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {
+            for (int y = 0; y < Fieldy; y++) {          
+                //i put the ! outside of the brackets and it made it much easier (because it then let me flip everything)
+                //now it is   if NOT(these conditions where i set the background OR icon) 
+                //rather than if(!these !conditions !where !i !set !the !background ! AND !icon)
+                //It made things much clearer. I then added a new condition.
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0)||(answers.isGameOver()&&answers.isBomb(x, y)))){
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);                                                             //^new check
-                    }else{
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);                            //^new check. Makes sure this if does not include revealed bombs
+                    }else{                                                        //this part inside was still correct.
                         getButtonAt(x,y).setBackground(null);
                         getButtonAt(x,y).setIcon(DefaultButtonIcon);
                     }
@@ -191,16 +211,19 @@ public class Grid extends JPanel {
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
                 }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
-                if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- then make the background for the revealed bombs at end of game changing logic
-                    if(wonValue == 0){
-                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode set the background black
+
+                if(answers.isBomb(x, y)&&answers.isGameOver()){//now we process it for our buttons with icons, after excluding them properly before
+                    if(wonValue == 0){//<-- if we lost, its gonna be the explosion
+                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode now set the background black
                         }else{                                          //else
                             getButtonAt(x,y).setBackground(null);//<-- set the background null
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
-                        }//THEN set the custom icon again
+                        }//THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
+                        //this will put it back on top of the other stuff we put.
                         getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
-                    }else if(wonValue == 1){
-                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//And then the same thing but for if you won.
+                    
+                    }else if(wonValue == 1){//<-- if you won, you see the mines
+                        if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
                         }else{
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
@@ -210,8 +233,33 @@ public class Grid extends JPanel {
                 }
             }
         }
-        Grid.this.repaint();
+        Grid.this.repaint();//<-- this makes it all visually update quickly at once. Same as before
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+                //^It does the same thing, but the bug is fixed. This whole branch is basically the same thing.
+                //This branch is from right before I made it a full on guide.
+
+                //I tried to make it into like, the russian doll of .jar files. It saves its scores into itself sorta.
+
+                //what really happens is it just creates and updates a new jar file version in the temp folder,
+                //and then when you close it, it copies a mini program out of itself, 
+                //called OverwriteJar, runs that program, closes, and then OverwriteJar well...
+                //it overwrites the jar with the new version for next time, then deletes itself and the temp jar.
+                //If it doesnt finish somehow it will still find the scores next time.
+                //Because i wrote the program in a modular fashion, the only thing
+                // that changed was minesweeper.java, and ScoresFileIO, and adding Overwrite.java
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ResetBoard(){//<-- for when you want new but not like, new new. Just like, sorta new. Refreshed.
         BombsFound = 0;

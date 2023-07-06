@@ -1,3 +1,9 @@
+```
+
+If you have come looking for answers from the tutorial experience, theyre in Grid class, in the same spot.
+
+```
+
 This folder contains the compile and package scripts along with:
 
 Application source code is in src/MySweep folder (other than OverwriteJar.java which is in src/)

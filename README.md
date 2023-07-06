@@ -11,6 +11,12 @@ You can learn too! Source code is included with the installer, as well as a comp
 which will update your actual installed version of the game that you can run from your start menu.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
+```
+
+If you have come looking for answers from the tutorial experience, theyre in Grid class, in the same spot.
+
+```
+
 **Attention:** This version is kinda dumb. Its also kinda cool. It exists as a proof of concept and because I wanted to try.
 
 Why is it so dumb? It saves by writing a new jar containing updated scores, and then overwriting itself on exit. 
