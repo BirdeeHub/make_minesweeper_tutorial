@@ -213,6 +213,10 @@ public class Grid extends JPanel {
     //You could probably fix this by the end of reading these game files. It will be a little challenging though!
     //This is part of the thing that makes coding frustrating sometimes, 
     //but it also will teach you a lot about how things are connected quickly
+    //Dont worry if you cant figure it out. I didnt really try too hard, but I didn't figure it out. 
+    //after all, why. I dont like the non darkmode version. So I kinda just left it. I didnt even notice it had the bug until I started rewriting all these comments.
+    //It is definitely doable without advanced techniques though. Just have to figure out the right things to check for here.
+    
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
@@ -222,7 +226,7 @@ public class Grid extends JPanel {
                     if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
                     }else{
                         getButtonAt(x,y).setBackground(null);
-                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
+                        getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- the light mode background is an icon (you can put the other icon back over it)
                     }
                     if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
@@ -232,6 +236,13 @@ public class Grid extends JPanel {
         }
         Grid.this.repaint();
     }
+    //Edit: after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
+    //Think about what things in minefield you can check for. 
+    //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
+    //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
+    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself.
+
+
     //this is called from the zoom listener in main game window
     int[] doZoom(int rotation, int mouseX1, int mouseY1){//<-- it makes the cells bigger. The main window is in a scroll pane. does not set font
         Dimension currentCellSize = Grid.this.getComponent(0).getSize();//get the first buttons size (theyre all the same)

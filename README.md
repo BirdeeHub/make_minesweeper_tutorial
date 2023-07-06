@@ -9,7 +9,9 @@ Mostly I just wanted to learn some Java.
 
 You can learn too! Source code is included with the installer, as well as a compile script, 
 which will update your actual installed version of the game that you can run from your start menu.
-It has a lot more than that actually. It is an attempt at a full learn to code java guide.
+
+It has a lot more than that actually. It has an attempt at a full learn to code java guide mixed along the source code.
+Of course, at a certain point you have to do, rather than read. But this will get you to that point.
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
 **version 1.0** is the normal version

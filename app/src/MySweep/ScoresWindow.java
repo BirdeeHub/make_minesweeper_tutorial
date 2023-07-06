@@ -382,5 +382,11 @@ public class ScoresWindow extends JFrame {
     You can't easily mess up game logic in that function, just if the button changes the display correctly, so its the perfect candidate.
     The game is designed like that as much as possible, where changing stuff shouldnt change stuff you wouldnt expect it to change.
 
+    The toggle ? error is quite hard for a beginner in a new code base. If you figure it out, you did a good job.
+    Think about what things in minefield you can check for and exclude. Also, a new icon will overwrite the old one so you have to then put the icon back on it
+    I would suggest going and doing one of those python learn to code courses now that you can see how data flows around a program in an object oriented language.
+    It will be super easy now that you know all of this, and you will be making cool stuff in no time!
+    Python is pretty similar, except you dont have to explicitly say a lot of the stuff you can specify in java, it figures it out based on context.
+
     Good Luck!!
 */
