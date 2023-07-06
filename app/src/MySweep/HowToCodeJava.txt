@@ -1,7 +1,8 @@
 /*
     Programming is not so complex as you may think. Computers are stupid. They cannot learn english. Their language is much simpler than ours.
-    Programs may one day be able to understand english. Currently we have programs that can generate it in response to input.
-    But a computer will never understand english. Too stupid. I get zap, I turn switch on. I dont get zap, I turn switch off.
+    Programs may one day be able to understand english. That  Currently we have programs that can generate it in response to input.
+    But a computer will never understand english. A computer is not able to understand anything.
+    Too stupid. I get zap, I turn switch on. I dont get zap, I turn switch off. Passive.
     When I say Computers Know, what I mean is, someone has created a set of instructions we can use to tell the computer what to do
     except, without pulling our hair out trying to make sense of 00010101 00111001 010110101011111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 Stack Overflow Error
 
@@ -12,16 +13,16 @@
     There are many comments. Designed to be read in the order of the reading order. That is also marked by comments.
 
     Also, visual studio code has really good tools for beginners that are easy to install. Download a java extension in vs code.
-    Other editors have this stuff too and can be better but it is harder to install stuff. It will make things much more readable.
+    Other editors have this stuff too and sometimes better but it is harder to install stuff. It will make things much more readable.
 
     Computers know:
 
     1. How to store a type of thing, that we can access by a variable name. You must tell it what type of thing.
 
     The types of things.
-    -You can store a true or false, called a boolean, which is basically a single byte with a couple bytes to identify it as a boolean
+    -You can store a true or false, called a boolean
     -A number of several sizes, i.e. a long is just like an integer (called an int going forward) that is able to store a bigger number than a basic integer can
-        or with a decimal point (called a float)
+    -Or a number with a decimal point (called a 'float' for 'floating point')
     -A single bit (0 or 1)
     -A single byte ((8) 0s or 1s)
     -A character (or, well, an integer index for a character)
@@ -43,7 +44,7 @@
     The main things it knows how to do with things it stores:
 
     There are several main things you can tell your computer to then do with those things you created.
-    The language you use dictates you what words and operators to use to tell it to do those things.
+    The language you use dictates what words and operators to use to tell it to do those things.
     
     -You can tell it to store a thing (see above)
     -You can tell it to read a thing it stored
@@ -62,13 +63,15 @@
     Functions can also call themselves sometimes. This is called recursion and seems better than really it is sometimes.
     
     Things declared inside these things -> {} cannot be seen by things outside of them by default unless you return it. 
-    This is called scope. It sees out but not in. {you}me <-- here, you can see me but I cant see you
+    This is called scope. It sees out but not in.       
+    
+    {you}me <-- here, you can see me but I cant see you
     
     //This is how we declare a function in Java. it returns an int, it is called addTwoIntegers...etc.., and it recieves 2 integers as input
 
     int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets a and b from input
         int c;  //<-- it then creates a new integer c to store the value of a + b or a * b
-        if((a+b) != 3){  //<---------- if not equal to 3
+        if((a+b) != 3){  //<---------- if answer not equal to 3
             c = a + b;  //<-- do this
         }else{  //<--------------- in this case, else{} would be equivalent to if(c == 3){}
             c = a * b;  //<-- else do this
@@ -76,7 +79,7 @@
         a = c;//<---- this will not change 'a' outside of the function. only inside.
         return a;  //<----------- we then return that value 
     }
-    //(I assigned the value of c to a in order to demonstrate scope, so a has our answer, but that does not affect our original a that we passed in)
+    //(I assigned the value of c to a in order to demonstrate scope. So 'a' has our answer, but that does not affect our original 'a' that we passed in)
     
 
     //and this is how we call it and store the result:
@@ -84,6 +87,7 @@
     int firstNumber = 1;
     int secondNumber = 2;
     result = addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);//<-- here is where we call it
+
     System.out.println(Integer.toString(result));//<-- this is very useful. Prints to terminal window. Use to debug. (or use a program to step through like I should have)
 
     //which would make the value of result be 2.
@@ -106,11 +110,12 @@
             if(theAnswer==42){
                 i=i*2;
             }else{
-                continue; //<-- this just skips to the next execution of the loop. break would jump all the way out
-            }
+                continue; //<-- this just skips to the next execution of the loop. break would jump all the way out. 
+            }//   ^It will not execute because theAnswer == 42
         }
     }
     
+    //the loop changes the value of 'i' each time, and when 'i' is no longer less than 12 it stops.
     //First with i == 0, then i == 1, then 3, then 6 and then when it becomes 12, it will fail the check in the while loop and not execute again.
     //Try to read through it like the computer does. It's very good theAnswer == 42 otherwise it would loop forever! (until you get task manager involved)
 
@@ -158,7 +163,7 @@
     the functions inside of them will operate on data accessible within that instance of the class.
     
     This means if you have a class called chair, you can create 2 instances of chair, and give them each their own height. 
-    Maybe they each have their own set height function to do it!
+    Maybe they each have their own setHeight(int h) function to do it!
 
     //If you had a class named MyClass that took a String as input in its constructor:
 
@@ -179,9 +184,10 @@
     //if our weird add function was declared as static, we wouldnt need to create an instance of MyClass, we could use it directly.
     //static functions can only contain static variables that can be shared among all instances of a class with no issue
 
+    //notice we dont need to create an instance here?
     int firstNumber = 6;
     int secondNumber = -3;
-    int result = MyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
+    int result = MyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);//<-- call it statically
 
     //which would make the value of result be -18, (because (6 + (-3)) == 3 of course!)
 
@@ -189,7 +195,7 @@
 
     Classes can also extend other classes. This means that they have all the functions the class they extend has. 
     They in essence are an instance of that class, but with more stuff.
-    They can change them if they want with @Override
+    They can change the things they inherit if they want with @Override
 
     An example is, if my class was to "extend" a JFrame, it would inherit all the functions and properties needed to 
     display as a window and display UI components from the javax.swing library inside of it because those are the functions a JFrame class has access to. 
@@ -203,9 +209,9 @@
 
     when you want to use one that is already written it looks like this:
 
-        ActionListener toggleQuestionMarkingListener = new ActionListener(){//<-- create an instance of the ActionListener interface class
-            public void actionPerformed(ActionEvent e){//<-- we would like to write an actionPerformed function
-                grid.toggleQuestionMarks();//<-- and we would like to turn the stupid question marks off.
+        ActionListener toggleQuestionMarkingListener = new ActionListener(){  //<-- create an instance of the ActionListener interface class
+            public void actionPerformed(ActionEvent e){  //<-- we would like to write an actionPerformed function
+                grid.toggleQuestionMarks();  //<-- and we would like to turn the stupid question marks off.
             }
         };
 
@@ -232,8 +238,8 @@
 
     try{
         thingtobetried();
-    }catch(ExceptionClass variable){
-        variable.somefunction();//<-- i usually just am lazy and do variable.printStackTrace();
+    }catch(ExceptionClass variable){ //<-- catch the error we threw
+        variable.somefunction(); //<-- i usually just am lazy and do variable.printStackTrace();
     }
 
     try(String thing = thingtoBeTriedThatTheNextStuffNeeds("some input")){
@@ -243,7 +249,7 @@
     } 
 
     Java runs from a java virtual machine thingy that runs your java code so that you can run it anywhere you can install Java.
-    You have to first compile it into a .class file for the JVM to be able to read your .java file.
+    You have to first compile it into a .class file for the JVM to be able to read your .java file. A .jar file is a runnable compressed java class folder
 
     some languages compile directly to binary for your machine. Java chose increased compatibility. Or, they tried and did decently well.
 
@@ -274,7 +280,8 @@
     But dont worry about what any of those things mean exactly just yet while looking through this program. Just know I didn't know that either.
     For now, assume doing it with a different library is basically the same just different function and class names. 
     It wouldn't be a lie. Its just extra stuff for when you wanna go real fast. 
-    Most of being fast is in how you structure the thing. Not the library or multi threading.
+    Most of being fast is in how you structure the thing. Not the library or multi threading. 
+    Anything that assigns new memory is heavier than changing something already there
 
     1 more thing. Important for beginners. Recommended reading order:
 

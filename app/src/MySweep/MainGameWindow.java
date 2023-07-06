@@ -35,19 +35,22 @@ import java.awt.GridBagLayout;
 //This is the main game board display window. contains action listeners and displays control buttons, and a Grid instance, which is the game board.
 public class MainGameWindow extends javax.swing.JFrame {//Originally grid and mainGameWindow were all 1 class but it got way too long.
     //-----------------------Initialize-----------------------------
-    private final int Fieldx, Fieldy, bombCount, lives;
-    private final Color PURPLE = new Color(58, 0, 82);
+    private final int Fieldx, Fieldy, bombCount, lives;//<-- variables to hold field x and y, number of bombs and lives.
+    //display stuff
+    private final Color PURPLE = new Color(58, 0, 82);//<-- these variables are final, meaning I cant assign a new thing to them.
     private final Color GREEN = new Color(0, 255, 0);
     private final Dimension DefaultWindowSize = new Dimension(830, 830);
-    private JLabel timeDisplay = new JLabel();
-    private final Timer displayTimer = new Timer();// Create Timer Displayer
-    private final TimerTask timeDisplayTask = new TimerTask() {
-        public void run() {
-            long time = grid.getTime();
-            if(time == -1){
-                timeDisplay.setText("");
-            }else timeDisplay.setText(Long.toString(time/1000));//if you want to add a time format you can do that here.
-        }//                            we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
+    private JLabel timeDisplay = new JLabel();//<-- this one isnt final because im going to be changing it regularly in order to:
+    private final Timer displayTimer = new Timer();//<-- Create Timer Displayer (the actual timer is in minefield)
+    private final TimerTask timeDisplayTask = new TimerTask() {//<-- this is added to displayTimer in constructor to start the time display
+        public void run() {//<-- it does this every x number of milliseconds
+            long time = grid.getTime();//<-- returns -1 if game has not yet started
+            if(time == -1){//<-- If no game started
+                timeDisplay.setText("");//<-- set text to nothing
+            }else{
+                timeDisplay.setText(Long.toString(time/1000));//<-- if you want to add a time format you can do that here. time variable is in milliseconds
+            } //we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
+        }//the actual time we save from is in Minefield. it has a 200ms refresh rate which is quite close to the system one. 
     };
     private JLabel GameOverDisplay = new JLabel();//our other 3 display labels and functions to set them.
     private JLabel BombsFoundDisplay = new JLabel();
@@ -63,13 +66,18 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private final String wonAndNotHighScoreMessage = "Cleared!";
     private final String diedButNewBoardMessage = "1st Board Death";
     private final String diedAndNotNewBoardMessage = "Exploded...";
-    private void setGameOverDisplay(){//<-- we set which one based on an index from grid whenever we call this function. same as the other 2 labels.
-        int[] GOIndex = new int[2];//GOIndex[0] is message index, GOIndex[1] is won value.
-        GOIndex = grid.getGameOverIndex();//if not in game over state, these will both be 3.
-        if(GOIndex[1]==1){ GameOverDisplay.setText((GOIndex[0]==2)?highScoreMessage:((GOIndex[0]==1)?newBoardSizeAndWonMessage:wonAndNotHighScoreMessage));
-        }else if(GOIndex[1]==0){ GameOverDisplay.setText((GOIndex[0]==1)?diedButNewBoardMessage:diedAndNotNewBoardMessage);
-        }else GameOverDisplay.setText("");
+    private void setGameOverDisplay(){//<-- we set which one based on an index from grid whenever we call this function. same as the other labels.
+        int[] GOIndex = new int[2];//<-- This is a 2 integer array. GOIndex[0] is message index, GOIndex[1] is won value.
+        GOIndex = grid.getGameOverIndex();//<-- if not in game over state, these will both be -1.
+        if(GOIndex[1]==1){ //<-- if you won
+            GameOverDisplay.setText((GOIndex[0]==2)?highScoreMessage:((GOIndex[0]==1)?newBoardSizeAndWonMessage:wonAndNotHighScoreMessage));
+        }else if(GOIndex[1]==0){ //<-- if you lost
+            GameOverDisplay.setText((GOIndex[0]==1)?diedButNewBoardMessage:diedAndNotNewBoardMessage);
+        }else {//<-- if you havent won or lost yet
+            GameOverDisplay.setText("");
+        }
     }
+    //logic stuff for listeners and the variable to hold the game board
     private Grid grid;//<-- Game Board Class (action listeners not included, only a function to set them. we set them here with the rest.)
     //things for listeners that needed to persistance across buttons or are used in different scopes
     private JScrollPane scrollPane;
@@ -78,7 +86,8 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
-    void toggleDarkMode(){//<-- these are accessible from instructions window if it has a reference to this instance of this class. They are public.
+    //these are accessible from instructions window if it has a reference to this instance of this class. They are public.
+    void toggleDarkMode(){
         grid.toggleDarkMode();
     }
     boolean isDMOn(){
@@ -88,11 +97,11 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     public MainGameWindow(int w, int h, int bombNum, int lives) {
         Fieldx = w;
         Fieldy = h;
-        this.lives = lives;
+        this.lives = lives;//<-- "this.something" allows us to refer to 'something' belonging to 'this' instance of the class
         bombCount = bombNum;
         grid = new Grid(Fieldx, Fieldy, bombCount, lives);//<-- Generate game board
-        displayTimer.scheduleAtFixedRate(timeDisplayTask, 0, 50);//<-- this just displays the time in Minefield answers.
-        scrollPane = new JScrollPane(grid);
+        displayTimer.scheduleAtFixedRate(timeDisplayTask, 0, 50);//<-- this just displays the time in Minefield answers. This rate is higher than the one in minefield so you dont tilt players
+        scrollPane = new JScrollPane(grid);//<-- create a scroll pane containing our grid panel
         addGridActionListeners();//<-- I could have done this in Grid but it was nice to keep the listeners in 1 place, and it would have been harder
         initComponentsAndMiscListeners();
     }
@@ -100,9 +109,9 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private void addGridActionListeners(){//i would have needed to pass in the toggle buttons for click action. this is better.
         grid.addCellListener(new MouseAdapter() {//<-- addCellListener() function in grid to add our listener to each cell.
             @Override
-            public void mouseEntered(MouseEvent e){//allows the 1.5 click trick by actually getting the component the mouse is over rather than just
+            public void mouseEntered(MouseEvent e){//<-- allows the 1.5 click trick by actually getting the component the mouse is over rather than just
                 currentButton=(JButton)e.getSource();// getting the component that fired the mousePressed and released actions which will always be the same
-            }//                                         ^ this is because each Adapter is associated with a particular button, and contains both methods, so if one fires, then the release for that one will run too.
+            }//     ^ this is because each Adapter is associated with a particular button, and contains both methods, so if one fires, then the release for that one will be the one that runs.
             @Override                                  //dont worry too much if listeners are confusing for now.
             public void mousePressed(MouseEvent e) {//<-- you need to know that they can fire on things like mouse pressed
                 if(SwingUtilities.isLeftMouseButton(e)){// and how to search for how to write an event listener for a mouse or a key or whatever in a language
@@ -198,7 +207,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         JToggleButton toggleQuestionMarking = new JToggleButton("?'s?");
         JButton ScoreBoard = new JButton("HiSc");
         Font ScoreAreaFontSize = new Font("Tahoma", 0, 20);
-        //------------------------set properties of that stuff (or to that stuff in the case of font)
+        //------------------------set properties of that stuff (or to that stuff in the case of the font)
         setBombsFoundDisplay();
         setLivesLostDisplay();
         setGameOverDisplay();
@@ -222,10 +231,11 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         scrollPane.setBackground(PURPLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
+
         //---------------------component adding and layout managing
         menuBagConstraints.gridx =0;
         menuBagConstraints.gridy =0;//           theyre all in a menu bar.
-        menuBagConstraints.gridwidth =1;// so i only need to change x value and weight
+        menuBagConstraints.gridwidth =1;// so i only need to change x value and weight each time
         menuBagConstraints.gridheight =1;
         menuBagConstraints.weightx = 0.0;
         menuBagConstraints.fill = GridBagConstraints.BOTH;
@@ -257,17 +267,17 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         menuBar.add(menuPanel);
         setJMenuBar(menuBar);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
-        //System.out.println("Start packing.");
+        //System.out.println("Start packing.");//<-- this would print to terminal when you reached here if you uncommented it
         pack();//<-- This pack() call is the slowest, heaviest thing in the entire program. But we need to call it to use layout managers...
         //System.out.println("done packing.");//<-- if you need proof, uncomment this and start a 300x300 with 6000 bombs game.
         getContentPane().revalidate();//^For 300x300 (90,000 cells) execution reaches here in under 1s, and the rest after it is even faster.
         grid.setCellFontSize();//       ^pretty sure to make it faster would need a different language unless there is a better pack function somewhere?
 
         //------------------misc action listeners----------------------misc action listeners-------------misc action listeners-------------misc action listeners------
-        Reset.addActionListener(new ActionListener() {//reset button
+        Reset.addActionListener(new ActionListener() {//<-- reset button
             long clickmemory = System.currentTimeMillis();//<-- this is for protection from spamming
             public void actionPerformed(ActionEvent evt) {
-                getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old size
+                getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old window size
                 if((System.currentTimeMillis()-clickmemory)>1000){//<-- this means 1s has passed since last click
                     clickmemory = System.currentTimeMillis();//<-- if so, update clickmemory
                     grid.ResetBoard();//<-- call reset function from grid
@@ -318,12 +328,12 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                     // get focused component source
                     Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
                     if(CurrComp instanceof JToggleButton){
-                        ((JToggleButton)CurrComp).doClick();
+                        ((JToggleButton)CurrComp).doClick();//<-- you need to cast it as the correct type
                     }else ((JButton)CurrComp).doClick();
                 }
             }
         };
-        ScoreBoard.addKeyListener(keyAdapter);//add the listeners
+        ScoreBoard.addKeyListener(keyAdapter);//<-- add the listeners
         NewGame.addKeyListener(keyAdapter);
         Reset.addKeyListener(keyAdapter);
         HowToPlay.addKeyListener(keyAdapter);

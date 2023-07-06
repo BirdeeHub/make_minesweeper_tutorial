@@ -29,16 +29,16 @@ public class ScoresWindow extends JFrame {
     private final ScoreEntry thisBoard;
     private JToggleButton clickableToggle = new JToggleButton("click?");
     private boolean clickable;
-    private JFrame ParentFrame;
-    private boolean FileIssue = false;//<-- used to stop it from becoming a button when you use the toggle button if file issue
+    private JFrame ParentFrame;//we need this reference in case we have to close it
+    private boolean FileIssue = false;//<-- used to stop it from becoming a button when you use the toggle button if file issue. Probably not needed anymore since I split stuff out into IO and Entry but I'd have to change stuff
     private final Dimension defaultwindowsize = new Dimension(280, 500);
     private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to allow leaderboardText(...) to be called anywhere in the file
     private JLabel[] BoardLabel;//                                                              ^leaderboardText(...) defined at end of file.
-    private JButton[] BoardButton;
+    private JButton[] BoardButton;//<-- these are here so we can swap them without re-running set leaderboard text function
     private boolean isControlDown;
     private boolean isShiftDown;
     private boolean isDeleteMode;//<-- controls toggle button background color WHILE SELECTED (see constructor)
-    //-----------------------action listeners for leaderboardText(...)------------------
+    //-----------------------action listeners for leaderboardText(...). Yes, you can globally declare action listeners too------------------
     private ActionListener BoardButtonListener = new ActionListener(){
         public void actionPerformed(ActionEvent evt) {
             if(clickableToggle.isSelected()==true){
@@ -47,7 +47,7 @@ public class ScoresWindow extends JFrame {
             }
         }
     };
-    private KeyAdapter keyAdapter = new KeyAdapter() {
+    private KeyAdapter keyAdapter = new KeyAdapter() {//<-- key listener. CTRL+SHIFT+Click (or enter) to delete!
         public void keyPressed(KeyEvent evt) {
             if(evt.getKeyCode() == KeyEvent.VK_CONTROL){// Check if control key is pressed
                 isControlDown = true;
@@ -63,7 +63,7 @@ public class ScoresWindow extends JFrame {
             if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
                 // get focused component source
                 Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-                if(CurrComp == clickableToggle){//this one is a JToggleButton
+                if(CurrComp == clickableToggle){//<- this one is a JToggleButton
                     clickableToggle.doClick();
                 }else ((JButton)CurrComp).doClick();
             }
@@ -81,42 +81,45 @@ public class ScoresWindow extends JFrame {
             }
         }
     };
-    private void BoardButtonPressedAction(JButton BoardPressed, JFrame ParentFrame){
-        ScoreEntry buttonEntry=((ScoreEntry)BoardPressed.getClientProperty("BoardTarget"));
+    //The 2 things you can do other than look
+    //------------------------Quickstart a new game
+    private void BoardButtonPressedAction(JButton BoardButtonPressed, JFrame ParentFrame){
+        ScoreEntry buttonEntry=((ScoreEntry)BoardButtonPressed.getClientProperty("BoardTarget"));
         if(buttonEntry.isValid()){
-            ParentFrame.dispose();
+            ParentFrame.dispose();//<-- close the old window
             EventQueue.invokeLater(new Runnable() {
-                public void run() {
+                public void run() {//open a pre populated opening window. Hit enter, or change something first
                     new OpeningWindow(Integer.toString(buttonEntry.getX()),Integer.toString(buttonEntry.getY()),Integer.toString(buttonEntry.getBombCount()),Integer.toString(buttonEntry.getLives())).setVisible(true);
                 }
             });
-            ScoresWindow.this.dispose();
+            ScoresWindow.this.dispose();//<-- close the score window
         }
-    }//-----------------------This one isnt required for leaderboardText(...) but it uses it---------------------------------------
-    private void BoardButtonDeleteAction(JButton BoardPressed){
-        MineSweeper.scoresFileIO.deleteScoreEntry(((ScoreEntry)BoardPressed.getClientProperty("BoardTarget")));//<-- delete score from file
-        BoardPanel.removeAll();//remove items in the panels because we are going to re-add from file.
+    }//-------------------------or delete a score.
+    private void BoardButtonDeleteAction(JButton BoardButtonPressed){
+        MineSweeper.scoresFileIO.deleteScoreEntry(((ScoreEntry)BoardButtonPressed.getClientProperty("BoardTarget")));//<-- delete this button's score from file
+        BoardPanel.removeAll();//remove items in the GridLayout panels which are our columns because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
-        leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//reset text for main scores display
+        leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//<-- Update the text for main scores display
         revalidate();
     }
     //------------------------------------Constructor------------Constructor-------------Constructor---------------------------------
     public ScoresWindow(int Fieldx, int  Fieldy, int bombCount, int lives, JFrame ParentFrame) {
-        thisBoard = new ScoreEntry(Fieldx, Fieldy, bombCount, lives, 0, 0);//this is how it knows what score to highlight
-        clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//get default state of clickable
-        this.clickable = clickableToggle.isSelected();
+        thisBoard = new ScoreEntry(Fieldx, Fieldy, bombCount, lives, 0, 0);//<-- this is how it knows what score to highlight
+        clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//<-- make button reflect default state of clickable
+        this.clickable = clickableToggle.isSelected();//<-- get default state of clickable for our global variable
         this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
         initComponents();
         clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
             @Override
             protected Color getSelectColor() {
-                return (isDeleteMode)?Color.RED:super.getSelectColor();//<-- "super" allows us to refer to the default behavior
-            }                                                          // of the class we are overriding a function from
+                return (isDeleteMode)?Color.RED:super.getSelectColor();//<-- "super" allows us to refer to the class we extended
+            }                                             // that way, if we override a function we can trigger the default functionality if we wish.
         });
     }
     private void initComponents() {//-----------------------------------initComponents()------------------------------------------
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); //Initialize our nested gridbaglayout panels
+        //------------------------------------------Initialize our nested gridbaglayout panels
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
         getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
         JPanel containerGridBag = new JPanel(new GridBagLayout());
         GridBagConstraints containerConstraints = new GridBagConstraints();
@@ -124,10 +127,10 @@ public class ScoresWindow extends JFrame {
         GridBagConstraints HeadingConstraints = new GridBagConstraints();
         JPanel ScoresPanel = new JPanel(new GridBagLayout());
         GridBagConstraints ScoresConstraints = new GridBagConstraints();
-        JScrollPane scrollPane = new JScrollPane(ScoresPanel);//<-- add the scores panel to scroll pane to scroll without losing back and toggle button
+        JScrollPane scrollPane = new JScrollPane(ScoresPanel);//<-- add just the scores panel to scroll pane to scroll without losing back and toggle button
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        getContentPane().add(containerGridBag);//add panel to frame
+        getContentPane().add(containerGridBag);//<-- add panel to frame
 
         containerConstraints.fill = GridBagConstraints.BOTH;//add our HeadingPanel and scrollPane into the containerGridBag panel
         containerConstraints.gridx = 0;
@@ -259,6 +262,7 @@ public class ScoresWindow extends JFrame {
         pack();
         getContentPane().setVisible(true);
     }
+    //---------------------------this is the function to set the buttons and labels for the scores in the window.---------------------------------------
     //---------------------------leaderboardText()---------------leaderboardText()------------------leaderboardText()-------------leaderboardText()--------
     //----------------------------------------------leaderboardText()-----------Reads files, creates components based on contents-----------------
     private void leaderboardText(JPanel BoardPanel, JPanel LivesPanel, JPanel TimePanel, ActionListener BoardButtonListener, KeyAdapter keyAdapter){
@@ -301,21 +305,21 @@ public class ScoresWindow extends JFrame {
             BoardButton = new JButton[entries.length];
             for(int c=0; c<entries.length; c++){//initialize board buttons
                 BoardButton[c] = new JButton();
-                BoardButton[c].putClientProperty("BoardTarget", "");
-            }//Board String will be its own property so that we can change how it displays as we wish-----------------------------------------------------------------------------
-            for(int c=0; c<entries.length; c++){
-                if(entries[c].isValid()){
+                BoardButton[c].putClientProperty("BoardTarget", "");//<-- we are about to overwrite this in a second anyway but if we dont initialize we might glitch our highlighting
+            }//Board String will be its own property so that we can change how it displays as we wish
+            for(int c=0; c<entries.length; c++){//<-- for entries returned from read
+                if(entries[c].isValid()){//Is it valid?
                     String finalBoardDisplayString = entries[c].getX()+"x"+entries[c].getY()+" B:"+entries[c].getBombCount()+" L:"+entries[c].getLives();
-                    if(entries[c].equals(thisBoard)){//This is us! add to start
+                    if(entries[c].equals(thisBoard)){//<-- This is us! add to start
                         if(entries.length>1 && c!=0){
-                            for(int add=entries.length-1; add>0; add--){//move all values up 1 so we dont overwrite when we place at start
+                            for(int add=entries.length-1; add>0; add--){//<-- move all values up 1 first so we dont overwrite when we place at start
                                 BoardButton[add].putClientProperty("BoardTarget",BoardButton[add-1].getClientProperty("BoardTarget"));
-                                BoardButton[add].setText(BoardButton[add-1].getText());
-                                BoardText[add]=BoardText[add-1];
+                                BoardButton[add].setText(BoardButton[add-1].getText());  //^^^^this is what not initializing it would glitch
+                                BoardText[add]=BoardText[add-1];                         //it would try to get a property that does not exist.
                                 LivesText[add]=LivesText[add-1];
                                 TimeText[add]=TimeText[add-1];
                             }
-                        }//place our board at start
+                        }//now place our board at start
                         BoardButton[0].putClientProperty("BoardTarget", entries[c]);
                         BoardButton[0].setText(Shtml+SHL+finalBoardDisplayString+EHL+Ehtml);
                         BoardText[0] = Shtml+SHL+finalBoardDisplayString+EHL+Ehtml;
@@ -328,16 +332,16 @@ public class ScoresWindow extends JFrame {
                         LivesText[c] = Shtml+((entries[c].getRemainingLives()==0)?"DIED AT":entries[c].getRemainingLives())+Ehtml;
                         TimeText[c] = Shtml+Long.toString(entries[c].getTime()/1000)+Ehtml;
                     }
-                } else {
-                    BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());//<--assign an empty one in case we try to do isValid and it crashes
+                } else {//invalid entry?
+                    BoardButton[c].putClientProperty("BoardTarget", new ScoreEntry());//<--assign an empty one in case we try to do isValid and it crashes somehow
                     BoardButton[c].setText("entry");
                     BoardText[c] = "entry";
                     LivesText[c] = "is";
                     TimeText[c] = "invalid";
                 }
             }
-            BoardLabel = new JLabel[entries.length];//initialize all the labels and button 
-            JLabel[] LivesLabel = new JLabel[entries.length];//properties that we didnt need to add during read.
+            BoardLabel = new JLabel[entries.length];//initialize all the labels and button properties
+            JLabel[] LivesLabel = new JLabel[entries.length];//that we didnt need to add during read.
             JLabel[] TimeLabel = new JLabel[entries.length];
             for(int i=0; i<entries.length; i++){
                 BoardButton[i].setMargin(new Insets(-1, 0, -1, 0));
@@ -350,14 +354,33 @@ public class ScoresWindow extends JFrame {
                 LivesLabel[i].setBorder(new EmptyBorder(0, 0, 0, 0));
                 TimeLabel[i] = new JLabel(TimeText[i]);
                 TimeLabel[i].setBorder(new EmptyBorder(0, 0, 0, 10));
-                if(clickable){//then add correct ones to panel
+                LivesPanel.add(LivesLabel[i]);//<-- add LivesLabel[i] to panel
+                TimePanel.add(TimeLabel[i]);//<----  add TimeLabel[i] to panel
+                if(clickable){//<--    add correct board button/label to panel
                     BoardPanel.add(BoardButton[i]);
                 }else{
                     BoardPanel.add(BoardLabel[i]);
                 }
-                LivesPanel.add(LivesLabel[i]);
-                TimePanel.add(TimeLabel[i]);
+
             }
         }
     }
 }
+/*
+    What do you think? 
+    Could you envision how to break down something you would like to make, into component parts like this?
+    Staring at a blank page is very hard. But with a semi decent plan, you can start, and make it better later.
+    Errors are good. They tell you what went wrong. Stuff working, but not the way you want is harder.
+
+    On that note, could you debug my toggle dark mode button? The button is in help window. 
+    The function is in Grid and it only does weird stuff on game over screen.
+    I never use it (I made it how I like it already) so I wasn't planning on improving it myself, but its great practice for you!
+    If you get it working you could add it to the main game window buttons too!
+    This would involve creating a new function you make that changes the buttons of the main game window.
+    And then making sure it can see your buttons.
+    And then place a call to it inside the function that is called when the toggle button is pressed. The info was on the way to grid anyway so it exists.
+    You can't easily mess up game logic in that function, just if the button changes the display correctly, so its the perfect candidate.
+    The game is designed like that as much as possible, where changing stuff shouldnt change stuff you wouldnt expect it to change.
+
+    Good Luck!!
+*/

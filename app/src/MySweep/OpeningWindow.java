@@ -30,13 +30,14 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     private JButton Start = new JButton("Start!");//<-- the start button!
     private JButton ScoreBoard = new JButton();//<-- user can press these
     private JButton HelpWindow = new JButton();
-    private JLabel LifeFieldLabel = new JLabel();//<-- these JLabels display stuff
+    private JLabel LifeFieldLabel = new JLabel();//<-- these JLabels will display stuff
     private JLabel WidthFieldLabel = new JLabel();
     private JLabel HeightFieldLabel = new JLabel();
     private JLabel BombFieldLabel = new JLabel();
     private JLabel TitleLabel = new JLabel();
     private JLabel AuthorLabel = new JLabel();
     //-----------------------------------------Constructors----------------------------------------------------------
+    //notice a constructor just looks like a function, but it has the same name as the class
     public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//called by scores window
         WidthField = new JTextField(initialx);
         HeightField = new JTextField(initialy);//<-- these just allow us to pre populate the fields while we create the buttons to go in the variables.
@@ -44,6 +45,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         LivesNumber = new JTextField(initiallives);
         initComponents();
     }
+    //it also has no return type (because it always returns an instance of this class.)
     public OpeningWindow() {//called by the rest
         WidthField = new JTextField();
         HeightField = new JTextField();//<-- initialize them without pre populated text instead
@@ -51,6 +53,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         LivesNumber = new JTextField();
         initComponents();
     }//--------------------------------and then our functions!---------------------------------------------------------------------------
+
     //-------------------------------------------------Start Action Performed---called by action listener on start button-------------------
     private void StartActionPerformed() {//this function runs MainGameWindow, performs error checking and displays errors
         try{
@@ -76,6 +79,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             TitleLabel.setText("Invalid field(s)");//<-- if an error, tell the user their input was too stringy
         }
     } 
+    
     //Yeah but where is the stuff located and what does it look like though? I thought this was a window? Or, a JFrame, or whatever?
     //---------------------------------initComponents()-----called by constructor-----------------------------------------------------------------
     private void initComponents() {
@@ -106,9 +110,9 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                     public void run() {
                         new instructionsWindow().setVisible(true);
                     }
-                });
+                });//<-- see?
             }
-        });
+        });//<-- 2 of them!
         KeyAdapter keyAdapter = new KeyAdapter() {//this one is not an anonymous class. It is called keyAdapter and it is a KeyAdapter.
             public void keyPressed(KeyEvent evt) {//It is a listener though. and an interface.
                 // Check if the Enter key is pressed
@@ -116,16 +120,17 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                     // get focused component source
                     Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
                     if(!(CurrComp instanceof JButton)){//<-- instanceof tells us if a variable is an instance of a certain class (it returns null if nothing is assigned to the variable)
-                        StartActionPerformed();//^make it so that enter on a field starts the game too
-                    }else {
+                                      //^this comparison makes it so that enter on a field starts the game too
+                        StartActionPerformed();//<-- and here is where we say to start the start if it was a text field
+                    }else {               //else,
                         ((JButton)CurrComp).doClick();//<-- doClick() does exactly what it sounds like
                     }
                 }//It gives us enter key functionality!
-            }    //the focusable component property is on by default unless you turn it off in this library.
-        };
-        Start.addKeyListener(keyAdapter);//<-- if you dont add listeners directly (anonymously) 
-        ScoreBoard.addKeyListener(keyAdapter);//<-you have to add them to the components you want later like this
-        WidthField.addKeyListener(keyAdapter);
+            }    //the tab focusable component property is on by default unless you turn it off in this library.
+        };       //so we just need to process the enter action.
+        Start.addKeyListener(keyAdapter);
+        ScoreBoard.addKeyListener(keyAdapter);//<-- if you dont add listeners directly (anonymously) 
+        WidthField.addKeyListener(keyAdapter);//<-you have to add them to the components you want later like this
         HeightField.addKeyListener(keyAdapter);
         BombNumber.addKeyListener(keyAdapter);
         LivesNumber.addKeyListener(keyAdapter);
@@ -261,4 +266,5 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         pack();//<-- this pack(); causes it to evaluate sizes and paint the contents of the pane
         getContentPane().setVisible(true);//<-- then this displays the pane
     }
+    //made it to the end? time for main game window!
 }

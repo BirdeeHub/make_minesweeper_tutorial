@@ -3,9 +3,9 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 class Minefield{//a data class for Grid. contains and manages all mutable game-state variables, it is more disposable than grid to allow easy reset of timer and board
-    private boolean[][] cell, chkd, mrk, exp, qstn;    //initialization of variables. these are 2D arrays. (or, arrays of arrays)
-    private int[][] adj;
-    private int Fieldx, Fieldy, bombCount;
+    private boolean[][] cell, chkd, mrk, exp, qstn;    //<-- initialization of variables. these are 2D arrays. (or, arrays of arrays)
+    private int[][] adj;//<-- this is also a 2d array but of numbers rather than true or false values
+    private int Fieldx, Fieldy, bombCount;//<-- size of field and number of bombs
     private int totalExploded = 0;
     private int totalChecked = 0;
     private int totalMarked = 0;
@@ -16,8 +16,8 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     private final Timer currentTimeTimer = new Timer();
     private TimerTask timeTask = new TimerTask() {
         public void run() {
-            time = System.currentTimeMillis()-startTime;//dont add a time format here. This gets saved to scores file
-        }//                                                                           It may not compare for highscore correctly after doing that
+            time = System.currentTimeMillis()-startTime;//<-- dont add a time format here. This gets saved to scores file
+        }//                                                                           It may not compare for highscore correctly if you that
     };
     //----------Constructor---------------------------------
     Minefield(int w, int h, int bombCount){
@@ -31,10 +31,11 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         exp  = new boolean[Fieldx][Fieldy];
         qstn = new boolean[Fieldx][Fieldy];
     }
-    //----------Reset Function-----------MANDATORY---------------Reset Function------------------Reset Function-------------
-    void reset(int a, int b){//THIS MUST BE CALLED BEFORE REFERENCING MINEFIELD CLASS IF YOU WANT IT TO WORK (I call it on first click)
+    //----------initBoardForFirstClickAt-----------MANDATORY---------------initBoardForFirstClickAt------------------initBoardForFirstClickAt-------------
+    void initBoardForFirstClickAt(int a, int b){//THIS MUST BE CALLED BEFORE REFERENCING MINEFIELD CLASS IF YOU WANT IT TO WORK
+        //if you dont call this, everything will return as null.
         //This cannot place a bomb that would cause AdjCount(a,b) to become >0 unless that is impossible
-        //the big multiline if statements exist to make sure that it does not loop forever if there are not enough available squares to place bombs.
+        //the big multi-line if statements exist to make sure that it does not loop forever if there are not enough available squares to place bombs.
         totalMarked = 0;//initialize variables
         totalChecked = 0;
         totalExploded = 0;

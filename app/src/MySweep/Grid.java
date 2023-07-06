@@ -34,34 +34,40 @@ public class Grid extends JPanel {
     private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
     private final Color QSTNMARKCOLOR = new Color(133, 95, 227);//<-- question mark color
     private final Color MARKCOLOR = new Color(255,0,0);//<-- color of marks
-    private final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors 2
+    private final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors 2 bombs
     private final Color BORDERORANGE = new Color(255, 160, 0);//<-- 3
     private final Color BORDERORANGERED = new Color(255,95,0);//<-- 4
-    private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
+    private final Color BORDERRED = new Color(255,0,0);//<-- higher
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
-    private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window. making this false would change the default setting)
     //--------------------get custom image files----------------------------------------------
-    private final boolean inAJar = MineSweeper.isJarFile();//<-- are we running from a .jar? (had to do this to detect if running from an IDE)
-    //getResource is a way to retrieve data from our .jar file we are running from.
-    private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
+    private final boolean inAJar = MineSweeper.isJarFile();//<-- remember this public static function from MineSweeper at the start?
+    //^^^ are we running from a .jar? (I had to do this to detect if running from an IDE because that changes the path to the icon)
+    //getClass().getResource is a way to retrieve data from the file path we are running from.
+    private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"")/*<-- if in a jar add "/src/MySweep/" */ + "Icons/GameOverExplosion.png")).getImage();
     private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
-    private final int Fieldx, Fieldy, bombCount, lives;//<-- the size of board and how many bombs and lives
-    private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
-    private int GameOverMessageIndex = 3;//<-- 3 is the "off" state
-    private int wonValue = 3;//<-- 3 is the "off" state
-    private int BombsFound = 0;//<-- just the number of how many marks you have placed
-    private int livesLeft = 0;
-    private Minefield answers;//<-- this one is the data class for game logic. Once you read through the constructor of this one, read that one.
 
-    //--------------------------------------you can initialize other classes within classes if required.
-    //-----------------------------------CellButton();-----------------------------------------CellButton();-----------------------------------------
+    private final int Fieldx, Fieldy, bombCount, lives;//<-- the size of board and how many bombs and lives
+
+    private Minefield answers;//<-- this one is the data class for game logic. Once you read up through the constructor of this Grid class, read that file.
+
+    //MainGameWindow gets these from functions defined here later
+    private int GameOverMessageIndex = -1;//<-- -1 is the "off" state of this variable (later set in game over function)
+    private int wonValue = -1;//<-- -1 is the "off" state. same deal.
+    private int BombsFound = 0;//<-- just the number of how many marks you have placed. 
+    private int livesLeft = 0;//<-- just the number of how many lives you have left. MainGameWindow gets this from a function
+    private boolean DarkMode = true;//<-- starts in DarkMode by default.(toggle button in help window. making this false would change the default setting)
+    private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
+
+    //--------------------------you can initialize other classes within classes if required.--------------------------------------------------------
+    //--------------------------this one is private. Things outside of grid just think it is a JButton. But here, we know.--------------------------
+    //--------------------------CellButton();-----------------------------------------CellButton();-------------------------------------------------
     private class CellButton extends JButton {//<-- these are our game board buttons. This class was created to allow the 
         private int borderWeight = 1;         //^setting of color and thickness of cell borders, now it knows where it is.
         private Color borderColor = defaultBorderColor;//<--default color not defined inside cellbutton class because that would mean creating a new color for each button, which is expensive.
         private int x, y;//<-- it knows where it is
-        private boolean dynamicWidth=false;// and if its border width should adjust based on size
+        private boolean dynamicWidth=false;//<-- and if its border width should adjust based on size
         public CellButton() {//<------------- Constructor
             this.setHorizontalAlignment(SwingConstants.CENTER);
             this.setVerticalAlignment(SwingConstants.CENTER);//Initialize our cell button properties other than font size (which is done after packing layout)
@@ -70,7 +76,7 @@ public class Grid extends JPanel {
         }
         //functions!
         public void setBorderColor(Color borderColor, int borderWeight) {
-            this.borderColor = borderColor;// "this.something" allows us to refer to 'something' belonging to 'this' instance of the class
+            this.borderColor = borderColor;//<-- "this.something" allows us to refer to 'something' belonging to 'this' instance of the class
             this.borderWeight = borderWeight;
         }
         public void setDynamicBorderWidth(boolean value){
@@ -163,32 +169,11 @@ public class Grid extends JPanel {
             }
         }
     }
-    boolean isDarkMode(){return DarkMode;}//<-- this is a function
-    //Im not sure why I have the dark mode toggle. Its kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
-    void toggleDarkMode(){//<-- and so is this
-        this.DarkMode = !DarkMode;
-        for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {
-                if(!answers.exploded(x, y) && (!answers.checked(x, y)||answers.adjCount(x, y)>0)){//these are the 2 conditions in which i set background
-                    //                                                                            ^so i check to prevent overwriting it
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
-                    }else{
-                        getButtonAt(x,y).setBackground(null);
-                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
-                    }
-                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
-                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
-                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
-                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
-            }
-        }
-        Grid.this.repaint();
-    }
     void ResetBoard(){//<-- for when you want new but not like, new new. Just like, sorta new. Refreshed.
         BombsFound = 0;
         livesLeft = lives;//reset stuff for main game window displays
-        GameOverMessageIndex = 3;
-        wonValue = 3;
+        GameOverMessageIndex = -1;
+        wonValue = -1;
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- get a new minefield, thus resetting the timer and everything else
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {// and then reset appearances of cellbuttons
@@ -205,10 +190,46 @@ public class Grid extends JPanel {
                 }
             }
         }
-        Grid.this.repaint();//repaint so that it actually repaints at a time that makes sense rather than just like... later.
+        Grid.this.repaint();//<-- repaint so that it actually repaints at a time that makes sense rather than just like... later.
     }
-    int[] doZoom(int rotation, int mouseX1, int mouseY1){//it makes the cells bigger. The main window is in a scroll pane. does not set font
-        Dimension currentCellSize = Grid.this.getComponent(0).getSize();
+    void setCellFontSize(){//<-- call this from main window after pack or resize to get correct component size before font size.
+        int cellHeight = Grid.this.getComponent(0).getHeight();
+        int FontSize = cellHeight- 1;
+        if(cellHeight>18)FontSize=18;
+        Font newFont = new Font("Tahoma", 0, FontSize);
+        for(int x = 0; x < Fieldx; x++)for(int y = 0; y < Fieldy; y++){//<-- more nested for loops. Everything is a grid haha
+            getButtonAt(x,y).setFont(newFont);
+        }
+    }
+
+    //----------------you can skip these next 3 functions for now.-----------------------------------------------------
+
+    boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
+
+    //Its kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
+    //You could probably fix this by the end of reading these game files.
+    void toggleDarkMode(){//<-- this toggles it for the board.
+        this.DarkMode = !DarkMode;
+        for (int x = 0; x < Fieldx; x++) {
+            for (int y = 0; y < Fieldy; y++) {
+                if(!answers.exploded(x, y) && (!answers.checked(x, y)||answers.adjCount(x, y)>0)){//<- these are the 2 conditions in which i set background 
+                    //                                                                            ^during game so i check to prevent overwriting it
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    }else{
+                        getButtonAt(x,y).setBackground(null);
+                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
+                    }
+                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
+                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
+                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
+            }
+        }
+        Grid.this.repaint();
+    }
+    //this is called from the zoom listener in main game window
+    int[] doZoom(int rotation, int mouseX1, int mouseY1){//<-- it makes the cells bigger. The main window is in a scroll pane. does not set font
+        Dimension currentCellSize = Grid.this.getComponent(0).getSize();//get the first buttons size (theyre all the same)
         Dimension newCellSize = new Dimension(currentCellSize.width + rotation, currentCellSize.height + rotation);
         for (int i = 0; i < Fieldx; i++) {//apply the new sizes
             for (int j = 0; j < Fieldy; j++) {
@@ -222,40 +243,34 @@ public class Grid extends JPanel {
         gridSizesOldNew[3] = (newCellSize.height*Fieldy);
         return gridSizesOldNew;
     }
-    void setCellFontSize(){//<-- call this from main window after pack or resize to get correct component size before font size.
-        int cellHeight = Grid.this.getComponent(0).getHeight();
-        int FontSize = cellHeight- 1;
-        if(cellHeight>18)FontSize=18;
-        Font newFont = new Font("Tahoma", 0, FontSize);
-        for(int x = 0; x < Fieldx; x++)for(int y = 0; y < Fieldy; y++){//<-- more nested for loops. Everything is a grid haha
-            getButtonAt(x,y).setFont(newFont);
-        }
-    }
+
+//----------------------------------------and then start reading again here-----------------------------------------------------------------------------
 //----GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW-------GAME-LOGIC-BELOW----------
 //--------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler------
-    public void doClickType(JButton clickedButton, int clickType) {//<-- runs the correct click type. called from listener
-        CellButton clickedCell = (CellButton)clickedButton;//<-- since listener was only added to cellbuttons, we know we can cast it as cellbuttons
-        if(clickType==0){
-            regularClick(clickedCell);//                      and cellbuttons know where they are!
-        }else if(clickType==1){
-            markCell(clickedCell);
+    public void doClickType(JButton clickedButton, int clickType) {//<-- runs the correct click type. Called from listener
+        CellButton clickedCell = (CellButton)clickedButton;//<-- since listener was only added to cellbuttons, we know we can cast it as a cellbutton
+        if(clickType==0){//       and cellbuttons know where they are! CellButton is a private class though. 
+            regularClick(clickedCell);//This means MainGameWindow just thinks it's a JButton
+        }else if(clickType==1){//<-- for each click type
+            markCell(clickedCell);//<-- pass the CellButton to the correct click function.
         }else if(clickType==2){
             playChord(clickedCell);
         }
     }
-//-----------END OF PUBLIC FUNCTIONS------------------------END OF PUBLIC FUNCTIONS------------------------END OF PUBLIC FUNCTIONS-----------------------
+//-----------END OF PUBLIC FUNCTIONS------------------------THESE ARE CALLED BY CLICK HANDLER---------------END OF PUBLIC FUNCTIONS-----------------------
 //-----------MAIN CELL CLICKED FUNCTIONS-----------------MAIN CELL CLICKED FUNCTIONS----------MAIN CELL CLICKED FUNCTIONS--------------------------------
     private void regularClick(CellButton current){//---------regularClick()--------regularClick()--------regularClick()--------regularClick()----
         int xValue = current.getXcoord();//<-- get the cellbutton's stored location
         int yValue = current.getYcoord();
-        if(!answers.isGameOver()){
-            if (answers.isFirstClick()) {
-                answers.reset(xValue,yValue);//if possible, answers.adjCount(clickedX,clickedY) == 0 on the first click. also initializes field data.
-                answers.doFirstClick();
+        if(!answers.isGameOver()){//<-- if game not over already
+            if (answers.isFirstClick()) {//<-- if it was the first click
+                answers.initBoardForFirstClickAt(xValue,yValue);//if possible, answers.adjCount(clickedX,clickedY) == 0 on the first click. also initializes field data.
+                answers.doFirstClick();//<-- starts the timer
             }
+            //was it a clickable cell?
             if (!answers.exploded(xValue,yValue) && !answers.checked(xValue,yValue) && !answers.marked(xValue,yValue) && !answers.isQuestionable(xValue,yValue)) {
-                if (answers.isBomb(xValue, yValue)) {//was it a bomb?                           ^was it a clickable cell?
-                    answers.explode(xValue,yValue);//it was a bomb...
+                if (answers.isBomb(xValue, yValue)) {//<-- was it a bomb?
+                    answers.explode(xValue,yValue);//<-- it was a bomb... explode it.
                     if(answers.cellsExploded()>=lives){//RIP
                         current.setText("!");
                         current.setBackground(RED);
@@ -269,11 +284,13 @@ public class Grid extends JPanel {
                         BombsFound = answers.cellsMarked()+answers.cellsExploded();//<-- I mean, you found the bomb so....
                     }
                     livesLeft = lives-answers.cellsExploded();//<-- set the variable used for setting lives display because you lost one
+
                 } else if (answers.adjCount(xValue, yValue) != 0) {//*whew*.... close one. Clicked a number.
                     current.setText(String.valueOf(answers.adjCount(xValue, yValue)));
                     current.setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     answers.check(xValue, yValue);
                     setBorderBasedOnAdj(xValue, yValue);
+
                 } else {                           //else you clicked a 0
                     boolean[][] prechekd=new boolean[Fieldx][Fieldy];//saving current checks so we know which ones fillzeroes flipped
                     for(int j=0;j<Fieldx;j++){
@@ -299,11 +316,11 @@ public class Grid extends JPanel {
         int yValue = current.getYcoord();
         if (!answers.isGameOver() && !answers.isFirstClick()) {//<-- if game is in progress
             if (!answers.exploded(xValue,yValue) && !answers.checked(xValue,yValue) && !answers.isFirstClick()){//<-- if its a markable cell
-                if(!answers.marked(xValue,yValue) && !answers.isQuestionable(xValue, yValue)) {//if not already marked or questionable
+                if(!answers.marked(xValue,yValue) && !answers.isQuestionable(xValue, yValue)) {//<-- if not already marked or questionable
                     answers.mark(xValue,yValue);
                     current.setForeground(MARKCOLOR);
                     current.setText("X");
-                } else if (answers.marked(xValue,yValue) && !cancelQuestionMarks) {//if marked and not questionable
+                } else if (answers.marked(xValue,yValue) && !cancelQuestionMarks) {//<-- if marked and not questionable
                     answers.unmark(xValue,yValue);
                     answers.question(xValue,yValue);
                     current.setForeground(QSTNMARKCOLOR);
@@ -326,7 +343,7 @@ public class Grid extends JPanel {
             if(answers.checked(a, b) && answers.adjCount(a, b)!=0){//<-- if it was a revealed number
                 for(int i=a-1;i<=a+1;i++){//go through neighbors
                     for(int j=b-1;j<=b+1;j++){
-                        if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;
+                        if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;//<-- if not a valid cell, skip to next iteration
                         if(answers.marked(i, j))adjMarked++;//<-- this counts the number of marked cells adjacent for penalty if too many are marked
                         if(!answers.exploded(i, j)&&!answers.marked(i, j)){//<-- if not exploded or marked (does not include !isQuesionable(x,y))
                             if(answers.isBomb(i, j)){//<-- then check this before checking !isQuestionable(x,y)
@@ -334,13 +351,13 @@ public class Grid extends JPanel {
                                 getButtonAt(i,j).setBackground(RED);
                                 getButtonAt(i,j).setForeground(CYAN);
                                 getButtonAt(i,j).setText(Integer.toString(answers.cellsExploded()));
-                            }else if(!answers.isQuestionable(i, j)){//<-- after this else is our logic for numbered cells and 0s 
-                                if (answers.adjCount(i, j) != 0) {//adjCount>0
+                            }else if(!answers.isQuestionable(i, j)){//<-- after this else is our logic for numbered cells and 0s. Notice we checked if bomb first.
+                                if (answers.adjCount(i, j) != 0) {//<-- adjCount>0?
                                     getButtonAt(i,j).setText(String.valueOf(answers.adjCount(i, j)));
                                     getButtonAt(i,j).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                                     answers.check(i, j);
                                     setBorderBasedOnAdj(i, j);
-                                } else {                           //you hit a 0
+                                } else {                           //<-- you hit a 0
                                     boolean[][] prechekd=new boolean[Fieldx][Fieldy];//saving current checks so we know which ones fillzeroes flipped
                                     for(int x=0;x<Fieldx;x++){
                                         for(int y=0;y<Fieldy;y++){
@@ -357,17 +374,17 @@ public class Grid extends JPanel {
                 }
             }
             if(adjMarked>answers.adjCount(a, b)){//if you marked too many, there is a penalty
-                int penalty = adjMarked-answers.adjCount(a, b);
-                for(int i=a-1;i<=a+1;i++){
+                int penalty = adjMarked-answers.adjCount(a, b);//<-- calculate the penalty
+                for(int i=a-1;i<=a+1;i++){//go through neighbors
                     for(int j=b-1;j<=b+1;j++){
                         if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;
-                        if(penalty>0&&answers.marked(i, j)&&answers.isBomb(i, j)&&!answers.exploded(i, j)){
-                                answers.unmark(i, j);
-                                answers.explode(i, j);
+                        if(penalty>0&&answers.marked(i, j)&&answers.isBomb(i, j)&&!answers.exploded(i, j)){//if you marked a bomb correctly and still have penalties to give
+                                answers.unmark(i, j);//unmark it
+                                answers.explode(i, j);//then explode it
                                 getButtonAt(i,j).setBackground(RED);
                                 getButtonAt(i,j).setForeground(CYAN);
                                 getButtonAt(i,j).setText(Integer.toString(answers.cellsExploded()));
-                                penalty--;
+                                penalty--;//decrement penalty by 1
                         }
                     }
                 }
@@ -392,15 +409,18 @@ public class Grid extends JPanel {
     //------------------------------------------fillZeroes()-------------------------------------------------
     private void fillZeroes(int xValue, int yValue) {//-----------fillZeroes()------------------------------------------------------------------
         Stack<Integer> stack = new Stack<>();//<-- a stack must be used instead of recursion because large board sizes cause stack overflow.
-        //google recursion stack overflow java. Now, to explain the thing used to get the button at a place:
-        stack.push(yValue * Fieldx + xValue);//make single value out of x and y and put it on top of the stack
+        //google recursion stack overflow java. 
+        //Now, to explain the thing used to get the button at a place:
+        stack.push(yValue * Fieldx + xValue);//<-- make single value out of x and y and put it on top of the stack
         //i did it in this order y then x because thats the same as getButtonAt, which is the same as getComponent(position)
         while (!stack.isEmpty()) {//<-- while we have a number on the stack
             int position = stack.pop();//<-- take it off the stack and read its position number
-            int y = position / Fieldx;//<-- integer division drops stuff after decimal so the remainder which is xValue is not included. y*Fieldx/Fieldx==y
+            int y = position / Fieldx;//<-- this is equivalent to y*Fieldx/Fieldx, which is equal to y
+            //                     ^this is because integer division drops stuff after decimal point so the remainder (which is xValue) is not included. 
             int x = position % Fieldx;//<-- remainder==x   ...   and thats it. Integer division will ignore the thing you add.
             //another thing to note about this is that x will always be the remainder because indexes start at 0, but length does not.
-            //length is the length and is 1 more than the highest index. 
+            //length is the length and is 1 more than the highest index, so x will always be the remainder, because it is less than Fieldx
+            
             //Now, for what we do with that while within this loop:
             if (!answers.checked(x, y)) {//<-- since this will unfortunately branch and call multiple times per 0 cell because it checks all neighbors each time
                 answers.check(x, y);//<--check this button                    ^^^make sure we dont re-call our loops on already checked squares
@@ -431,7 +451,7 @@ public class Grid extends JPanel {
     //-----------------------------------------------------markLonelyBombs()----------------------------------------------------------------
     private void markLonelyBombs(boolean[][] prechekd){//I didnt want to click on all the lone bombs on big boards in order to
         for (int j = 0; j < Fieldx; j++) {             //make the count of marked bombs actually useful
-            for (int k = 0; k < Fieldy; k++) {//go through the board
+            for (int k = 0; k < Fieldy; k++) {//<-- go through the board
                 if(answers.isBomb(j, k)){//<-- check for "is bomb"
                     boolean dqed = true;//<--initialize stuff we will use to count stuff
                     int totalneighbors = 0;
@@ -444,7 +464,7 @@ public class Grid extends JPanel {
                             }//                   ^^^ condition would mean fillzeroes just revealed it and adj count was 1 so add 1
                         }
                     }
-                    if(totalneighbors==meetsConditions)dqed=false;//fillzeroes revealed all neighbors and all were 1.
+                    if(totalneighbors==meetsConditions)dqed=false;//fillzeroes revealed all neighbors and all were 1. It was a lonely bomb.
                     if(!dqed){//<-- if it was a lonely bomb
                         answers.mark(j,k); //If so, mark the lonely bomb.
                         getButtonAt(j,k).setForeground(MARKCOLOR);
@@ -476,8 +496,8 @@ public class Grid extends JPanel {
         //we have to define the image to the size of the button or it will resize the board
         ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
-            for (int j = 0; j < Fieldy; j++) {
+        for (int i = 0; i < Fieldx; i++) {//            reveal bombs on board
+            for (int j = 0; j < Fieldy; j++) {//<-- check for bombs
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {//<-- if it should be revealed
                     if (won == false){//<-- should they explode?
                         if(answers.marked(i,j)){
@@ -494,7 +514,7 @@ public class Grid extends JPanel {
                         getButtonAt(i,j).setIcon(RVLiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }
-                    getButtonAt(i,j).setText("");//<-- remove text from the button
+                    getButtonAt(i,j).setText("");//<-- any remove text from the button
                     answers.check(i,j);//<-- check the revealed bomb in a failed attempt to make it so you cant mess it up by toggling dark mode
                 }
             }

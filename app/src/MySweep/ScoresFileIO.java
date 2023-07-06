@@ -21,12 +21,13 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
             scoresFileName = scoresFileNameOther;
         }
     }
+    // it helps to have ScoreEntry open for reference sometimes in this class but it is not necessary
     //----------------------------------WRITE------------------------------------------------------WRITE-------------------------------------------
-    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){//writes from Score Entries to file
-        StringBuilder scoresFileString = new StringBuilder();// create string from entries
-        if(append)scoresFileString.append(" ");
-        for(int i = 0; i < allEntries.length; i++){
-            scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function
+    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){// writes from Score Entries to file
+        StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
+        if(append)scoresFileString.append(" ");//<-- make sure theres at least one space to separate it from the other scores
+        for(int i = 0; i < allEntries.length; i++){//<-- for all the entries
+            scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function. arrays dont.
         }
         //-------------------------write string----------------------write string-------------
         try {
@@ -36,27 +37,27 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
             Files.createFile(Path.of(scoresFileName));//<-- Create the file if not created.
         }catch(IOException e){if(!(e instanceof FileAlreadyExistsException))System.out.println(e.getClass()+" @ "+scoresFileName);}
 
-        try (FileWriter out2 = new FileWriter(scoresFileName, append)) {
-            out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
+        try (FileWriter out2 = new FileWriter(scoresFileName, append)) {//<-- filewriters can overwrite or append a string to a file
+            out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
         }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
     }
     //-----------------------------------READ-------------------------------------READ----------------------------------------------------------------
     public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
-        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();//Array lists also have a good append function.
+        ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();//<-- Array lists also have a good append function.
         ScoreEntry[] fileEntries;
-        try(Scanner in = new Scanner(new File(scoresFileName))) {
-            while (in.hasNext()) {
-                ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
+        try(Scanner in = new Scanner(new File(scoresFileName))) {//scanner class reads words from a file to strings (separated by whitespace) 
+            while (in.hasNext()) {//<-- while theres still something in the file
+                ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (a string separated by whitespace)
                 if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
             }
-            fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
+            fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);//<-- return our array of entries
         }catch(FileNotFoundException e){
             fileEntries=null; 
             System.out.println(e.getClass()+" @ "+scoresFileName);
         }
         return fileEntries;
     }
-    //--------------------------------------------Everything below here uses only ScoreEntries to do its work---and uses read and write---------------
+    //---------------------------------Everything below here uses only ScoreEntries to do its work---and uses read and write---------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work------------deleteScoreEntry----------------------
     public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read
@@ -80,7 +81,7 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
         int RemainingLives= Math.max(0, lives-cellsExploded);
         ScoreEntry thisEntry = new ScoreEntry(Fieldx,Fieldy,bombCount,lives,RemainingLives,time);
         if(thisEntry.isValid()){
-            ScoreEntry[] entries = readLeaderboard();
+            ScoreEntry[] entries = readLeaderboard();//<-- get our score entries
             if(entries == null){//<-- file not found
                 entries = new ScoreEntry[1];
                 entries[0] = thisEntry;
@@ -126,3 +127,8 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
         return 0;//<-- board size was found, score was not better.
     }
 }
+//And that is how we do some basic file operations, and also how to use a score entry.
+// if you have not read ScoreEntry yet, read that now.
+// else read ScoresWindow
+//Then you're done!
+// after that you can check out instructions window if you want but its boring.
