@@ -4,6 +4,7 @@
     But a computer will never understand english. A computer is not able to understand anything.
     Too stupid. I get zap, I turn switch on. I dont get zap, I turn switch off. Passive.
     The hard part is writing instructions that something so stupid can follow.
+    The other hard part is getting data to be visible where it needs to be.
     When I say Computers Know, what I mean is, someone has created a set of instructions we can use to tell the computer what to do
     except, without pulling our hair out trying to make sense of 00010101 00111001 010110101011111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 Stack Overflow Error
 

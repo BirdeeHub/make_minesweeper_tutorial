@@ -43,7 +43,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         for(int j=0;j<Fieldx;j++){//<-- with 2 nested for loops you can step through each entry of a 2D array
             for(int k=0;k<Fieldy;k++){
                 chkd[j][k]=false;//<-- initialize each of these to false
-                mrk[j][k]=false;
+                mrk[j][k]=false;//<-- otherwise they would be null and I might get an error somewhere.
                 exp[j][k]=false;
                 cell[j][k]=false;
                 qstn[j][k]=false;

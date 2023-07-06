@@ -40,18 +40,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private final Color PURPLE = new Color(58, 0, 82);//<-- these variables are final, meaning I cant assign a new thing to them.
     private final Color GREEN = new Color(0, 255, 0);
     private final Dimension DefaultWindowSize = new Dimension(830, 830);
-    private JLabel timeDisplay = new JLabel();//<-- this one isnt final because im going to be changing it regularly in order to:
-    private final Timer displayTimer = new Timer();//<-- Create Timer Displayer (the actual timer is in minefield)
-    private final TimerTask timeDisplayTask = new TimerTask() {//<-- this is added to displayTimer in constructor to start the time display
-        public void run() {//<-- it does this every x number of milliseconds
-            long time = grid.getTime();//<-- returns -1 if game has not yet started
-            if(time == -1){//<-- If no game started
-                timeDisplay.setText("");//<-- set text to nothing
-            }else{
-                timeDisplay.setText(Long.toString(time/1000));//<-- if you want to add a time format you can do that here. time variable is in milliseconds
-            } //we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
-        }//the actual time we save from is in Minefield. it has a 200ms refresh rate which is quite close to the system one. 
-    };
+
     private JLabel GameOverDisplay = new JLabel();//our other 3 display labels and functions to set them.
     private JLabel BombsFoundDisplay = new JLabel();
     private JLabel livesLostDisplay = new JLabel();
@@ -77,9 +66,21 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
             GameOverDisplay.setText("");
         }
     }
+    private JLabel timeDisplay = new JLabel();//<-- create thing to display our timer
+    private final Timer displayTimer = new Timer();//<-- Create Timer Displayer (the actual timer is in minefield)
+    private final TimerTask timeDisplayTask = new TimerTask() {//<-- this is added to displayTimer in constructor to start the time display
+        public void run() {//<-- it does this every x number of milliseconds
+            long time = grid.getTime();//<-- returns -1 if game has not yet started
+            if(time == -1){//<-- If no game started
+                timeDisplay.setText("");//<-- set text to nothing
+            }else{
+                timeDisplay.setText(Long.toString(time/1000));//<-- if you want to add a time format you can do that here. time variable is in milliseconds
+            } //we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
+        }//the actual time we save from is in Minefield. it has a 200ms refresh rate which is quite close to the system one. 
+    };
     //logic stuff for listeners and the variable to hold the game board
     private Grid grid;//<-- Game Board Class (action listeners not included, only a function to set them. we set them here with the rest.)
-    //things for listeners that needed to persistance across buttons or are used in different scopes
+    //things for listeners that needed persistance across buttons or are used in different scopes
     private JScrollPane scrollPane;
     private JToggleButton markToggle = new JToggleButton("Mark");
     private JToggleButton chordToggle = new JToggleButton("Chord");
@@ -112,13 +113,14 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
             public void mouseEntered(MouseEvent e){//<-- allows the 1.5 click trick by actually getting the component the mouse is over rather than just
                 currentButton=(JButton)e.getSource();// getting the component that fired the mousePressed and released actions which will always be the same
             }//     ^ this is because each Adapter is associated with a particular button, and contains both methods, so if one fires, then the release for that one will be the one that runs.
+            
             @Override                                  //dont worry too much if listeners are confusing for now.
             public void mousePressed(MouseEvent e) {//<-- you need to know that they can fire on things like mouse pressed
                 if(SwingUtilities.isLeftMouseButton(e)){// and how to search for how to write an event listener for a mouse or a key or whatever in a language
                     LMB = true;//<-- set our left mouse button variable true so that all the buttons can hear if the mouse was pressed
                     if(currentButton!=null){//<-- if mouse is over a button
                         if(chordToggle.isSelected()){
-                            grid.doClickType(currentButton, 2);//<-- in this case, we run do clicktype
+                            grid.doClickType(currentButton, 2);//<-- in this case, we run grid.doClickType 2 (a chord)
                         }else if(markToggle.isSelected()){
                             grid.doClickType(currentButton, 1);//mark
                         }else if(RMB){

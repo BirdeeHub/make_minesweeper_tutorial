@@ -43,7 +43,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         HeightField = new JTextField(initialy);//<-- these just allow us to pre populate the fields while we create the buttons to go in the variables.
         BombNumber = new JTextField(initialbombno);
         LivesNumber = new JTextField(initiallives);
-        initComponents();
+        initComponents();//<-- sets up our window components
     }
     //it also has no return type (because it always returns an instance of this class.)
     public OpeningWindow() {//called by the rest
@@ -56,6 +56,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
 
     //-------------------------------------------------Start Action Performed---called by action listener on start button-------------------
     private void StartActionPerformed() {//this function runs MainGameWindow, performs error checking and displays errors
+        //this next part is kinda like in MineSweeper class
         try{
             int width =(int)(Integer.parseInt(WidthField.getText()));//(int) makes sure it is read as an integer. This is called a cast.
             int height =(int)(Integer.parseInt(HeightField.getText()));//Integer.parseInt(String) converts strings to integers
@@ -64,7 +65,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             if(width*height<=bombCount||bombCount<0||lives<1||width<1||height<1){//<-- and here, we check if they are valid numbers for the game
                 if(lives<1)LifeFieldLabel.setText("no life");
                 if(width<1)WidthFieldLabel.setText("invalid width");//<-- and tell the user what they did wrong 
-                if(height<1)HeightFieldLabel.setText("invalid height");//  ^by setting the text of a label we already had
+                if(height<1)HeightFieldLabel.setText("invalid height");//  by setting the text of a label we already had
                 if(width*height<=bombCount)BombFieldLabel.setText("Space<Bombs");
                 if(bombCount<0)BombFieldLabel.setText("Bombs<0");//notice the if statement at the start of each.
                 return;//<-- return early, ending execution of the function, because input was bad.
@@ -74,7 +75,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                     new MainGameWindow(width,height,bombCount,lives).setVisible(true);//<-- start the game!
                 }
             });
-            OpeningWindow.this.dispose();
+            OpeningWindow.this.dispose();//<-- we dispose windows unless we want to close the whole program.
         }catch(NumberFormatException e){
             TitleLabel.setText("Invalid field(s)");//<-- if an error, tell the user their input was too stringy
         }
@@ -82,7 +83,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     
     //Yeah but where is the stuff located and what does it look like though? I thought this was a window? Or, a JFrame, or whatever?
     //---------------------------------initComponents()-----called by constructor-----------------------------------------------------------------
-    private void initComponents() {
+    private void initComponents() {//<-- a private function that doesnt return anything. It does stuff though.
         //--------------------------------------add action Listeners to components
         Start.addActionListener(new ActionListener() {//<-- our start button was clicked?
             public void actionPerformed(ActionEvent evt) {
@@ -113,7 +114,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                 });//<-- see?
             }
         });//<-- 2 of them!
-        KeyAdapter keyAdapter = new KeyAdapter() {//this one is not an anonymous class. It is called keyAdapter and it is a KeyAdapter.
+        KeyAdapter keyAdapter = new KeyAdapter() {//this one is not defined as an anonymous class. It is called keyAdapter and it is a KeyAdapter.
             public void keyPressed(KeyEvent evt) {//It is a listener though. and an interface.
                 // Check if the Enter key is pressed
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {

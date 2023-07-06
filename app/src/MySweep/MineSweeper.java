@@ -45,8 +45,10 @@ class MineSweeper {//<-- the start of our first class
                 height = (int)(Integer.parseInt(args[1]));//<-- each index in it corresponds to a string. This is the second item.
                 bombCount = (int)(Integer.parseInt(args[2]));//<-- Integer.parseInt(String) converts strings to integers
                 lives = (int)(Integer.parseInt(args[3]));//<-- (int) makes sure it is read as an integer. this is called a "cast"
+
                 if(width > 0 && height > 0 && bombCount > 0 && lives > 0){//<-- if you put in 4 positive numbers
                                                                             //then launch main game window with those numbers as input
+
                     EventQueue.invokeLater(new Runnable(){//<-- invoke later just well... it runs it later. not much later though.
                         public void run(){//(JFrames are initiated this way, and the window classes extend JFrame)
                             //(notice the "new" though? it is used to call a constructor for a class)
@@ -75,7 +77,7 @@ class MineSweeper {//<-- the start of our first class
         }else if(args.length == 5){
             if(args[0].equals("o")||args[0].equals("m")){//<-- aString.equals(anotherString) is how you compare strings.
                 try{
-                    width = (int)(Integer.parseInt(args[1]));
+                    width = (int)(Integer.parseInt(args[1]));//<-- same as before
                     height = (int)(Integer.parseInt(args[2]));
                     bombCount = (int)(Integer.parseInt(args[3]));
                     lives = (int)(Integer.parseInt(args[4]));
@@ -87,7 +89,7 @@ class MineSweeper {//<-- the start of our first class
                         }
                         if(args[0].equals("o")){
                             EventQueue.invokeLater(new Runnable(){public void run(){
-                                new OpeningWindow(args[1],args[2], args[3], args[4]).setVisible(true);//<-- Opening window takes strings
+                                new OpeningWindow(args[1],args[2], args[3], args[4]).setVisible(true);//<-- Opening window can take strings
                             }});
                         }
                     }else{
@@ -119,9 +121,10 @@ class MineSweeper {//<-- the start of our first class
 
     //a public and static function:
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
-        //you can also see that it returns a boolean, i.e. true or false.
-        //try to open the file we are running from to read it 
-        //(you need to do this to read 4 bytes from a file. Dont worry. Just pay attention to "public static" right now.)
+                    //^you can also see that it returns a boolean, i.e. true or false.
+        
+        //we try to open the file we are running from to read it 
+        //(you need to do this to read 4 bytes from a file. Dont worry. Just pay attention to "public static boolean" right now.)
         try (FileInputStream fileInputStream = new FileInputStream(Paths.get(System.getProperty("java.class.path")).toFile())) {//<-- start file input stream from where we are running from
             byte[] magicNumber = new byte[4];
             int bytesRead = fileInputStream.read(magicNumber);

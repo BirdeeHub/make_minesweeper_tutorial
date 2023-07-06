@@ -121,12 +121,15 @@ public class Grid extends JPanel {
         }
         for(int i = 0; i < Fieldx; i++){//<-- first for loop
             for(int j = 0; j < Fieldy; j++){//<-- second inner for loop
-                getButtonAt(i,j).setXY(i,j);//order of button add irrelevant because (i,j)=(i,j)
+                getButtonAt(i,j).setXY(i,j);//<-- add our coordinates to our buttons.
             }//at the end 0,0 will be in the top left. like the first word on a page. doesnt matter to us though. we just need to know that its a grid and the x and y
         }
         if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);//<-- i do this more than i should...
     }                                                                                            //(its the same 2 for loops just on one line) im sorryyyy! Im also not though. You will need to be able to see it both ways. You can usually leave brackets off of things like if statements and loops if theyre on the same line
     //-------------------------------------------END OF CONSTRUCTOR-------------------------------------------
+    
+    //-------------------------------------------Go to MineField.java, then come back here.--------------------------------------------------------
+    
     //--------------------getButtonAt(int x, int y) Became necessary after getting rid of 2d array to reference cells by location-------------------------
     private CellButton getButtonAt(int x, int y) {//<-- all you need to know about this right now is that it gets button at x, y
         return (CellButton) Grid.this.getComponent(y * Fieldx + x); //<-- this works because of integer division. Explained in fillZeroes.
@@ -206,7 +209,7 @@ public class Grid extends JPanel {
 
     boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
 
-    //Its kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
+    //This one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
     //You could probably fix this by the end of reading these game files.
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;
