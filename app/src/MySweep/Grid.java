@@ -235,6 +235,7 @@ public class Grid extends JPanel {
             //but as long as it works and doesnt rely on doing too much stuff outside of the function
             //or relies on changing stuff not fixed by reset, then it was a good solution.
             //The most obvious different way to write it would be:
+
 //VERSION 2 (The one I would probably go with)
 /*
     void toggleDarkMode(){
