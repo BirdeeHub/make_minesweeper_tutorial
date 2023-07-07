@@ -18,6 +18,8 @@ Yes. Inside the source code. This entire game is a learn to code guide.
 
 It begins with HowToCodeJava.txt, and then you walk along the program in a particular (but not too convoluted) order.
 
+You will probably want to download some sort of code editor so that the code is color coded. A suggestion is in HowToCodeJava.txt, suggested for its ease of install.
+
 It has comments along the way and introduces concepts in a gradually increasing order of difficulty. (or, as close to that as possible while still being a game!!)
 
 And it ends with a coding excercise that should hopefully be within grasp once you make it to the end, where you fix a slight bug. (with hints!) 
@@ -26,7 +28,7 @@ And it ends with a coding excercise that should hopefully be within grasp once y
 
 It should be challenging, but definitely not impossible, even if you have no previous knowledge of coding. You will need to pay close attention.
 
-(Dont forget to reference back to the opening text file where I explain what you dont understand as it gets reintroduced when necessary!)
+(Dont forget to reference back to the opening text file where I explain what you don't understand yet as it gets reintroduced during the code!)
 
 Of course, at a certain point you have to DO, rather than read. But this will get you to that point.
 
@@ -153,7 +155,7 @@ Make sure jdk is added to your path, or run it with the path to the java binary 
 
 Inside the Jar, there is a replica of the app directory. (yes, in a 1/5th of a MB file, that is also a game. Most of that is Icon.)
 
-If you wish to access these files to edit the program, use:
+If you wish to access these files to edit the program(or learn java), use:
 
 jar -xvf ./minesweeper.jar && rm -r MySweep/ META-INF/
 
