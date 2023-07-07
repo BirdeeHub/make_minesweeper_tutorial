@@ -6,7 +6,6 @@ import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.util.TimerTask;
 import java.util.Timer;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;

@@ -21,24 +21,24 @@ import javax.swing.ImageIcon;
 //This class controls the behavior of the game board. Contains cell display and action logic, and uses Minefield to keep track of the game state
 public class Grid extends JPanel {
     //--------------Initialize-Colors--------Many are the same color, but now theyre easily changed?
-    private final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- used for non darkmode
-    private final Color LightModeTextColor = new Color(0);//<-- LightMode button foreground
-    private final Color DarkModeTextColor = new Color(255, 255, 255);//<-- DarkMode button foreground
-    private final Color BLACK = new Color(0);//<-- default button background color in dark mode
-    private final Color GRASS = new Color(31, 133, 28);//<-- grass
-    private final Color MAGENTA = new Color(255,0,255);//<-- unmarked status color on win
-    private final Color GREEN = new Color(0,255,0);//<-- marked status color on loss
-    private final Color RED = new Color(255,0,0);//<-- in game exploded bomb background
-    private final Color ChGO_RED = new Color(255,0,0);//<-- game over indicator on chord number foreground
-    private final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
-    private final Color QSTNMARKCOLOR = new Color(133, 95, 227);//<-- question mark color
-    private final Color MARKCOLOR = new Color(255,0,0);//<-- color of marks
-    private final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors 2
-    private final Color BORDERORANGE = new Color(255, 160, 0);//<-- 3
-    private final Color BORDERORANGERED = new Color(255,95,0);//<-- 4
-    private final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
-    private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
-    private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
+    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- used for non darkmode
+    private static final Color LightModeTextColor = new Color(0);//<-- LightMode button foreground
+    private static final Color DarkModeTextColor = new Color(255, 255, 255);//<-- DarkMode button foreground
+    private static final Color BLACK = new Color(0);//<-- default button background color in dark mode
+    private static final Color GRASS = new Color(31, 133, 28);//<-- grass
+    private static final Color MAGENTA = new Color(255,0,255);//<-- unmarked status color on win
+    private static final Color GREEN = new Color(0,255,0);//<-- marked status color on loss
+    private static final Color RED = new Color(255,0,0);//<-- in game exploded bomb background
+    private static final Color ChGO_RED = new Color(255,0,0);//<-- game over indicator on chord number foreground
+    private static final Color CYAN = new Color(0,255,200);//<-- exploded bomb foreground
+    private static final Color QSTNMARKCOLOR = new Color(133, 95, 227);//<-- question mark color
+    private static final Color MARKCOLOR = new Color(255,0,0);//<-- color of marks
+    private static final Color BORDERYELLOW = new Color(255, 255, 0);//<-- border colors 2
+    private static final Color BORDERORANGE = new Color(255, 160, 0);//<-- 3
+    private static final Color BORDERORANGERED = new Color(255,95,0);//<-- 4
+    private static final Color BORDERRED = new Color(255,0,0);//<-- end of border colors
+    private static final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
+    private static final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
@@ -235,6 +235,7 @@ public class Grid extends JPanel {
             //but as long as it works and doesnt rely on doing too much stuff outside of the function
             //or relies on changing stuff not fixed by reset, then it was a good solution.
             //The most obvious different way to write it would be:
+//VERSION 2 (The one I would probably go with)
 /*
     void toggleDarkMode(){
         this.DarkMode = !DarkMode;
@@ -268,6 +269,7 @@ public class Grid extends JPanel {
             //This branch is from right before I made it a full on guide.
             //This means you also get to see the comments I had in here just for myself before I made it into a guide (with the occasional editorial comment for github)
 
+            //Main difference:
             //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
             //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
 
@@ -280,6 +282,7 @@ public class Grid extends JPanel {
 
             //Because I wrote the program in a modular fashion, the only thing that needed to be changed in this version was
             //minesweeper.java, and ScoresFileIO, and adding OverwriteJar.java
+            //I did end up changing more stuff that wasnt necessary though, like also making ScoresFileIO entirely static
 
 
 
@@ -590,7 +593,7 @@ public class Grid extends JPanel {
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
-        MessageIndex = MineSweeper.scoresFileIO.updateScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
+        MessageIndex = ScoresFileIO.updateScoreEntry(won, answers.getTime(), answers.cellsExploded(), Fieldx, Fieldy, bombCount, lives);
         GameOverMessageIndex = MessageIndex;
         wonValue=(won)?1:0;
     }

@@ -27,12 +27,12 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 class ScoresFileIO{
-    private final String scoresFileName= "scores.txt";
-    private final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
-    private final String jarName = (MineSweeper.isJarFile())?MineSweeper.getClassPath().getFileName().toString():"";
+    private static final String scoresFileName= "scores.txt";
+    private static final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
+    private static final String jarName = (MineSweeper.isJarFile())?MineSweeper.getClassPath().getFileName().toString():"";
     public ScoresFileIO(){}//<-- CONSTRUCTOR
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
-    private void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
+    private static void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
         if(MineSweeper.isJarFile()){//-------------------------------------------------------IN A JAR----------------------------
             StringBuilder jarFileScoresStringBuilder = new StringBuilder();// create string from entries
             for(int i = 0; i < allEntries.length; i++){
@@ -55,7 +55,7 @@ class ScoresFileIO{
                 removeDirectory(MineSweeper.getTempJarPath().toString());
             }catch(IOException e){e.printStackTrace();}
         }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
-            File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
+            File scoresFile = new File(MineSweeper.class.getResource(scoresFileName).getPath().toString());
             StringBuilder scoresFileString = new StringBuilder();// create string from entries
             for(int i = 0; i < allEntries.length; i++){
               scoresFileString.append(allEntries[i].toString()).append(" ");
@@ -172,7 +172,7 @@ class ScoresFileIO{
     //----------------------------functions used by other windows---------------------------------------functions used by other windows-------------
     //---------------------------------------------------------------functions used by other windows---------------------------------------
     //-----------------------------------READ-------------------------------------READ----------------------READ---------READ--------------------
-    public ScoreEntry[] readLeaderboard(){ //reads from internal file by word to Score Entries
+    public static ScoreEntry[] readLeaderboard(){ //reads from internal file by word to Score Entries
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries=null;
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR-------------------------------------------
@@ -204,7 +204,7 @@ class ScoresFileIO{
             return fileEntries;
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
             try{
-                File scoresFile = new File(getClass().getResource(scoresFileName).getPath().toString());
+                File scoresFile = new File(MineSweeper.class.getResource(scoresFileName).getPath().toString());
                 try(Scanner in = new Scanner(scoresFile)) {
                     while (in.hasNext()) {
                         ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
@@ -221,7 +221,7 @@ class ScoresFileIO{
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
-    public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
+    public static void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read
         ArrayList<ScoreEntry> newFileBuilder = new ArrayList<>();
         if(deletries!=null){
@@ -238,7 +238,7 @@ class ScoresFileIO{
             writeLeaderboard(deletries);// <-- overwrite with new
         }
     }
-    public int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    public static int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
         ScoreEntry thisEntry = new ScoreEntry(Fieldx,Fieldy,bombCount,lives,RemainingLives,time);

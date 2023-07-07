@@ -19,7 +19,6 @@ class MineSweeper {
     private static final Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
     private static final Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
     private static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
-    public static ScoresFileIO scoresFileIO = new ScoresFileIO();
     //---public static methods-------------------------------------------------
     public static final Path getTempJarPath(){return tempJarPath;}
     public static final Path getClassPath(){return minesweeperclasspath;}
