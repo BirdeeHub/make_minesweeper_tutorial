@@ -296,6 +296,8 @@
     I promise it isn't as hard of an excercise as it will seem at first.
     But you have to determine what extra conditions you need, and then do something extra based on them
 
+    Don't worry, the path is clearly marked.
+
     By the end of reading the program in this way,
     You will have read through something in a way pretty close to the order I wrote the program, with an opening window created in between.
     except grid and MainGameWindow were originally the same class until they got too long and i had to override some stuff.

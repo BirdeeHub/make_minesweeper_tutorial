@@ -1,4 +1,6 @@
-There is a guide to learn to code in these files. Read on.
+There is a guide to learn to code in these files.
+
+You should read HowToCodeJava.txt in src/MySweep first if you are a beginner in java and then return here for reference when needed later.
 
 This folder contains the compile and package scripts in packaged installs. 
 
@@ -113,7 +115,9 @@ ________________________________________________________________________________
 
 You should read HowToCodeJava.txt in src/MySweep first if you are a beginner in java and then return here for reference when needed later.
 
-Main game window is in charge of action listeners and the menu bar and scrolling. And being the window. It contains an instance of the Grid class
+Main game window is in charge of action listeners and the menu bar and scrolling. And being the window for the main game. 
+
+It contains an instance of the Grid class
 
 Grid is a panel containing the grid of buttons for the board.
 
@@ -135,15 +139,13 @@ On each reset, Grid creates a new Minefield instance (which was designed to be a
 
 --
 
-ScoresFileIO turns the scores file into ScoreEntry instances by splitting them by whitespace and using score entry constructor
+ScoresFileIO turns the scores file into ScoreEntry instances by splitting them by whitespace and using the ScoreEntry constructor
+
+It also writes them back using (scoreEntryInstance.toString() + " ") 
 
 ScoresFileIO contains functions directly pertaining to reading and writing to the scores file, which includes delete and update(save) as well.
 
-ScoreEntry are for processing and scores window
-
-Most importantly, ScoreEntry contain the conversion information to turn the scores into a string for saving and back again.
-
-ScoresFileIO contains functions 
+ScoreEntry are for processing scores to string and back again, and use within the game.
 
 scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
 
@@ -155,29 +157,29 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 --
 
-1 more thing. Recommended reading order for the Coding Tutorial aspect of this game.
+1 more thing. Recommended reading order for the Coding Tutorial aspect of this game. (It is also marked by comments)
 
-For the beginner, start with HowToCodeJava.txt
+- For the beginner, start with HowToCodeJava.txt
 
-Then play the game a couple times. When the code says JButton, it means theres a button for it, so see the button first, and it will make more sense.
+- Then play the game a couple times. When the code says JButton, it means theres a button for it, so see the button first, and it will make more sense.
 
-Then read MineSweeper but dont think about what an EventQueue.invokeLater is too hard,
+- Then read MineSweeper but dont think about what an EventQueue.invokeLater is too hard,
 
-then OpeningWindow, 
+- then OpeningWindow, 
 
-then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
+- then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
 
-then Grid up through the end of the constructor,
+- then Grid up through the end of the constructor,
 
-then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing (which is the excercise at the end). 
+- then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing (which is the excercise at the end). 
 
-now read the zoom function on both MainGameWindow and Grid.
+- now read the zoom function on both MainGameWindow and Grid.
 
-Then ScoresFileIO, then ScoreEntry, then ScoresWindow. IO and Entry together are kinda like their own plugin that grid and scores window use.
+- Then ScoresFileIO, then ScoreEntry, then ScoresWindow. IO and Entry together are kinda like their own plugin that grid and scores window use.
 
-Now read toggle dark mode function of Grid
+- Now read toggle dark mode function of Grid
 
-instructionsWindow is really better viewed in the game.
+- instructionsWindow is really better viewed in the game.
 
 At the end, go to toggleDarkMode function in grid and there will be instructions for an excercise. 
 
