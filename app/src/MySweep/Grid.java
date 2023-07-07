@@ -240,29 +240,29 @@ public class Grid extends JPanel {
 
 
 
-                //^The bug is fixed. Obviously there are other ways to write it, 
-                //but as long as it works and doesnt rely on doing too much stuff outside of the function
-                //or relies on changing stuff not fixed by reset, then it was a good solution.
+            //^The bug is fixed. Obviously there are other ways to write it, 
+            //but as long as it works and doesnt rely on doing too much stuff outside of the function
+            //or relies on changing stuff not fixed by reset, then it was a good solution.
 
-                //Regardless, you need to find some condition to use to determine when the game over icon would be on the button, and which one.
-                //you also need to then assign the icon again after setting the new background to re overlay it over top.
+            //Regardless, you need to find some condition to use to determine when the game over icon would be on the button, and which one.
+            //you also need to then assign the icon again after setting the new background to re overlay it over top.
 
-                //This whole branch is basically the same thing as the other one.
-                //This branch is from right before I made it a full on guide.
-                //This means you also get to see the comments I had in here just for myself before I made it into a guide
+            //This whole branch is basically the same thing as the other one.
+            //This branch is from right before I made it a full on guide.
+            //This means you also get to see the comments I had in here just for myself before I made it into a guide
 
-                //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
-                //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
+            //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
+            //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
 
-                //what really happens is it just creates and updates a new jar file version in the temp folder,
-                //and then when you close it, it copies a mini program out of itself, called OverwriteJar to run after this one closes.
-                //It runs that program, closes, and then OverwriteJar overwrites the jar with the new version for next time, 
-                //then deletes itself and the temp jar.
-                //If it doesnt finish somehow (usually because of force quitting, causing it to skip the shutdown hook that runs OverwriteJar) 
-                //it will still find the scores next time because it reads from the temp one first.
+            //what really happens is it just creates and updates a new jar file version in the temp folder,
+            //and then when you close it, it copies a mini program out of itself, called OverwriteJar to run after this one closes.
+            //It runs that program, closes, and then OverwriteJar overwrites the jar with the new version for next time, 
+            //then deletes itself and the temp jar.
+            //If it doesnt finish somehow (usually because of force quitting, causing it to skip the shutdown hook that runs OverwriteJar) 
+            //it will still find the scores next time because it reads from the temp one first.
 
-                //Because I wrote the program in a modular fashion, the only thing that needed to be changed in this version was
-                //minesweeper.java, and ScoresFileIO, and adding OverwriteJar.java
+            //Because I wrote the program in a modular fashion, the only thing that needed to be changed in this version was
+            //minesweeper.java, and ScoresFileIO, and adding OverwriteJar.java
 
 
 
