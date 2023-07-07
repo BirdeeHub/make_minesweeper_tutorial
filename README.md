@@ -73,6 +73,13 @@ It will have source code and compile scripts inside the game folder after instal
 If that worries you, the source code and scripts used to build it are available right here,
 and instructions are below. Or get a jdk and use the jar file.)
 
+---------------------------------------------------------------------------------------------
+
+**MAC**
+
+I was unfortunately unable to make a mac .pkg file with the system i had access to.
+If you want to run it on mac, use the .jar file. You will need to download a JDK for Mac.
+
 ************************************************************************************
 
 **LINUX USERS:**
@@ -178,14 +185,11 @@ Running via this script will also hide any errors you make, but you dont have to
 
 To run, use command "minesweeper" or find it in your start menu equivalent.
 
-the script in your /usr/local/bin directory runs $install_directory/minesweeper/bin/Minesweeper $@ >/dev/null 2>&1 < /dev/null &
-
-in this case, install_directory is /usr/local/games
-
-**ATTENTION:** I was unfortunately unable to make a mac .pkg file with the system i had access to.
-Until I can spend an extended time on a mac or get around to trying a mac vm, 
-there will be no further mac support than what is here already.
-If you want to run it on mac, use the .jar file. You will need to download a JDK for Mac.
+the script in your /usr/local/bin directory runs 
+```bash
+$install_directory/minesweeper/bin/Minesweeper $@ >/dev/null 2>&1 < /dev/null &
+```
+in this case, install_directory is /usr/local/games. Its hard coded in the script, so if you move it, you will have to change that.
 
 *************************************************************************************************************************************************
 
