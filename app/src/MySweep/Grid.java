@@ -191,7 +191,6 @@ public class Grid extends JPanel {
              //ANSWERS TO THE EXCERCISE TO FIX TOGGLE DARK MODE BELOW
 
 
-
 /////////////////////////////////////////////////////////////////////////////
     void toggleDarkMode(){
         this.DarkMode = !DarkMode;
@@ -241,8 +240,13 @@ public class Grid extends JPanel {
 
 
 
-                //^The bug is fixed. 
-                
+                //^The bug is fixed. Obviously there are other ways to write it, 
+                //but as long as it works and doesnt rely on doing too much stuff outside of the function
+                //or relies on changing stuff not fixed by reset, then it was a good solution.
+
+                //Regardless, you need to find some condition to use to determine when the game over icon would be on the button, and which one.
+                //you also need to then assign the icon again after setting the new background to re overlay it over top.
+
                 //This whole branch is basically the same thing as the other one.
                 //This branch is from right before I made it a full on guide.
                 //This means you also get to see the comments I had in here just for myself before I made it into a guide
