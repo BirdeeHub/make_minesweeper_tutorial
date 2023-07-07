@@ -151,7 +151,7 @@ use "java -jar <_path_>/<_to_>/minesweeper.jar" to play!
 
 Make sure jdk is added to your path, or run it with the path to the java binary directly.
 
-Inside the Jar, there is a replica of the app directory. (yes, in a 1/5th of a MB file, that is also a game.)
+Inside the Jar, there is a replica of the app directory. (yes, in a 1/5th of a MB file, that is also a game. Most of that is Icon.)
 
 If you wish to access these files to edit the program, use:
 
