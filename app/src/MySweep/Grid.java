@@ -249,7 +249,7 @@ public class Grid extends JPanel {
 
             //This whole branch is basically the same thing as the other one.
             //This branch is from right before I made it a full on guide.
-            //This means you also get to see the comments I had in here just for myself before I made it into a guide
+            //This means you also get to see the comments I had in here just for myself before I made it into a guide (with the occasional editorial comment for github)
 
             //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
             //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
