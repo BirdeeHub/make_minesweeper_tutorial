@@ -1,7 +1,9 @@
 package MySweep;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,15 +15,17 @@ import java.nio.file.StandardCopyOption;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 class MineSweeper {
-    private static Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
-    private static Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
-    private static Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
-    private static String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
+    private static final Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
+    private static final Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
+    private static final Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
+    private static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static ScoresFileIO scoresFileIO = new ScoresFileIO();
     //---public static methods-------------------------------------------------
-    public static Path getTempJarPath(){return tempJarPath;}
-    public static Path getClassPath(){return minesweeperclasspath;}
-    public static Path getTempPath(){return tempPath;}
+    public static final Path getTempJarPath(){return tempJarPath;}
+    public static final Path getClassPath(){return minesweeperclasspath;}
+    public static final Path getTempPath(){return tempPath;}
+    public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
+    public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
         try (FileInputStream fileInputStream = new FileInputStream(minesweeperclasspath.toFile())) {
             byte[] magicNumber = new byte[4];

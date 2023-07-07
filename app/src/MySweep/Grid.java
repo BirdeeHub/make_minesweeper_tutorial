@@ -40,10 +40,6 @@ public class Grid extends JPanel {
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
     private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
     private boolean DarkMode = true;//<-- starts in darkMode by default.(toggle in help window)
-    //--------------------get custom image files----------------------------------------------
-    private final boolean inAJar = MineSweeper.isJarFile();//<-- are we running from a .jar?
-    private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
-    private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
@@ -192,14 +188,12 @@ public class Grid extends JPanel {
 
 
 /////////////////////////////////////////////////////////////////////////////
+//ANSWER VERSION 1 (version 2 in the comments below it.(its much shorter))
     void toggleDarkMode(){
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {          
-                //i put the ! outside of the brackets and it made it much easier (because it then let me flip everything)
-                //now it is   if NOT(these conditions where i set the background OR icon) 
-                //rather than if(!these !conditions !where !i !set !the !background ! AND !icon)
-                //It made things much clearer. I then added a new condition.
+            for (int y = 0; y < Fieldy; y++) {
+                //I added a new condition to exclude.
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0)||(answers.isGameOver()&&answers.isBomb(x, y)))){
                     if(DarkMode){getButtonAt(x,y).setBackground(BLACK);                            //^new check. Makes sure this if does not include revealed bombs
                     }else{                                                        //this part inside was still correct.
@@ -219,7 +213,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
                         }//THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
                         //this will put it back on top of the other stuff we put.
-                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
                     
                     }else if(wonValue == 1){//<-- if you won, you see the mines
                         if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
@@ -227,7 +221,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
                         }
-                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
                     }
                 }
             }
@@ -237,15 +231,38 @@ public class Grid extends JPanel {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
             //^The bug is fixed. Obviously there are other ways to write it, 
             //but as long as it works and doesnt rely on doing too much stuff outside of the function
             //or relies on changing stuff not fixed by reset, then it was a good solution.
-
+            //The most obvious different way to write it would be:
+/*
+    void toggleDarkMode(){
+        this.DarkMode = !DarkMode;
+        for (int x = 0; x < Fieldx; x++) {
+            for (int y = 0; y < Fieldy; y++) {
+                if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    }else{
+                        getButtonAt(x,y).setBackground(null);
+                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
+                    }
+                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
+                    }
+                    if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
+                        //check for wonValue and then copy paste icon thing from game over
+                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                    }
+                }
+            }
+        }
+        Grid.this.repaint();
+    }
+ */
             //Regardless, you need to find some condition to use to determine when the game over icon would be on the button, and which one.
             //you also need to then assign the icon again after setting the new background to re overlay it over top.
+            //if you do those things correctly in some way, it would work.
 
             //This whole branch is basically the same thing as the other one.
             //This branch is from right before I made it a full on guide.
@@ -548,8 +565,8 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {

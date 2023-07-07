@@ -37,7 +37,7 @@ public class instructionsWindow extends javax.swing.JFrame {
         initComponents();
     }
     private void initComponents() {
-        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
+        setIconImage(MineSweeper.MineIcon);
         JButton Back = new JButton("Back");
         JToggleButton DMToggleButton = new JToggleButton("<html>Dark<br>Mode</html>");
         if(ParentWindow instanceof MainGameWindow){

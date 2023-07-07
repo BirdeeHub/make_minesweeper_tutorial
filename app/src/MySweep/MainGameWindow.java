@@ -221,6 +221,7 @@ public class MainGameWindow extends javax.swing.JFrame {
         scrollPane.setBackground(PURPLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
+        setIconImage(MineSweeper.MineIcon);
         //---------------------component adding and layout managing
         menuBagConstraints.gridx =0;
         menuBagConstraints.gridy =0;
@@ -330,6 +331,5 @@ public class MainGameWindow extends javax.swing.JFrame {
         chordToggle.addKeyListener(keyAdapter);
 
         getContentPane().setVisible(true);
-        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
     }
 }

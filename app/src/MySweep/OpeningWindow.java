@@ -145,6 +145,7 @@ public class OpeningWindow extends JFrame {
         AuthorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         //Layout Managing:
+        setIconImage(MineSweeper.MineIcon);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(300, 200));
         getContentPane().setLayout(new GridBagLayout());
@@ -243,7 +244,5 @@ public class OpeningWindow extends JFrame {
 
         pack();
         getContentPane().setVisible(true);
-
-        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
     }
 }
