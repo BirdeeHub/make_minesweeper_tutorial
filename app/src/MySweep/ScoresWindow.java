@@ -1,4 +1,5 @@
 package MySweep;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -116,6 +117,7 @@ public class ScoresWindow extends JFrame {
         });
     }
     private void initComponents() {//-----------------------------------initComponents()------------------------------------------
+        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); //Initialize our nested gridbaglayout panels
         getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
         JPanel containerGridBag = new JPanel(new GridBagLayout());

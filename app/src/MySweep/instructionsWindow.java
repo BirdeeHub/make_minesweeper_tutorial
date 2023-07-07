@@ -2,6 +2,8 @@ package MySweep;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,6 +37,7 @@ public class instructionsWindow extends javax.swing.JFrame {
         initComponents();
     }
     private void initComponents() {
+        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
         JButton Back = new JButton("Back");
         JToggleButton DMToggleButton = new JToggleButton("<html>Dark<br>Mode</html>");
         if(ParentWindow instanceof MainGameWindow){

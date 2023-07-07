@@ -6,6 +6,7 @@ import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.util.TimerTask;
 import java.util.Timer;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
@@ -329,5 +330,6 @@ public class MainGameWindow extends javax.swing.JFrame {
         chordToggle.addKeyListener(keyAdapter);
 
         getContentPane().setVisible(true);
+        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
     }
 }

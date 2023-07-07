@@ -1,4 +1,5 @@
 package MySweep;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -242,5 +243,7 @@ public class OpeningWindow extends JFrame {
 
         pack();
         getContentPane().setVisible(true);
+
+        this.setIconImage(new ImageIcon(getClass().getResource(((MineSweeper.isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage());
     }
 }
