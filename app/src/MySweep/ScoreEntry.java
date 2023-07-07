@@ -36,9 +36,11 @@ public class ScoreEntry{//This exists because i was converting from string way m
     @Override
     public boolean equals(Object o) {
         if(o instanceof ScoreEntry){
-            if((((ScoreEntry)o).getX() == this.x) && (((ScoreEntry)o).getY() == this.y) &&
-                (((ScoreEntry)o).getBombCount() == this.bombCount) && (((ScoreEntry)o).getLives() == this.lives)){
-                return true;
+            if(((ScoreEntry)o).isValid()){
+                if((((ScoreEntry)o).getX() == this.x) && (((ScoreEntry)o).getY() == this.y) &&
+                    (((ScoreEntry)o).getBombCount() == this.bombCount) && (((ScoreEntry)o).getLives() == this.lives)){
+                    return true;
+                }else return false;
             }else return false;
         }else return false;
     }

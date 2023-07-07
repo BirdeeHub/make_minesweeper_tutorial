@@ -177,21 +177,14 @@
     String inputString = "some sort of data";
     MyClass instanceOfMyClass = new MyClass(inputString);
     int result;
-    int firstNumber = 2;
-    int secondNumber = 2;
-    result = instanceOfMyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
-
-    //which would make the value of result be 4.
-
-    //if our weird add function was declared as static, we wouldnt need to create an instance of MyClass, we could use it directly.
-    //static functions can only contain static variables that can be shared among all instances of a class with no issue
-
-    //notice we dont need to create an instance here?
     int firstNumber = 6;
     int secondNumber = -3;
-    int result = MyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);//<-- call it statically
+    result = instanceOfMyClass.addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
 
     //which would make the value of result be -18, (because (6 + (-3)) == 3 of course!)
+
+    This is using the '.' operator to get the version of the function belonging to that instance of the class.
+    i.e. chair.getHeight() would return the height of THAT chair and not another one.
 
     6. Extends and implements:
 
@@ -294,11 +287,14 @@
     then MainGameWindow but dont worry about zoom listener for now unless you want a headache, 
     then Grid up through the end of the constructor,
     then Minefield, 
-    then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
-    now read the zoom function on both MainGameWindow and Grid.
-    Or skip it and go straight to scores and go back to it later.
+    then the rest of Grid except the zoom function and random toggle dark mode thing (it will be an excercise at the end). 
+    now read the zoom function on both MainGameWindow and Grid together.
     Then ScoresFileIO, then ScoreEntry, then ScoresWindow. 
     instructionsWindow is really better viewed in the game.
+    At the end, go to toggleDarkMode function in grid and there will be instructions for an excercise. 
+    You will fix a bug in that function on game over screen (with some hints).
+    I promise it isn't as hard of an excercise as it will seem at first.
+    But you have to determine what extra conditions you need, and then do something extra based on them
 
     By the end of reading the program in this way,
     You will have read through something in a way pretty close to the order I wrote the program, with an opening window created in between.

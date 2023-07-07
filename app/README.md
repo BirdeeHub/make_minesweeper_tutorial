@@ -153,13 +153,13 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 --
 
-1 more thing. Recommended reading order.
+1 more thing. Recommended reading order for the Coding Tutorial aspect of this game.
 
 For the beginner, start with HowToCodeJava.txt
 
 Then play the game a couple times. When the code says JButton, it means theres a button for it, so see the button first, and it will make more sense.
 
-Then read MineSweeper but dont think about what an EventQueue.invokeLater is too hard yet if you dont know what an interface is,
+Then read MineSweeper but dont think about what an EventQueue.invokeLater is too hard,
 
 then OpeningWindow, 
 
@@ -167,13 +167,25 @@ then MainGameWindow but dont worry about zoom listener for now unless you want a
 
 then Grid up through the end of the constructor,
 
-then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing that I dont know why I still have but I do. 
+then Minefield, then the rest of Grid except the zoom function and random toggle dark mode thing (which is the excercise at the end). 
 
-now read the zoom function on both MainGameWindow and Grid. Or skip it and go straight to scores and go back to it later.
+now read the zoom function on both MainGameWindow and Grid.
 
 Then ScoresFileIO, then ScoreEntry, then ScoresWindow. IO and Entry together are kinda like their own plugin that grid and scores window use.
 
+Now read toggle dark mode function of Grid
+
 instructionsWindow is really better viewed in the game.
+
+At the end, go to toggleDarkMode function in grid and there will be instructions for an excercise. 
+
+You will fix a bug in that function on game over screen (with some hints).
+
+I promise it isn't as hard of an excercise as it will seem at first.
+
+But you have to determine what extra conditions you need, and then do something extra based on them
+
+Answer is in the Jarred branch of this repo in the same spot if you really are stuck.
 
 _______________________________________________________________________________________________________________________________________________
 

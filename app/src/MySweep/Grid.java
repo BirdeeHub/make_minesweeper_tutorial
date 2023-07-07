@@ -39,24 +39,18 @@ public class Grid extends JPanel {
     private final Color BORDERORANGERED = new Color(255,95,0);//<-- 4
     private final Color BORDERRED = new Color(255,0,0);//<-- higher
     private final Color defaultBorderColor = new Color(126, 126, 126);//<-- default border color
-    private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers
-    //--------------------get custom image files----------------------------------------------
-    private final boolean inAJar = MineSweeper.isJarFile();//<-- remember this public static function from MineSweeper at the start?
-    //^^^ are we running from a .jar? (I had to do this to detect if running from an IDE because that changes the path to the icon)
-    //getClass().getResource is a way to retrieve data from the file path we are running from.
-    private final Image EXPicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"")/*<-- if in a jar add "/src/MySweep/" */ + "Icons/GameOverExplosion.png")).getImage();
-    private final Image RVLicon = new ImageIcon(getClass().getResource(((inAJar)?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
-    //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
+    private final Insets CellInset = new Insets(-20, -20, -20, -20);//<-- leave this alone unless you want dots instead of numbers. It sets text margins
 
+    //-------------logic initializing-----------------------------logic initializing--------------logic initializing---------------------------------logic initializing-----
     private final int Fieldx, Fieldy, bombCount, lives;//<-- the size of board and how many bombs and lives
 
     private Minefield answers;//<-- this one is the data class for game logic. Once you read up through the constructor of this Grid class, read that file.
 
     //MainGameWindow gets these from functions defined here later
     private int GameOverMessageIndex = -1;//<-- -1 is the "off" state of this variable (later set in game over function)
-    private int wonValue = -1;//<-- -1 is the "off" state. same deal.
+    private int wonValue = -1;//<-- -1 is the "off" state. also set in game over function
     private int BombsFound = 0;//<-- just the number of how many marks you have placed. 
-    private int livesLeft = 0;//<-- just the number of how many lives you have left. MainGameWindow gets this from a function
+    private int livesLeft = 0;//<-- just the number of how many lives you have left.
     private boolean DarkMode = true;//<-- starts in DarkMode by default.(toggle button in help window. making this false would change the default setting)
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
 
@@ -72,7 +66,7 @@ public class Grid extends JPanel {
             this.setHorizontalAlignment(SwingConstants.CENTER);
             this.setVerticalAlignment(SwingConstants.CENTER);//Initialize our cell button properties other than font size (which is done after packing layout)
             this.setFocusable(false);//<-- made unfocusable because i didnt like hitting tab for 3 years
-            this.setMargin(CellInset);//<-- defined outside of class so it is not multiplied times whatever same as default border color
+            this.setMargin(CellInset);//<-- Inset defined outside of class so it is not multiplied times whatever (same as default border color)
         }
         //functions!
         public void setBorderColor(Color borderColor, int borderWeight) {
@@ -83,10 +77,10 @@ public class Grid extends JPanel {
             dynamicWidth = value;
         }
         public void setXY(int x, int y){
-            this.x = x;//<-- this used to be a putClientProperty item
+            this.x = x;//<-- this used to be added via .putClientProperty("xValue", x)
             this.y = y;
         }
-        public int getXcoord(){return x;}
+        public int getXcoord(){return x;}//<-- these functions get the x and y
         public int getYcoord(){return y;}
         //Jbutton had a paintBorder function but I did not like it. So I override it.
         @Override
@@ -100,7 +94,7 @@ public class Grid extends JPanel {
                     g.drawRect(i, i, getWidth() - i*2 - 1, getHeight() - i*2 -1);//<-- like draw rectangles of 1 pixel width
                 }//in a loop because 1 pixel width, so i need many.
             }
-        }
+        }//(dont worry about protected. It means it can only be seen within the package. paintBorder is originally defined that way.)
     }
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
@@ -124,8 +118,8 @@ public class Grid extends JPanel {
                 getButtonAt(i,j).setXY(i,j);//<-- add our coordinates to our buttons.
             }//at the end 0,0 will be in the top left. like the first word on a page. doesnt matter to us though. we just need to know that its a grid and the x and y
         }
-        if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);//<-- i do this more than i should...
-    }                                                                                            //(its the same 2 for loops just on one line) im sorryyyy! Im also not though. You will need to be able to see it both ways. You can usually leave brackets off of things like if statements and loops if theyre on the same line
+        if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);//<-- i do this more than i should... You are able to leave brackets off of things like if statements and loops if its just 1 function call.
+    }                                                                                           //^(its the same 2 for loops just on one line) im sorryyyy! Im also not though. You will need to be able to see it both ways. 
     //-------------------------------------------END OF CONSTRUCTOR-------------------------------------------
     
     //-------------------------------------------Go to MineField.java, then come back here.--------------------------------------------------------
@@ -149,7 +143,7 @@ public class Grid extends JPanel {
     }
     //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
     //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    long getTime(){return (answers.isFirstClick())?(-1):answers.getTime();}//<-- i passed this through here to keep surface area small for brain
+    long getTime(){return (answers.isFirstClick())?(-1):answers.getTime();}//<-- i passed this through here from minefield so mainGameWindow gets the correct instance of minefield's time
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
     int[] getGameOverIndex(){//     <--    text
@@ -274,7 +268,7 @@ public class Grid extends JPanel {
         //after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
     }
     //HELPFUL HINTS:
-    //Think about what things in minefield you can check for. 
+    //Think about what things in minefield you can check for and use, and when the bug is occurring and on what cells. 
     //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
 
 
@@ -547,9 +541,13 @@ public class Grid extends JPanel {
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board with icon and border and stuff then passes the work to ScoresFileIO
         //we have to define the image to the size of the button or it will resize the board
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(EXPicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(RVLicon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        for (int i = 0; i < Fieldx; i++) {//            reveal bombs on board
+        //remember those public static images from earlier in MineSweeper?
+        //we are going to create new scaleableIcons out of them, and scale them to the correct initial size.
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        
+        //            reveal bombs on board
+        for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {//<-- check for bombs
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {//<-- if it should be revealed
                     if (won == false){//<-- should they explode?
@@ -577,6 +575,7 @@ public class Grid extends JPanel {
         GameOverMessageIndex = MessageIndex;//these are used by main game window to set the message that says "Exploded..."" or whatever at the end
         wonValue=(won)?1:0;
     }
+
 
     //made it to the end? check out the zoom function here and in the main game window, and ScaleableIcon below if you feel brave.
     //then go to scoresFileIO

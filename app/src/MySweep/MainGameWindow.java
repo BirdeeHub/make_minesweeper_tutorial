@@ -37,9 +37,9 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     //-----------------------Initialize-----------------------------
     private final int Fieldx, Fieldy, bombCount, lives;//<-- variables to hold field x and y, number of bombs and lives.
     //display stuff
-    private final Color PURPLE = new Color(58, 0, 82);//<-- these variables are final, meaning I cant assign a new thing to them.
-    private final Color GREEN = new Color(0, 255, 0);
-    private final Dimension DefaultWindowSize = new Dimension(830, 830);
+    private final Color PURPLE = new Color(58, 0, 82);//<-- these variables are final, meaning they can't be changed.
+    private final Color GREEN = new Color(0, 255, 0);       //You can start them as uninitialized if you want, like our board size above,
+    private final Dimension DefaultWindowSize = new Dimension(830, 830);//but they must be set before the end of the constructor.
 
     private JLabel GameOverDisplay = new JLabel();//our other 3 display labels and functions to set them.
     private JLabel BombsFoundDisplay = new JLabel();
@@ -50,11 +50,11 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private void setLivesLostDisplay(){//<-- you can initialize functions before the constructor but only do it if they are short and actually improve readability
         livesLostDisplay.setText("L:" + Integer.toString(grid.getLivesLeft()) + "/" + Integer.toString(lives));
     }
-    private final String highScoreMessage = "Record Time!";//to change text of game over messages in menubar display, edit from here
-    private final String newBoardSizeAndWonMessage = "New Board Cleared!";
-    private final String wonAndNotHighScoreMessage = "Cleared!";
-    private final String diedButNewBoardMessage = "1st Board Death";
-    private final String diedAndNotNewBoardMessage = "Exploded...";
+    private final static String highScoreMessage = "Record Time!";//to change text of game over messages in menubar display, edit from here
+    private final static String newBoardSizeAndWonMessage = "New Board Cleared!";
+    private final static String wonAndNotHighScoreMessage = "Cleared!";
+    private final static String diedButNewBoardMessage = "1st Board Death";//<-- you can make things both final and static if you want
+    private final static String diedAndNotNewBoardMessage = "Exploded...";
     private void setGameOverDisplay(){//<-- we set which one based on an index from grid whenever we call this function. same as the other labels.
         int[] GOIndex = new int[2];//<-- This is a 2 integer array. GOIndex[0] is message index, GOIndex[1] is won value.
         GOIndex = grid.getGameOverIndex();//<-- if not in game over state, these will both be -1.
@@ -99,38 +99,39 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         Fieldx = w;
         Fieldy = h;
         this.lives = lives;//<-- "this.something" allows us to refer to 'something' belonging to 'this' instance of the class
+                                                //which is useful because we already have a lives that got passed in by the constructor
         bombCount = bombNum;
-        grid = new Grid(Fieldx, Fieldy, bombCount, lives);//<-- Generate game board
+        grid = new Grid(Fieldx, Fieldy, bombCount, lives);//<-- **Generate game board**
         displayTimer.scheduleAtFixedRate(timeDisplayTask, 0, 50);//<-- this just displays the time in Minefield answers. This rate is higher than the one in minefield so you dont tilt players
         scrollPane = new JScrollPane(grid);//<-- create a scroll pane containing our grid panel
         addGridActionListeners();//<-- I could have done this in Grid but it was nice to keep the listeners in 1 place, and it would have been harder
         initComponentsAndMiscListeners();
     }
     //functions!
-    private void addGridActionListeners(){//i would have needed to pass in the toggle buttons for click action. this is better.
+    private void addGridActionListeners(){//i would have needed to pass a reference to the toggle buttons for click action in grid constructor. this is better.
         grid.addCellListener(new MouseAdapter() {//<-- addCellListener() function in grid to add our listener to each cell.
             @Override
-            public void mouseEntered(MouseEvent e){//<-- allows the 1.5 click trick by actually getting the component the mouse is over rather than just
+            public void mouseEntered(MouseEvent e){//<-- this allows the 1.5 click trick by actually getting the component the mouse is over rather than just
                 currentButton=(JButton)e.getSource();// getting the component that fired the mousePressed and released actions which will always be the same
             }//     ^ this is because each Adapter is associated with a particular button, and contains both methods, so if one fires, then the release for that one will be the one that runs.
             
-            @Override                                  //dont worry too much if listeners are confusing for now.
+            @Override                                  //dont worry too much if this listener is confusing for now.
             public void mousePressed(MouseEvent e) {//<-- you need to know that they can fire on things like mouse pressed
                 if(SwingUtilities.isLeftMouseButton(e)){// and how to search for how to write an event listener for a mouse or a key or whatever in a language
                     LMB = true;//<-- set our left mouse button variable true so that all the buttons can hear if the mouse was pressed
                     if(currentButton!=null){//<-- if mouse is over a button
-                        if(chordToggle.isSelected()){
+                        if(chordToggle.isSelected()){//<-- if the toggle button for chords is selected
                             grid.doClickType(currentButton, 2);//<-- in this case, we run grid.doClickType 2 (a chord)
-                        }else if(markToggle.isSelected()){
+                        }else if(markToggle.isSelected()){//<-- if the toggle button for marking is selected
                             grid.doClickType(currentButton, 1);//mark
-                        }else if(RMB){
+                        }else if(RMB){//was the right mouse button also pressed?
                             grid.doClickType(currentButton, 2);//Chord
-                        }else{
+                        }else{//else do regular left click
                             grid.doClickType(currentButton, 0);//regular
                         }
                     }
                 }
-                if(SwingUtilities.isRightMouseButton(e)){//same thing but for right click, so no need for clickType 0 or marktoggle check
+                if(SwingUtilities.isRightMouseButton(e)){//same thing but for right click, so no need for clickType 0 or checking our toggle buttons
                     RMB = true;
                     if(currentButton!=null){
                         if(LMB){
@@ -144,7 +145,8 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                 setLivesLostDisplay();//doing this after clicking a cell made most sense.
                 setGameOverDisplay();
             }
-            @Override
+
+            @Override //<-- mouseAdapter already had a default for these. But we want to write them instead to do our game stuff so we override
             public void mouseReleased(MouseEvent e) {//<-- not holding the mouse anymore
                 if(SwingUtilities.isLeftMouseButton(e)){
                     LMB = false;//<-- set the global variable back so other buttons know you released the button
@@ -154,7 +156,10 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                 }
             }
         });
-        //-----------------this next one is complex. skip to the next one for now if its hard. come back to this section later.------------------
+
+
+        //-----------------this next one is complex. skip to the next one for now. come back to this section later.--------------------------------
+
         grid.addMouseWheelListener(new MouseWheelListener() {//zoom and scroll (only active over grid because it is added to the JPanel, i.e. the grid instance itself)
             JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
             JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
@@ -197,7 +202,9 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                 }
             }
         });
-    }//-----------------------start reading again here---------------------------------
+    }
+    
+    //-----------------------start reading again here---------------------------------
     private void initComponentsAndMiscListeners() {//-------------------initComponents() on window below-----------------------------------------------------------------------------
         //--------------init the stuff that doesnt need to be global
         JMenuBar menuBar = new JMenuBar();
@@ -209,7 +216,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         JToggleButton toggleQuestionMarking = new JToggleButton("?'s?");
         JButton ScoreBoard = new JButton("HiSc");
         Font ScoreAreaFontSize = new Font("Tahoma", 0, 20);
-        //------------------------set properties of that stuff (or to that stuff in the case of the font)
+        //------------------------set properties of stuff
         setBombsFoundDisplay();
         setLivesLostDisplay();
         setGameOverDisplay();
@@ -233,6 +240,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         scrollPane.setBackground(PURPLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
+        setIconImage(MineSweeper.MineIcon);
 
         //---------------------component adding and layout managing
         menuBagConstraints.gridx =0;
@@ -286,7 +294,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                     setBombsFoundDisplay();//and also get the properly reset display values
                     setLivesLostDisplay();
                     setGameOverDisplay();
-                    getContentPane().revalidate();
+                    getContentPane().revalidate();//<-- revalidate is faster than pack and is fine for here.
                 }else clickmemory = System.currentTimeMillis();//if you spammed, update clickmemory instead
             }
         });
@@ -345,6 +353,6 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
 
         getContentPane().setVisible(true);//<-- let there be light!
 
-        //Cool! We have a functioning window to display our game! Now it is time to read Grid up through the constructor and see whats going on there
+        //Cool! We have a functioning window to display our game! Now it is time to read Grid up through the constructor and see whats going on there!
     }
 }

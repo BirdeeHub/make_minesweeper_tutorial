@@ -38,15 +38,15 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     private JLabel AuthorLabel = new JLabel();
     //-----------------------------------------Constructors----------------------------------------------------------
     //notice a constructor just looks like a function, but it has the same name as the class
-    public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//called by scores window
+    public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//<-- called when you have 4 strings as arguments
         WidthField = new JTextField(initialx);
-        HeightField = new JTextField(initialy);//<-- these just allow us to pre populate the fields while we create the buttons to go in the variables.
-        BombNumber = new JTextField(initialbombno);
+        HeightField = new JTextField(initialy);//<-- when you use the JTextField constructor with a string as an argument,
+        BombNumber = new JTextField(initialbombno);             //it prepopulates the field with that string
         LivesNumber = new JTextField(initiallives);
         initComponents();//<-- sets up our window components
     }
-    //it also has no return type (because it always returns an instance of this class.)
-    public OpeningWindow() {//called by the rest
+    //A Constructor also has no return type (because it always is used with new to return an instance of this class.)
+    public OpeningWindow() {//<-- called when you use no arguments
         WidthField = new JTextField();
         HeightField = new JTextField();//<-- initialize them without pre populated text instead
         BombNumber = new JTextField();
@@ -56,7 +56,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
 
     //-------------------------------------------------Start Action Performed---called by action listener on start button-------------------
     private void StartActionPerformed() {//this function runs MainGameWindow, performs error checking and displays errors
-        //this next part is kinda like in MineSweeper class
+        //this next part is like in MineSweeper class
         try{
             int width =(int)(Integer.parseInt(WidthField.getText()));//(int) makes sure it is read as an integer. This is called a cast.
             int height =(int)(Integer.parseInt(HeightField.getText()));//Integer.parseInt(String) converts strings to integers
@@ -84,6 +84,12 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     //Yeah but where is the stuff located and what does it look like though? I thought this was a window? Or, a JFrame, or whatever?
     //---------------------------------initComponents()-----called by constructor-----------------------------------------------------------------
     private void initComponents() {//<-- a private function that doesnt return anything. It does stuff though.
+
+        this.setIconImage(MineSweeper.MineIcon);//<-- see how easy it is to reference our public static variable from MineSweeper?
+        //^ here we set that little icon in the top left corner
+        //"this.something" allows us to refer to 'something' belonging to 'this' instance of the class
+        //in this case, 'something' is a function called setIconImage() belonging to the class named OpeningWindow, which is a JFrame
+
         //--------------------------------------add action Listeners to components
         Start.addActionListener(new ActionListener() {//<-- our start button was clicked?
             public void actionPerformed(ActionEvent evt) {
@@ -93,14 +99,16 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         ScoreBoard.addActionListener(new ActionListener() {//<-- action listeners are also interfaces with various functions you can assign
             public void actionPerformed(ActionEvent evt) {//<-- we have assigned the actionPerformed function to do a thing
                 EventQueue.invokeLater(new Runnable() {//<-- and that thing is to implement the runnable interface
-                    public void run() {//this run() will launch the scores window
+                    public void run() {//<-- this run() will launch the scores window. It is part of the Runnable class, but we have to define it.
                         try{
                             int width =(int)(Integer.parseInt(WidthField.getText()));//get input info so we can highlight the current one.
                             int height =(int)(Integer.parseInt(HeightField.getText()));
                             int bombCount = (int)(Integer.parseInt(BombNumber.getText()));
                             int lives = (int)(Integer.parseInt(LivesNumber.getText()));
                             new ScoresWindow(width,height,bombCount,lives,OpeningWindow.this).setVisible(true);//<-- and then run our scores window
-                        }catch(NumberFormatException e){new ScoresWindow(0,0,0,0,OpeningWindow.this).setVisible(true);}
+                        }catch(NumberFormatException e){
+                            new ScoresWindow(OpeningWindow.this).setVisible(true);//<-- if bad input, use the other constructor
+                        }
                     }
                 });
             }
@@ -127,8 +135,8 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                         ((JButton)CurrComp).doClick();//<-- doClick() does exactly what it sounds like
                     }
                 }//It gives us enter key functionality!
-            }    //the tab focusable component property is on by default unless you turn it off in this library.
-        };       //so we just need to process the enter action.
+            }    //the tab focusable component property is on by default unless you turn it off in Swing.
+        };       //so we just need to process the enter button action.
         Start.addKeyListener(keyAdapter);
         ScoreBoard.addKeyListener(keyAdapter);//<-- if you dont add listeners directly (anonymously) 
         WidthField.addKeyListener(keyAdapter);//<-you have to add them to the components you want later like this
@@ -173,19 +181,19 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                 //after you add the thing, you can change the constraints object without affecting how you set the previous thing
         //Thats how this layout manager works. There are others. Like grid. Which is a regular grid. This is a grid bag. Bags are more flexible than grids
 
-        containerConstraints.gridx =2;
+        containerConstraints.gridx =2;//set some values for x and y and whatever of the constraints
         containerConstraints.gridy =0;
         containerConstraints.gridwidth =3;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(TitleLabel, containerConstraints);
+        getContentPane().add(TitleLabel, containerConstraints);//<-- then add your component to the pane, but with containerConstraints as a 2nd argument
 
-        containerConstraints.gridx =4;
-        containerConstraints.gridy =1;
+        containerConstraints.gridx =4;//<-- you can then change the values you want to, and then repeat the process, 
+        containerConstraints.gridy =1;// and TitleLabel will keep the previous setting as its position.
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(AuthorLabel, containerConstraints);
+        getContentPane().add(AuthorLabel, containerConstraints);//<-- and this will recieve the new values, along with whatever wasnt changed from before.
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =2;
@@ -267,5 +275,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         pack();//<-- this pack(); causes it to evaluate sizes and paint the contents of the pane
         getContentPane().setVisible(true);//<-- then this displays the pane
     }
-    //made it to the end? time for main game window!
+    //Made it to the end?
+    
+    //Now time for main game window!
 }

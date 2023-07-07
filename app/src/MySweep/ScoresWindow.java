@@ -110,17 +110,25 @@ public class ScoresWindow extends JFrame {
         this.clickable = clickableToggle.isSelected();//<-- get default state of clickable for our global variable
         this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
         initComponents();
+    }
+    public ScoresWindow(JFrame ParentFrame) {
+        thisBoard = new ScoreEntry();
+        clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//<-- make button reflect default state of clickable
+        this.clickable = clickableToggle.isSelected();//<-- get default state of clickable for our global variable
+        this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
+        initComponents();
+    }
+    private void initComponents() {//-----------------------------------initComponents()------------------------------------------
         clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
             @Override
             protected Color getSelectColor() {
                 return (isDeleteMode)?Color.RED:super.getSelectColor();//<-- "super" allows us to refer to the class we extended
             }                                             // that way, if we override a function we can trigger the default functionality if we wish.
         });
-    }
-    private void initComponents() {//-----------------------------------initComponents()------------------------------------------
         //------------------------------------------Initialize our nested gridbaglayout panels
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
         getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
+        setIconImage(MineSweeper.MineIcon);
         JPanel containerGridBag = new JPanel(new GridBagLayout());
         GridBagConstraints containerConstraints = new GridBagConstraints();
         JPanel HeadingPanel = new JPanel(new GridBagLayout());
@@ -380,17 +388,25 @@ public class ScoresWindow extends JFrame {
     And then place a call to it inside the function that is called when the toggle button is pressed. The info was on the way to grid anyway so it exists. 
     You can't easily mess up game logic in that function, just if the button changes the display correctly, so its the perfect candidate.
     The game is designed like that as much as possible, where changing stuff shouldnt change stuff you wouldnt expect it to change.
-    (dont forget to make sure your function can see your buttons somehow)
+    
+    for example, setting the text color or background or text of an icon will never make the game technically unwinnable because display is separate from game logic, 
+    and check makes sure it wasnt previously checked before incrementing its count, so calling it too many times on a button wont break it
 
-    The toggle ? error is quite hard for a beginner in a new code base. If you figure it out, you did a good job.
-    Think about what things in minefield you can check for and exclude. Also, a new icon will overwrite the old one so you have to then put the icon back on it
+    The toggle dark mode error is quite hard for a beginner in a new code base. If you figure it out, you did a good job.
+    Think about what things in minefield you can check for and use, and when the bug is occurring and on what cells. 
+    Also, a new icon will overwrite the old one so you have to then put the icon back on it (after you tell it when to do that of course)
+    
+    I do have answers for the excercise in the other github branch (Jarred) where I fixed the function if you get real stuck. 
+    Dont forget to remove the thing i had in game over that I tell you to remove at the start of the excercise. 
+    It will make spotting what is happening wrong much easier!
+    After that, you will not have to do anything outside of toggle dark mode to fix it.
     
     After all that:
-    I would suggest going and doing one of those python learn to code courses now that you can see how data flows around a program in an object oriented language.
-    It will be super easy now that you know all of this, and you will be making cool stuff in no time!
+    I would suggest going and doing one of those python learn to code courses now that you can see how data flows around a program in an object-oriented language.
+    It will be super easy learning the syntax for that now that you know all of this, and you will be making cool stuff in no time!
+    Probably, before you even finish their course you could be making something like this in python after doing this mini course game thing.
     Python is pretty similar, except you dont have to explicitly say a lot of the stuff you can specify in java, it figures it out based on context.
-
-    I do have answers for it in the other branch where I fixed the function if you get real stuck but want to copy it in and make your game work better. you will also need to remove 1 thing from game over function.
+    It also has a more varied code base to pull from to do a lot of different stuff, and is easier to compile and run.
 
     Good Luck!!
 */
