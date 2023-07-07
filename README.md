@@ -114,8 +114,8 @@ unzip minesweeper_linux_dist.zip -d minesweeper_linux_dist && \
 sudo ./minesweeper_linux_dist/installLinuxMinesweeper.sh
 ```
 
+and, optionally, you can run these to move the install scripts to the folder scores save in after the install
 ```bash
-##and, optionally, you can run these to move the install scripts to the folder scores save in after the install
 [ ! -d ~/.minesweeper/ ] && mkdir ~/.minesweeper; \
 mv ./minesweeper_linux_dist/installLinuxMinesweeper.sh ~/.minesweeper/ && \
 mv ./minesweeper_linux_dist/uninstallLinuxMinesweeper.sh ~/.minesweeper/ && \
