@@ -241,20 +241,20 @@ public class Grid extends JPanel {
 
 
 
-                //^It does the same thing, but the bug is fixed. This whole branch is basically the same thing.
+                //^The bug is fixed. 
+                
+                //This whole branch is basically the same thing as the other one.
                 //This branch is from right before I made it a full on guide.
 
-                //I tried to make it into like, the russian doll of .jar files. It saves its scores into itself sorta.
+                //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
 
                 //what really happens is it just creates and updates a new jar file version in the temp folder,
-                //and then when you close it, it copies a mini program out of itself, 
-                //called OverwriteJar, runs that program, closes, and then OverwriteJar well...
-                //it overwrites the jar with the new version for next time, then deletes itself and the temp jar.
-                //If it doesnt finish somehow it will still find the scores next time.
+                //and then when you close it, it copies a mini program out of itself, called OverwriteJar,
+                // runs that program, closes, and then OverwriteJar well it overwrites the jar with the new version for next time, then deletes itself and the temp jar.
+                //If it doesnt finish somehow it will still find the scores next time because it reads from the temp one first.
+
                 //Because i wrote the program in a modular fashion, the only thing
-                // that changed was minesweeper.java, and ScoresFileIO, and adding Overwrite.java
-
-
+                // that needed to be changed was minesweeper.java, and ScoresFileIO, and adding OverwriteJar.java
 
 
 
