@@ -1,10 +1,12 @@
 /*
     Programming is not so complex as you may think. Computers are stupid. They cannot learn english. Their language is much simpler than ours.
-    Programs may one day be able to understand english. That  Currently we have programs that can generate it in response to input.
-    But a computer will never understand english. A computer is not able to understand anything.
+    Programs may one day be able to understand english, but there is a long time until then. 
+    BUT a computer will never understand english. A computer is not able to understand anything.
     Too stupid. I get zap, I turn switch on. I dont get zap, I turn switch off. Passive.
     The hard part is writing instructions that something so stupid can follow.
-    The other hard part is getting data to be visible where it needs to be.
+    The other hard part is getting data to be visible where it needs to be in your program.
+    The other other hard part is looking on the internet for that one function you don't know the name of but will solve all your problems.
+
     When I say Computers Know, what I mean is, someone has created a set of instructions we can use to tell the computer what to do
     except, without pulling our hair out trying to make sense of 00010101 00111001 010110101011111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 Stack Overflow Error
 
@@ -15,7 +17,9 @@
     There are many comments. Designed to be read in the order of the reading order. That is also marked by comments.
 
     Also, visual studio code has really good tools for beginners that are easy to install. Download a java extension in vs code.
-    Other editors have this stuff too and sometimes better but it is harder to install stuff. It will make things much more readable.
+    Other editors have this stuff too and sometimes better but it is harder to install stuff. 
+
+    It will make things MUCH more readable. Or, readable at all.
 
     Computers know:
 
@@ -37,23 +41,21 @@
     -A String which is an array of characters, or as we call them, "words". Yes, with the quotes. 
     
     in some languages you must tell it to create a physical place to store things before you tell it what variable name to store the value in.
-    not Java though. It has a Garbage Collector to clear up what you allocate automatically when you create variables.
+    Not Java though. It has a Garbage Collector to clear up what you allocate automatically when you create variables.
     The big GC to take the wheel. The G stands for Guesus.
     Many languages have garbage collectors. Garbage Collectors do very important work every day just like human ones do.
 
     2. How to do a few very simple things with the things you stored.
     
     The main things it knows how to do with things it stores:
-
-    There are several main things you can tell your computer to then do with those things you created.
-    The language you use dictates what words and operators to use to tell it to do those things.
+    (The language you use dictates what words and operators to use to tell it to do those things.)
     
     -You can tell it to store a thing (see above)
     -You can tell it to read a thing it stored
     -You can tell it to perform a thing on a thing you stored, including changing it (usually) and checking it against the value of another thing.
     -You can tell it to do one set of things or another based on checking a comparison between things (the main way to do this is called an if statement)
     -You can tell it to do a set of things until a comparison becomes false which is called a loop.
-        (declared with "for(variable; condition; thing to change on each loop){your stuff here}", or "while(comparison){your stuff here}")
+        (declared with "while(comparison){your stuff here}" or "for(variable_to_check; condition<variable; variable=variable+change){your stuff here}")
     -You can add a comment, like the one this file is inside with /* a comment */, or by using // for rest of line comments
 
     3. Where do you put these things?
@@ -90,9 +92,7 @@
     int secondNumber = 2;
     result = addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);//<-- here is where we call it
 
-    System.out.println(Integer.toString(result));//<-- this is very useful. Prints to terminal window. Use to debug. (or use a program to step through like I should have)
-
-    //which would make the value of result be 2.
+    System.out.println(Integer.toString(result));//<-- will print the value 2 to the terminal window.
 
     to know what operators you have and what they can do (like + for example can append strings or add numbers. 
     / is also worth looking up. It will not work like you think for integers 
@@ -100,7 +100,7 @@
     
     google operators for your language after reading this. Know how these work.
     
-    //this while loop will execute 4 times:
+    //this while loop will execute 4 times. Walk through it. if thisIsTrue do this, otherwise(else), if this, do this, etc...
     int theAnswer=42;
     int i = 0;
     while(i<12){
@@ -113,7 +113,7 @@
                 i=i*2;
             }else{
                 continue; //<-- this just skips to the next execution of the loop. break would jump all the way out. 
-            }//   ^It will not execute because theAnswer == 42
+            }   //^It will not execute because theAnswer == 42
         }
     }
     
@@ -121,9 +121,11 @@
     //First with i == 0, then i == 1, then 3, then 6 and then when it becomes 12, it will fail the check in the while loop and not execute again.
     //Try to read through it like the computer does. It's very good theAnswer == 42 otherwise it would loop forever! (until you get task manager involved)
 
+    //this next thing will make more sense as you see it used and is a side detail but:
     //Theres also a weird thing that is nice sometimes that looks like (boolean)?"thing1":"thing2" and is used like:
 
     boolean comparison = (3 == 4);//<-- performs a comparison between 3 and 4 and returns the result false to the variable comparison
+    
     int x = (comparison)?numberone:numbertwo;//<--int x will recieve numbertwo from the ternary expression
 
     //or more simply:
@@ -139,15 +141,16 @@
     in Java, execution begins at the main(String[] args) function, which takes an array as input, that is filled with whichever words (strings) 
     which may have been passed in from the command line. The main function of this program begins in MineSweeper.java
 
-    in Java, if you pass a primitive type, you pass a copy of the contents. You cannot change the value of the original with the result.
+    in Java, if you pass a primitive type(the ones mentioned at the top of the file), 
+    you pass a copy of the contents. You cannot change the value of the original with the result.
 
     int result;
     int firstNumber = 2;
     int secondNumber = 2;
     result = addTwoIntegersIfAnswerIsNotThreeOtherwiseMultiply(firstNumber, secondNumber);
-    //firstNumber and secondNumber both are still 2, and result is now 4, regardless of what happens to them inside the function.
+    //firstNumber and secondNumber both are still 2, regardless of what happens to them inside the function. and result is now 4.
 
-    But if you pass a thing that is an instance of a class, you CAN change the original inside a function.
+    But if you pass a thing that is an instance of a class instead, you CAN change the original inside a function.
 
     5. And now for Classes
 
@@ -160,12 +163,12 @@
     and create a new instance using 'new' and a constructor
         (a constructor is just a function with the name of the class that automatically returns an instance of that class)
     
-    you can then access functions and data (variables) inside of it from outside of the class 
-        (unless said item is declared as private) by using the dot operator '.'
-    the functions inside of them will operate on data accessible within that instance of the class.
+    you can then access functions and data (stored in variables) inside of it from outside of the class by using the dot operator '.'
+    the functions inside of them will operate on data accessible within *that instance* of the class.
     
-    This means if you have a class called chair, you can create 2 instances of chair, and give them each their own height. 
-    Maybe they each have their own setHeight(int h) function to do it!
+    This means if you have a class called chair with a height and a function to read it, you can then create 2 instances of chair.
+    Then, Chair1.getHeight(); could be different from Chair2.getHeight();
+    (if you bought them in different places, for example.)
 
     //If you had a class named MyClass that took a String as input in its constructor:
 
