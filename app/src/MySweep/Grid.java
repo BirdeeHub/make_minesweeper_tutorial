@@ -242,10 +242,22 @@ public class Grid extends JPanel {
     //Just have to figure out the right things to check from minefield to achieve what you want.
 
     //NECESSARY HINTS: 
-    //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself. 
-    //Dont forget to remove that. In fact, go to game over function and remove it right now. 
+
+    //FIRST: Reproduce the bug.
+    //open a game and click some bombs. when you explode, open instructions window.
+    //pay attention to the explosions when you toggle the button. Some of them dissapear.
+    //it happens on the win screen as well for the same reason.
+
+    //SECOND:
+    //I apparently thought of checking all the bombs in the game over function instead of dealing with it here. Go remove that.
+    //I'm rolling my eyes at myself. I legitimately thought that was a good idea.
     //It will make the error much more clear.
     //After that, you can fix it by changing only things inside this function.
+
+    //If you are REALLY smart, you can do it in 3-5 lines plus a } (depending on if you like to put stuff on the same line or space it out)
+    //If you aren't, and are like me, it might take you many more lines the first try.
+    //there are MANY ways to do it, some are more elegant than others.
+    //Both of my solutions are available but try to figure it out. You just read the whole thing. Use it or lose it!
     
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;//<-- toggle the variable
@@ -541,7 +553,7 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board with icon and border and stuff then passes the work to ScoresFileIO
-        //we have to define the image to the size of the button or it will resize the board
+        //we have to set the size of the image to the size of the button or it will resize the board
         //remember those public static images from earlier in MineSweeper?
         //we are going to create new scaleableIcons out of them, and scale them to the correct initial size.
         ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));

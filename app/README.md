@@ -1,3 +1,5 @@
+There is a guide to learn to code in these files. Read on.
+
 This folder contains the compile and package scripts in packaged installs. 
 
 Application source code is in src/MySweep folder. 

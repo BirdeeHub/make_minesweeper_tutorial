@@ -14,25 +14,33 @@ which will update your actual installed version of the game that you can run fro
 
 It has a lot more than that actually. It has a full learn to code java guide inside the source code.
 
+Yes. Inside the source code. This entire game is a learn to code guide.
+
 It begins with HowToCodeJava.txt, and then you walk along the program in a particular (but not too convoluted) order.
 
-It has comments along the way and introduces concepts in a gradually increasing order of difficulty. (or, as close to that as possible while still being a game) 
+It has comments along the way and introduces concepts in a gradually increasing order of difficulty. (or, as close to that as possible while still being a game!!)
 
-and it ends with a coding excercise that should hopefully be within grasp once you make it to the end where you fix a slight bug. 
+And it ends with a coding excercise that should hopefully be within grasp once you make it to the end, where you fix a slight bug. (with hints!) 
 
-It should be challenging, but not too difficult, even if you have no previous knowledge of coding. 
+(Bug does not affect gameplay. But it was a real bug. I made it. On accident. Yes there is a link to solutions... try not to use it.)
+
+It should be challenging, but definitely not impossible, even if you have no previous knowledge of coding. You will need to pay close attention.
 
 (Dont forget to reference back to the opening text file where I explain what you dont understand as it gets reintroduced when necessary!)
 
-Of course, at a certain point you have to do, rather than read. But this will get you to that point.
+Of course, at a certain point you have to DO, rather than read. But this will get you to that point.
 
 Go to the install folder of your game, and read the README in app/ or lib/app for more info.
 
+Don't clone the repo it just has extra stuff. Download an installer, (or just the .jar file in app folder and extract it. Instructions below.)
+
+Inside is an entire copy of the app folder of this repo.
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
-**version 1.0** is the normal version
+**version 1.0** is the normal version for those who just want a good minesweeper game.
 
-**version 2.0** contains a compiler you can use, but is an extra 10MB.
+**version 2.0** contains a compiler you can use, but is an extra 10MB. Recommended for learners, because you can jump in with no extra steps!
 
 if you have 1.0 you will need a version of Java Development Kit to recompile if you wish to edit.
 
@@ -78,6 +86,20 @@ otherwise some package launchers like dmenu (the default on i3) cant find it.
 
 It would work fine though if you used the .deb other than being less convenient to use it from the command line
 
+If you are planning to learn Java rather than just play, you will unfortunately have to copy your game from its install folder to a directory that doesnt require sudo.
+
+So in that case, use the .deb file. It wont get added to your path, but you will also be able to see error messages because it wont be running from a script that hides those.
+
+dpkg has certain install locations it allows....
+
+**If you are learning java, download the .deb file (or the .jar) for the reasons stated above.** 
+```bash
+wget -O minesweeper_1.0-1_amd64.deb https://github.com/BirdeeHub/minesweeper/raw/main/minesweeper_1.0-1_amd64.deb && \
+sudo dpkg -i ./minesweeper_1.0-1_amd64.deb
+```
+
+**Otherwise, better playing experience from command line launch:**
+
 move to a writeable directory and run the following command (requires wget):
 ```bash
 wget -O minesweeper_linux_dist.zip https://github.com/BirdeeHub/minesweeper/raw/main/minesweeper_linux_dist.zip && \
@@ -100,9 +122,15 @@ sudo ~/.minesweeper/uninstallLinuxMinesweeper.sh
 
 the uninstall script will cleanup the script from /usr/local/bin, but will not delete ~/.minesweeper/ or its contents
 
+The .deb installer script may not work if your system is unable to install jdk 17 and run programs with it, 
+because Java requires C libraries that are not present at runtime.
+You dont have to install jdk 17 to run it, just be capable of installing it.
+
 **********************************************************************************************************************
 
-**PLATFORM INDEPENDENT:**
+**PLATFORM INDEPENDENT:(and should work with older versions)**
+
+**(the .jar file)**
 
 ____________________________________________________________________________________
 
@@ -114,24 +142,19 @@ https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 
 use "java -jar <_path_>/<_to_>/minesweeper.jar" to play!
 
-Make sure jdk is added to your path, or run the java binary directly.
+Make sure jdk is added to your path, or run it with the path to the java binary directly.
 
-Inside the Jar, you will find a replica of the app directory.
+Inside the Jar, there is a replica of the app directory. (yes, in a 1/5th of a MB file, that is also a game.)
 
 If you wish to access these files to edit the program, use:
 
 jar -xvf ./minesweeper.jar && rm -r MySweep/ META-INF/
 
+the rm -r command is optional, but those things arent needed to compile. They ARE what was compiled. Or, well, copies of the ones in the jar.
+
 If you have another version of jdk already, 
 but it wont let you run due to incompatible version,
-you can probably just recompile. run the appropriate compile script if you have the github repo, or if you only had the package installer,
-then the compile script is in \<install_directory\>/minesweeper/lib/app/ and the source is included.
-
-if your computer is unable to install jdk 17 and run programs with it, such as ubuntu 20 or earlier, 
-then the .deb installer script may not work on your system, because java requires C libraries that are not present at runtime.
-You dont have to install jdk 17, just be capable of installing it.
-
-However, using the jar can work with older versions of jdk back to about 11
+you can probably just recompile. run the appropriate compile script. It will require the file structure of the app folder to remain the same.
 
 ***************************************************************************************************************************
 
@@ -139,26 +162,25 @@ However, using the jar can work with older versions of jdk back to about 11
 
 ____________________________________________________________________________________
 
-*Windows:*
+Cool! All you did was download extra stuff and cheat yourself out of running it from the start menu. 
 
-If on windows, just run the installer unless you just wanna use the jar.
+You can run it from the jar, or just run the installer. Or, look through the code, recompile, repackage, and then run the installer idk.
 
-*Linux:*
+------------------------------------------------------------------------------------------------------------------------------------------------
 
-either unzip the zip folder, *OR* copy the installLinuxMinesweeper.sh file in Packaging/LinuxInstall into the same directory as the .deb file.
-
-(its designed to get zipped with the .deb and installed that way so it would be in the same folder. 
-In the repo, it is not in the right folder. but the zip folder is right there for you.)
-
-Run the install script in LinuxInstall USING SUDO (needs permission to run dpkg and to copy launcher script to /usr/local/bin)
+**Extra info for linux users:**
 
 Install directory is /usr/local/games, scores save in ~/.minesweeper/
 
-It will create short script called minesweeper in /usr/local/bin so that you can run the game from terminal without it freezing your terminal.
+It will create short script called minesweeper in /usr/local/bin so that you can run the game from terminal without it hogging your terminal.
+
+Running via this script will also hide any errors you make, but you dont have to run it via the script. You could go to the actual folder.
 
 To run, use command "minesweeper" or find it in your start menu equivalent.
 
-(the script in your /usr/local/bin directory runs \<install_directory\>/minesweeper/bin/Minesweeper $@ >/dev/null 2>&1 < /dev/null &)
+the script in your /usr/local/bin directory runs $install_directory/minesweeper/bin/Minesweeper $@ >/dev/null 2>&1 < /dev/null &
+
+in this case, install_directory is /usr/local/games
 
 **ATTENTION:** I was unfortunately unable to make a mac .pkg file with the system i had access to.
 Until I can spend an extended time on a mac or get around to trying a mac vm, 
