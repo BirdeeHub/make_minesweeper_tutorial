@@ -233,7 +233,7 @@ public class Grid extends JPanel {
     //I have hints for you if you get stuck.
     //This can be part of the thing that makes coding frustrating sometimes, 
     //but it also will teach you a lot about how things are connected very quickly.
-    //Dont worry if you cant figure it out. I didnt really try too hard the first time necessarily, 
+    //Dont worry if you cant figure it out. I could have tried harder, 
     //but I didn't actually figure it out until after I made it an excercise. 
     //I didnt even notice it until right before all these tutorial comments.
     //I dont like the non darkmode version. So I kinda just left it. It wasnt super important.
@@ -243,16 +243,16 @@ public class Grid extends JPanel {
 
     //NECESSARY HINTS: 
     //I apparently thought of checking all the bombs in the game over function instead and I am now rolling my eyes at myself. 
-    //Dont forget to remove that. In fact, go to game over function and remove it right now after testing it as is. 
+    //Dont forget to remove that. In fact, go to game over function and remove it right now. 
     //It will make the error much more clear.
-    //After that, you can fix it entirely inside this function.
+    //After that, you can fix it by changing only things inside this function.
     
     void toggleDarkMode(){//<-- this toggles it for the board.
         this.DarkMode = !DarkMode;//<-- toggle the variable
         for (int x = 0; x < Fieldx; x++) {//<-- step through the grid
             for (int y = 0; y < Fieldy; y++) {
-                if(!answers.exploded(x, y) && (!answers.checked(x, y)||answers.adjCount(x, y)>0)){//<- these are the 2 conditions in which i set background 
-                    //                                                                            ^during game so i check to prevent overwriting it
+                if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){//<- these are the 2 conditions in which I set background 
+                    //                                                                            ^during game so I check to prevent overwriting it
                     if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
                     }else{
                         getButtonAt(x,y).setBackground(null);
@@ -261,7 +261,8 @@ public class Grid extends JPanel {
                     if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
-                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
+                    // ^it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
+                }
             }
         }
         Grid.this.repaint();
@@ -269,7 +270,7 @@ public class Grid extends JPanel {
     }
     //HELPFUL HINTS:
     //Think about what things in minefield you can check for and use, and when the bug is occurring and on what cells. 
-    //Also, a new icon will overwrite the old one so you have to then put the icon back on it. How best to do that?
+    //Also, a new icon will overwrite the old one so you have to then put the icon back on it. Check game over for how to do that.
 
 
 
@@ -277,8 +278,8 @@ public class Grid extends JPanel {
     //SUPER HINTS:
     //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
 
-    //SPOILERS
-    //Also, I added the answer to Jarred branch if you get really stuck. 
+    //spoilers required?
+    //I added the answer to Jarred branch if you get really stuck. https://github.com/BirdeeHub/minesweeper/blob/Jarred/app/src/MySweep/Grid.java
     //That branch is kinda dumb but I wanted to preserve this excercise here but still have the answers somewhere. 
     //So there is a better version of this function there.
 //------------------------------------------------------------------------------------
