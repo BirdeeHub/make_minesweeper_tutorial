@@ -262,37 +262,6 @@ public class Grid extends JPanel {
         Grid.this.repaint();
     }
  */
-
- //VERSION 3 (Only allocate the Icons 1 time. Faster.)
-/*
-    void toggleDarkMode(){
-        if(answers.isGameOver()){
-            ScalableIcon Explosion = new ScalableIcon(MineSweeper.ExplosionIcon);
-            ScalableIcon Revealed = new ScalableIcon(MineSweeper.MineIcon);
-        }
-        this.DarkMode = !DarkMode;
-        for (int x = 0; x < Fieldx; x++) {
-            for (int y = 0; y < Fieldy; y++) {
-                if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
-                    }else{
-                        getButtonAt(x,y).setBackground(null);
-                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
-                    }
-                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
-                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
-                    }
-                    if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
-                        //check for wonValue and then copy paste icon thing from game over
-                        if(wonValue == 0)getButtonAt(x,y).setIcon(Explosion);
-                        if(wonValue == 1)getButtonAt(x,y).setIcon(Revealed);
-                    }
-                }
-            }
-        }
-        Grid.this.repaint();
-    }
- */
             //Regardless, you need to find some condition to use to determine when the game over icon would be on the button, and which one.
             //you also need to then assign the icon again after setting the new background to re overlay it over top.
             //if you do those things correctly in some way, it would work.
