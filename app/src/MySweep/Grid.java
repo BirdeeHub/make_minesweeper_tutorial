@@ -88,13 +88,12 @@ public class Grid extends JPanel {
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
     private class ScalableIcon implements Icon {//currently only used in GameOver function
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
-        public ScalableIcon(Image originalIcon, int w, int h) {//<-- Constructor 
-            this.originalIcon = new ImageIcon(originalIcon.getScaledInstance(w, h, Image.SCALE_SMOOTH));//<-- scale the image to the correct initial size
-            //and create an ImageIcon out of it. It is not easy to get the height of the Image class.
-        }//Stuff for resizing Icon.
-        public int getIconWidth() {return originalIcon.getIconWidth();}
-        public int getIconHeight() {return originalIcon.getIconHeight();}
-        public void paintIcon(Component c, Graphics g, int x, int y) {
+        public ScalableIcon(Image originalImage) {//<-- Constructor 
+            this.originalIcon = new ImageIcon(originalImage);//<-- create an ImageIcon out of the icon. It is not easy to get the height of the Image class.
+        }
+        public int getIconWidth() {return 0;}//<-- it only matters that these are smaller than the buttons. If it isnt, the button will get bigger.
+        public int getIconHeight() {return 0;}//<-- We are implementing an interface. Other java functions use these functions. One of those, is JButton.
+        public void paintIcon(Component c, Graphics g, int x, int y) {//<-- This will then make the icon the size of the button after.
             int width = c.getWidth();
             int height = c.getHeight();
             Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
@@ -214,7 +213,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
                         }//THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
                         //this will put it back on top of the other stuff we put.
-                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon));
                     
                     }else if(wonValue == 1){//<-- if you won, you see the mines
                         if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
@@ -222,7 +221,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
                         }
-                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon));
                     }
                 }
             }
@@ -254,8 +253,8 @@ public class Grid extends JPanel {
                     }
                     if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
                         //check for wonValue and then copy paste icon thing from game over
-                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
-                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
+                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon);
+                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon);
                     }
                 }
             }
@@ -570,8 +569,8 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon);
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon);
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
