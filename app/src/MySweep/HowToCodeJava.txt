@@ -203,7 +203,7 @@
     An Interface is where you just inherit the developers problems. They decided it would be better not to tell you how to write your program.
     You must write the functions of an interface you implement if you want to use them. Other functions are relying on you for it!
     They did not write them. They just wrote stuff that uses them if you define them. 
-    If you want to make a class that is an interface you use the 'implements' keyword when you define the class.
+    If you want to make a class that defines functions from an interface you use the 'implements' keyword when you define the class.
 
     when you want to use one that is already written it looks like this:
 

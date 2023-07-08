@@ -229,8 +229,10 @@ public class Grid extends JPanel {
 
     boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
 
+
+
 /* 
-    Excercise:
+    Excercise for end of guide:
 
     This next function is kinda glitchy if you use it in the end of game screen. 
     But it doesnt affect gameplay because reset will fix it.
@@ -307,7 +309,7 @@ public class Grid extends JPanel {
 
     //spoilers required? <-- This though, is only for if you are frustrated beyond belief.
     //I added the answer to Jarred branch if you get really stuck. https://github.com/BirdeeHub/minesweeper/blob/Jarred/app/src/MySweep/Grid.java
-    //So there is a fixed version of this function there. 2 different versions of it actually.
+    //So there is a fixed version of this function there. A few different versions of it actually.
 
     //That branch is kinda dumb in some ways but I wanted to preserve this excercise here and still have the answers somewhere. 
     //Its dumb for the same reason it is cool actually.
@@ -625,22 +627,23 @@ public class Grid extends JPanel {
 
 
 
-    //You should really come back to this next one at the end
+    //You should really come back to this next one at the end if you want to try to understand the paint function of this next one.
 
 
-    //this next one is hard but short. I needed to make it because of zoom + Icons
+    //this next class is complicated. I needed to make it because of zoom + Icons
 
     //It makes it so that the Icon stays the same size of the button. 
-    //It is also an example of implementing your own interface.
-    //(control click Icon if in VS code. Those are the functions I am required to write. I can define others as well, such as my own constructor)
+    //It is also an example of implementing an interface.
+    //I am required to define all of the functions in the interface. I can define others as well, such as my own constructor
+    //(control click Icon if in VS code to see the interface I am implementing.)
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
-    private class ScalableIcon implements Icon {//currently only used in GameOver function
+    private class ScalableIcon implements Icon {//<-- implement the Icon interface, which contains 3 functions for us to implement.
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
         public ScalableIcon(Image originalImage) {//<-- Constructor 
             this.originalIcon = new ImageIcon(originalImage);//<-- create an ImageIcon out of the icon. It is not easy to get the height of the Image class.
         }
         public int getIconWidth() {return 0;}//<-- it only matters that these are smaller than the buttons. If it isnt, the button will get bigger.
-        public int getIconHeight() {return 0;}//<-- We are implementing an interface. Other java functions use these functions. One of those, is JButton.
+        public int getIconHeight() {return 0;}//<-- We are implementing an interface. Other java classes use these functions. One of those, is JButton.
         public void paintIcon(Component c, Graphics g, int x, int y) {//<-- This will then make the icon the size of the button after.
             int width = c.getWidth();
             int height = c.getHeight();
