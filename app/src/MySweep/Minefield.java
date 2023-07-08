@@ -3,8 +3,8 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 class Minefield{//a data class for Grid. contains and manages all mutable game-state variables, it is more disposable than grid to allow easy reset of timer and board
-    private boolean[][] cell, chkd, mrk, exp, qstn;    //<-- initialization of variables. these are 2D arrays. (or, arrays of arrays)
-    private int[][] adj;//<-- this is also a 2d array but of numbers rather than true or false values
+    private boolean[][] cell, chkd, mrk, exp, qstn;    //<-- initialization of variables. these will contain 5 different 2D arrays. (or, arrays of arrays)
+    private int[][] adj;//<-- this is also a 2D array but of numbers rather than true or false values
     private final int Fieldx, Fieldy, bombCount;//<-- size of field and number of bombs
     private int totalExploded = 0;
     private int totalChecked = 0;
@@ -55,7 +55,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
             }
         } else {//<-- this else means if not dead on arrival
             int i=0;//If you had googled operators you would know that && and || are logical operators for comparisons that return booleans and that whitespace doesnt matter
-            if(((Fieldx*Fieldy-bombCount)>8)||//IF field has 9 non-bomb cells, OR
+            if((8<(Fieldx*Fieldy-bombCount))||//IF field has 9 non-bomb cells, OR
             ((5<(Fieldx*Fieldy-bombCount))&&(a==0||a==(Fieldx-1)||b==0||b==(Fieldy-1)))||//clicked on an edge and 6 non-bomb cells, OR
             ((3<(Fieldx*Fieldy-bombCount))&&((a==0 && b==(Fieldy-1))||(b==0 && a==(Fieldx-1))||(a==0 && b==0)||(b==(Fieldy-1) && a==(Fieldx-1))))){
                                                                                         //^^ clicked a corner and 4 non-bomb cells
@@ -64,7 +64,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
                     int Randy=(int)Math.round(Math.random()*(Fieldy-1));//repeatedly until no bombs are left to distribute
                     if((cell[Randx][Randy]==false)&&(((Randx <(a-1))||(Randx >(a+1)))||((Randy <(b-1))||(Randy >(b+1))))){//<-- if not too close to us
                         cell[Randx][Randy]=true;//<-- place the bomb in the cell
-                        i++;
+                        i++;//<-- increment i. when i >= bombCount we placed all our bombs.
                     }
                 }
             }else {//not enough room for adjc==0. square just can't be a bomb.
@@ -80,26 +80,26 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
         }
         for(int j=0;j<Fieldx;j++)for(int k=0;k<Fieldy;k++)adj[j][k]=adjc(j,k);//<-- call the adjc(a,b) function on each cell to initialize all adj counts
     }
-    private int adjc(int a, int b){//when called, initialize adjacent bomb counts for 1 cell. Helper for reset.
+    private int adjc(int a, int b){//when called, initialize adjacent bomb counts for 1 cell. Helper for initBoardForFirstClickAt(x,y).
         int adjCount = 0;
         for(int i=a-1;i<=a+1;i++){//a-1 to a+1
             for(int j=b-1;j<=b+1;j++){//b-1 to b+1
-                if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;// if not inside the grid, continue so we dont check an out of bounds array index
-                if(cell[i][j]) adjCount++;
+                if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;//<--  if not inside the grid, continue so we dont check an out of bounds array index
+                if(cell[i][j]) adjCount++;//<-- if cell has bomb, increase adj count
             }
         }
-        return adjCount;
+        return adjCount;//<-- return number of adjacent bombs
     }
     //-----------------------Data Access functions------------------------------------------------------------------------------
     //I grouped them by the 2D array they reference.
 
-    boolean isBomb(int a, int b){return cell[a][b];}
+    boolean isBomb(int a, int b){return cell[a][b];}//<-- returns value in cell[][] for the one asked about, which indicates if it is a bomb or not.
 
-    int adjCount(int a, int b){return adj[a][b];}
+    int adjCount(int a, int b){return adj[a][b];}//<-- same thing but for adj count
 
     //exploding
     void explode(int a, int b){
-        if(!exp[a][b])totalExploded++;//<-- cant mess up the count because it checks if it was already exploded
+        if(!exp[a][b])totalExploded++;//<-- cant mess up the count because it checks if it was already exploded before incrementing it.
         exp[a][b]=true;
     }
     boolean exploded(int a, int b){return exp[a][b];}
@@ -122,7 +122,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     void clearSuspicion(int a, int b){qstn[a][b]=false;}
     boolean isQuestionable(int a, int b){return qstn[a][b];}
 
-    //checking
+    //checking (for every cell that is revealed and not a bomb, we will check it. When cellsChecked()==Fieldx*Fieldy-bombCount, we win.)
     void check(int a, int b){
         if(!chkd[a][b])totalChecked++;
         chkd[a][b]=true;
@@ -142,7 +142,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
 
     long getTime(){return time;}//get time
 
-    //GameOver & stop timer (which then cannot be started again)
+    //GameOver & stop timer (which then cannot be started again in this instance)
     void setGameOver(){
         if(!GameOver){
             GameOver=true;
@@ -152,5 +152,5 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
     boolean isGameOver(){return GameOver;}
 
     //if all of this makes sense, go back to grid, and read the stuff after constructor. 
-    //it has some misc display functions, and then the main game logic that uses this class.
+    //it has some misc display functions, and then the main game logic that uses this class to check values and do stuff..
 }

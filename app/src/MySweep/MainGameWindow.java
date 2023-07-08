@@ -172,20 +172,21 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                     }else{//initialize stuff we need to know for recentering before changing zoom
                         zoomInProgress = true;
                         rotationAmount += e.getWheelRotation();
-                        PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                        PointerInfo pointerInfo = MouseInfo.getPointerInfo();//<-- get current mouse location on screen
                         Point mouseLocation = pointerInfo.getLocation();
-                        SwingUtilities.convertPointFromScreen(mouseLocation, grid);//<-- find mouse relative to grid at function call
-                        int mouseX1 = mouseLocation.x;
+                        SwingUtilities.convertPointFromScreen(mouseLocation, grid);//<-- find mouse relative to grid
+                        int mouseX1 = mouseLocation.x;//<-- save current position over grid for recentering later
                         int mouseY1 = mouseLocation.y;
-                        getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to old size
+                        getContentPane().setPreferredSize(MainGameWindow.this.getContentPane().getSize());//<-- stop it from reverting to original size
                         //get wheel and cell size info and do zoom
                         SwingUtilities.invokeLater(() -> {//<-- invoke later to avoid issues with many simultaneous scroll inputs,
-                            int[] gridSizesOldNew = grid.doZoom(-rotationAmount, mouseX1, mouseY1);//<-- does zoom, gives old and new button grid sizes
+                            int[] gridSizesOldNew = grid.doZoom(-rotationAmount, mouseX1, mouseY1);//<-- changes grid size, gives old and new grid sizes
                             rotationAmount=0;//reset rotation amount
-                            grid.setCellFontSize();//set font size after zoom so that its not dependent on rotationAmount
+                            grid.setCellFontSize();//set font size after doZoom so that its not dependent on rotationAmount
+                            
                             //make sure it keeps the spot the mouse is over in more or less the same place on the board.
                             int mouseX2 = (gridSizesOldNew[2]*mouseX1)/gridSizesOldNew[0];//if i calculate these inside doZoom and then call
-                            int mouseY2 = (gridSizesOldNew[3]*mouseY1)/gridSizesOldNew[1];//revalidate it works weird. Outside works great. Idk.
+                            int mouseY2 = (gridSizesOldNew[3]*mouseY1)/gridSizesOldNew[1];//revalidate it works weird. Doing it here works great. Idk.
                             int scrollAmountX = (mouseX2 - mouseX1);
                             int scrollAmountY = (mouseY2 - mouseY1);
                             int newScrollValueX = horizontalScrollBar.getValue() + scrollAmountX;

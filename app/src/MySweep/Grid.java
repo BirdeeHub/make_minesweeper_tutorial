@@ -55,7 +55,7 @@ public class Grid extends JPanel {
     private boolean cancelQuestionMarks = true;//<-- boolean for toggling ? marks on bombs
 
     //--------------------------you can initialize other classes within classes if required.--------------------------------------------------------
-    //--------------------------this one is private. Things outside of grid just think it is a JButton. But here, we know.--------------------------
+    //----this one is private. Things outside of grid just think it is a JButton.(because it extends JButton) But here, we know.--------------------------
     //--------------------------CellButton();-----------------------------------------CellButton();-------------------------------------------------
     private class CellButton extends JButton {//<-- these are our game board buttons. This class was created to allow the 
         private int borderWeight = 1;         //^setting of color and thickness of cell borders, now it knows where it is.
@@ -130,29 +130,32 @@ public class Grid extends JPanel {
     }                                                           //read on. when you get there and read it, this will make sense.
     //-----------------------------------function for adding mouse Listener to cells in Grid-------------------------------------------------
     void addCellListener(MouseListener mouseListener){//----------addCellListener()--------------------------------------------------
-        for (int i = 0; i < Fieldx; i++) {
+        for (int i = 0; i < Fieldx; i++) {//<-- step through x and y
             for (int j = 0; j < Fieldy; j++) {
-                getButtonAt(i,j).addMouseListener(mouseListener);
+                getButtonAt(i,j).addMouseListener(mouseListener);//<-- add the listener to each.
             }//The short time where your click wont immediately update the visuals yet after board becomes visible on large board sizes
         }//                               ^ isnt due to this function its just because its java (tm) and still packing.
     }//----------------------------------------------------------------------------------------------------------------------------------------
+
+    //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
+    //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
     @Override
     protected void paintComponent(Graphics g) {//<--Override the paint function to make the background GRASS without making the components also GRASS??
             g.setColor(GRASS);
             g.fillRect(0, 0, getWidth(), getHeight());
     }
-    //--------------------------------------------Misc Public Display Functions--------------------------------------------------------------------
-    //---------Misc Public Display Functions-----------------------------------------Misc Public Display Functions---------------------------
-    long getTime(){return (answers.isFirstClick())?(-1):answers.getTime();}//<-- i passed this through here from minefield so mainGameWindow gets the correct instance of minefield's time
+    long getTime(){
+        return (answers.isFirstClick())?(-1):answers.getTime();//<-- i passed this through here from minefield so mainGameWindow gets the correct instance of minefield's time
+    }
     int getBombsFound(){return BombsFound;}//<-- get
     int getLivesLeft(){return livesLeft;}//<-- that
-    int[] getGameOverIndex(){//     <--    text
+    int[] getGameOverIndex(){//     <--    text (for displays in MainGameWindow)
         int[] messageIndexes = new int[2];
         messageIndexes[0]=GameOverMessageIndex;
         messageIndexes[1]=wonValue;
         return messageIndexes;
     }
-    void toggleQuestionMarks(){//<-- toggles the ability to mark cells with a ? on and off (i find it annoying so it starts turned off)
+    void toggleQuestionMarks(){//<-- toggles the ability to mark cells with a ? on and off (I find it annoying so it starts turned off)
         this.cancelQuestionMarks = !cancelQuestionMarks;
         if(cancelQuestionMarks == true){
             for (int x = 0; x < Fieldx; x++) {
@@ -226,43 +229,49 @@ public class Grid extends JPanel {
 
     boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
 
+/* 
+    Excercise:
 
-    //Excercise:
-    //This next one is kinda glitchy if you use it in the end of game screen but it doesnt affect gameplay
-    //You could probably fix this by the end of reading these game files. It will be a little challenging though!
-    //I have hints for you if you get stuck.
-    //This can be part of the thing that makes coding frustrating sometimes, 
-    //but it also will teach you a lot about how things are connected very quickly.
-    //Dont worry if you cant figure it out. I could have tried harder, 
-    //but I didn't actually figure it out until after I made it an excercise. 
-    //I didnt even notice it until right before all these tutorial comments.
-    //I dont like the non darkmode version. So I kinda just left it. It wasnt super important.
+    This next function is kinda glitchy if you use it in the end of game screen. 
+    But it doesnt affect gameplay because reset will fix it.
+    You could probably fix this by the end of reading these game files. It will be a little challenging though!
+    I have hints for you if you get stuck.
+    This can be part of the thing that makes coding frustrating sometimes, 
+    but it also will teach you a lot about how things are connected very quickly.
+    Dont worry if you cant figure it out. I could have tried harder, 
+    but I didn't actually figure it out until after I made it an excercise. 
+    I didnt even notice it until right before all these tutorial comments.
+    I dont like the non darkmode version. So I kinda just left it. It wasnt super important.
 
-    //It is definitely doable without advanced techniques though. 
-    //Just have to figure out the right things to check from minefield to achieve what you want.
+    It is definitely doable without advanced techniques though. 
+    Its even doable without googling and mostly copy paste if you were paying attention when you read this file!
+    You just have to figure out the right things to check from minefield to achieve what you want.
 
-    //NECESSARY HINTS: 
+    NECESSARY HINTS: 
 
-    //FIRST: Reproduce the bug.
-    //open a game and click some bombs. when you explode, open instructions window.
-    //pay attention to the explosions when you toggle the button. Some of them dissapear.
-    //it happens on the win screen as well for the same reason.
+    FIRST: Reproduce the bug.
+    open a game and click some bombs. when you explode, open instructions window.
+    pay attention to the explosions when you toggle the button. Some of them dissapear.
+    they also still have their old background colors.
+    it happens on the win screen as well for the same reason.
 
-    //SECOND:
-    //I apparently thought of checking all the bombs in the game over function instead of dealing with it here. Go remove that.
-    //I'm rolling my eyes at myself. I legitimately thought that was a good idea.
-    //It will make the error much more clear.
-    //After that, you can fix it by changing only things inside this function.
+    SECOND:
+    I apparently thought of checking all the bombs in the game over function instead of dealing with it here. Go remove that.
+    I'm rolling my eyes at myself. I legitimately thought that was a good idea.
+    It will make the error much more clear.
+    After that, you can fix it by changing only things inside this function.
 
-    //If you are REALLY smart, you can do it in 3-5 lines plus a } (depending on if you like to put stuff on the same line or space it out)
-    //If you aren't, and are like me, it might take you many more lines the first try.
-    //there are MANY ways to do it, some are more elegant than others.
-    //Both of my solutions are available but try to figure it out. You just read the whole thing. Use it or lose it!
-    
+    If you are REALLY smart, you can do it in 3-5 lines plus some }'s (depending on if you like to put stuff on the same line or space it out)
+    If you aren't, and are like me, it might take you many more lines the first try.
+    there are MANY ways to do it, some are more elegant than others.
+    Both of my solutions are available but try to figure it out. You just read the whole thing. Use it or lose it! 
+    Using the hints below the function is fine. (try not to use the link though!)
+*/
     void toggleDarkMode(){//<-- this toggles it for the board.
-        this.DarkMode = !DarkMode;//<-- toggle the variable
-        for (int x = 0; x < Fieldx; x++) {//<-- step through the grid
-            for (int y = 0; y < Fieldy; y++) {
+        this.DarkMode = !DarkMode;//<-- toggle the variable for if darkmode
+        for (int x = 0; x < Fieldx; x++) {//<-- step through the x of grid so we can change for all columns.
+            for (int y = 0; y < Fieldy; y++) {//<-- step through each column so we can change for each button in the column
+
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){//<- these are the 2 conditions in which I set background 
                     //                                                                            ^during game so I check to prevent overwriting it
                     if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
@@ -278,22 +287,39 @@ public class Grid extends JPanel {
             }
         }
         Grid.this.repaint();
-        //after writing this out, I saw what I did wrong and what I could do instead. If you figure it out, you paid good attention and did a good job.
+        //after writing these comments out, I saw what I did wrong and what I could do instead. 
+        //If you figure it out, you paid good attention and did a good job.
     }
     //HELPFUL HINTS:
     //Think about what things in minefield you can check for and use, and when the bug is occurring and on what cells. 
     //Also, a new icon will overwrite the old one so you have to then put the icon back on it. Check game over for how to do that.
 
+    //if you change too much and want to reference the original function that was here, its on the github at 
+    //https://github.com/BirdeeHub/minesweeper/blob/main/app/src/MySweep/Grid.java    <-- this link is totally fair game to use. Its just what was here before.
 
 
-    
-    //SUPER HINTS:
-    //is bomb? is game over? all excellent things to think about, somehow missing from the above function.
 
-    //spoilers required?
+
+    //SUPER HINTS: <-- these are still fine to use
+    //is bomb? is game over? all excellent things to think about, somehow missing from the above function. 
+    //You also know if you have won or lost yet and which it was.
+
+
+
+    //spoilers required? <-- This though, is only for if you are frustrated beyond belief.
     //I added the answer to Jarred branch if you get really stuck. https://github.com/BirdeeHub/minesweeper/blob/Jarred/app/src/MySweep/Grid.java
-    //That branch is kinda dumb but I wanted to preserve this excercise here but still have the answers somewhere. 
-    //So there is a better version of this function there.
+    //So there is a fixed version of this function there. 2 different versions of it actually.
+
+    //That branch is kinda dumb in some ways but I wanted to preserve this excercise here and still have the answers somewhere. 
+    //Its dumb for the same reason it is cool actually.
+
+    //The cool thing about it is that the scores save inside the jar so if it is on a usb, it will still find your scores wherever you go.
+
+    //The dumb thing is, if it is in a directory it cannot write to, all it does is create a new jar in the temp directory of the machine and read from that.
+    //it will try to overwrite the old jar with the new jar on close but it will fail in that scenario.
+    //and linux dpkg can only install to directories you cannot write to without sudo..... 
+    //so this version is better for linux. For windows, you won't notice (although delete score will seem slower.).
+    //it also does not have a version with a compiler, and you couldnt use the one from this because Jarred requires the management module and java.exe to be present.
 //------------------------------------------------------------------------------------
 
 
@@ -301,16 +327,18 @@ public class Grid extends JPanel {
 
 
 
-
+//---------------------START READING AGAIN HERE. Zoom Function and toggle DarkMode OVER--------------------------------------------------------------
+//---------------------START READING AGAIN HERE. Zoom Function and toggle DarkMode OVER--------------------------------------------------------------
 //---------------------START READING AGAIN HERE. Zoom Function and toggle DarkMode OVER--------------------------------------------------------------
 
-//----------------------------------------and then start reading again here-----------------------------------------------------------------------------
+//This is honestly the most exciting section. Its where we do our actual click actions.
+
 //----GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW--------GAME-LOGIC-BELOW-------GAME-LOGIC-BELOW----------
 //--------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler--------------Click Handler------
     public void doClickType(JButton clickedButton, int clickType) {//<-- runs the correct click type. Called from listener
         CellButton clickedCell = (CellButton)clickedButton;//<-- since listener was only added to cellbuttons, we know we can cast it as a cellbutton
-        if(clickType==0){//       and cellbuttons know where they are! CellButton is a private class though. 
-            regularClick(clickedCell);//This means MainGameWindow just thinks it's a JButton
+        if(clickType==0){//       and cellbuttons know where they are! CellButton is a private class though. This means MainGameWindow just thinks it's a JButton
+            regularClick(clickedCell);
         }else if(clickType==1){//<-- for each click type
             markCell(clickedCell);//<-- pass the CellButton to the correct click function.
         }else if(clickType==2){
@@ -358,7 +386,7 @@ public class Grid extends JPanel {
                             prechekd[j][k]=(answers.checked(j, k));
                         }
                     }
-                    fillZeroes(xValue, yValue);//<-- adjCount=0. Fill.
+                    fillZeroes(xValue, yValue);//<-- adjCount==0. Fill.
                     markLonelyBombs(prechekd);//<-- mark the bombs with all neighbors 1 that were completely revealed by fillzeroes
                     BombsFound = answers.cellsMarked()+answers.cellsExploded();//<-- set variable used for setting Bombs found display.
                 }
@@ -386,7 +414,7 @@ public class Grid extends JPanel {
                     current.setForeground(QSTNMARKCOLOR);
                     current.setText("?");
                 }else if (answers.isQuestionable(xValue,yValue) || ((answers.marked(xValue, yValue) && cancelQuestionMarks))){//<-if questionable, or if no quesion marks allowed and marked
-                    answers.unmark(xValue,yValue);//<-- it already checks if it was unmarked in minefield so just stick it here as well to make it work regardless of ? settings
+                    answers.unmark(xValue,yValue);//<-- it already checks if it was unmarked in minefield for count so just stick it here as well to make it work regardless of ? settings
                     answers.clearSuspicion(xValue,yValue);
                     current.setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     current.setText("");
@@ -556,9 +584,9 @@ public class Grid extends JPanel {
         //we have to set the size of the image to the size of the button or it will resize the board
         //remember those public static images from earlier in MineSweeper?
         //we are going to create new scaleableIcons out of them, and scale them to the correct initial size.
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.MineIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
+
         //            reveal bombs on board
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {//<-- check for bombs
@@ -579,8 +607,9 @@ public class Grid extends JPanel {
                         getButtonAt(i,j).revalidate();
                     }
                     getButtonAt(i,j).setText("");//<-- any remove text from the button
+
                     answers.check(i,j);//<-- check the revealed bomb in a failed attempt to make it so you cant mess it up by toggling dark mode
-                }
+                }   //^ remove this check when you get to the excercise after ScoresWindow after it instructs you to do so.
             }
         }
         int MessageIndex = 0; //update leaderboard then update win or loss message based on highscore status
@@ -590,16 +619,22 @@ public class Grid extends JPanel {
     }
 
 
-    //made it to the end? check out the zoom function here and in the main game window, and ScaleableIcon below if you feel brave.
+    //made it to the end? 
+    //Check out the zoom function here and in the main game window, and then ScaleableIcon below if you feel brave.
     //then go to scoresFileIO
-    //or the other way around. Honestly, it doesnt matter at this point, but when reading scores, read IO and entry before the window.
 
-    //this next one is hard but short. and only used in game over function. I needed to make it because of zoom
+
+    //this next one is hard but short. and only used in game over function right now. I needed to make it because of zoom + Icons
+
+    //It makes it so that the Icon stays the same size of the button. 
+    //It is also an example of implementing your own interface.
+    //(control click Icon if in VS code. Those are the functions I am required to write. I can define others as well, such as my own constructor)
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
     private class ScalableIcon implements Icon {//currently only used in GameOver function
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
-        public ScalableIcon(ImageIcon originalIcon) {//<-- Constructor
-            this.originalIcon = originalIcon;
+        public ScalableIcon(Image originalIcon, int w, int h) {//<-- Constructor 
+            this.originalIcon = new ImageIcon(originalIcon.getScaledInstance(w, h, Image.SCALE_SMOOTH));//<-- scale the image to the correct initial size
+            //and create an ImageIcon out of it. It is not easy to get the height of the Image class.
         }//Stuff for resizing Icon.
         public int getIconWidth() {return originalIcon.getIconWidth();}
         public int getIconHeight() {return originalIcon.getIconHeight();}

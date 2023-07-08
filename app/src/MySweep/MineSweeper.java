@@ -180,7 +180,7 @@ class MineSweeper {//<-- the start of our first class
         try (FileInputStream fileInputStream = new FileInputStream(Paths.get(System.getProperty("java.class.path")).toFile())) {//<-- start file input stream from where we are running from
             byte[] magicNumber = new byte[4];
             int bytesRead = fileInputStream.read(magicNumber);
-            return bytesRead == 4 &&//<-- whitespace doesnt matter in code. These lines are 1 comparison, and the result is returned.
+            return bytesRead == 4 &&//<-- whitespace doesnt matter in code. These lines are 1 comparison (notice the && and ||), and the result is returned.
                     (magicNumber[0] == 0x50 && magicNumber[1] == 0x4B && magicNumber[2] == 0x03 && magicNumber[3] == 0x04)//wow what a long comparison
                     || (magicNumber[0] == (byte) 0x80 && magicNumber[1] == 0x75 && magicNumber[2] == 0x03 && magicNumber[3] == 0x04);//<-- it ends here
         } catch (Exception e) {
