@@ -266,8 +266,10 @@ public class Grid extends JPanel {
  //VERSION 3 (Only allocate the Icons 1 time. Faster.)
 /*
     void toggleDarkMode(){
-        ScalableIcon Explosion = new ScalableIcon(MineSweeper.ExplosionIcon);
-        ScalableIcon Revealed = new ScalableIcon(MineSweeper.MineIcon);
+        if(answers.isGameOver()){
+            ScalableIcon Explosion = new ScalableIcon(MineSweeper.ExplosionIcon);
+            ScalableIcon Revealed = new ScalableIcon(MineSweeper.MineIcon);
+        }
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
             for (int y = 0; y < Fieldy; y++) {
