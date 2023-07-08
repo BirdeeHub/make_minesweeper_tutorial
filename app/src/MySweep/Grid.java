@@ -601,7 +601,7 @@ public class Grid extends JPanel {
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
         ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon);
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon);
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.MineIcon);
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
