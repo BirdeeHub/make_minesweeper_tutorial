@@ -88,8 +88,9 @@ public class Grid extends JPanel {
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
     private class ScalableIcon implements Icon {//currently only used in GameOver function
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
-        public ScalableIcon(ImageIcon originalIcon) {//<-- Constructor
-            this.originalIcon = originalIcon;
+        public ScalableIcon(Image originalIcon, int w, int h) {//<-- Constructor 
+            this.originalIcon = new ImageIcon(originalIcon.getScaledInstance(w, h, Image.SCALE_SMOOTH));//<-- scale the image to the correct initial size
+            //and create an ImageIcon out of it. It is not easy to get the height of the Image class.
         }//Stuff for resizing Icon.
         public int getIconWidth() {return originalIcon.getIconWidth();}
         public int getIconHeight() {return originalIcon.getIconHeight();}
@@ -213,7 +214,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
                         }//THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
                         //this will put it back on top of the other stuff we put.
-                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
                     
                     }else if(wonValue == 1){//<-- if you won, you see the mines
                         if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
@@ -221,7 +222,7 @@ public class Grid extends JPanel {
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
                         }
-                        getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
                     }
                 }
             }
@@ -253,8 +254,8 @@ public class Grid extends JPanel {
                     }
                     if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
                         //check for wonValue and then copy paste icon thing from game over
-                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
-                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH))));
+                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
+                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight()));
                     }
                 }
             }
@@ -569,8 +570,8 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board then passes the work to ScoresFileIO
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.ExplosionIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(new ImageIcon(MineSweeper.MineIcon.getScaledInstance(getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight(), Image.SCALE_SMOOTH)));
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
         for (int i = 0; i < Fieldx; i++) {//reveal bombs on board
             for (int j = 0; j < Fieldy; j++) {
                 if (answers.isBomb(i, j) && !answers.exploded(i, j)) {
