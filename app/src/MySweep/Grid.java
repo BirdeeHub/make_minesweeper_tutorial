@@ -238,14 +238,13 @@ public class Grid extends JPanel {
     I have hints for you if you get stuck.
     This can be part of the thing that makes coding frustrating sometimes, 
     but it also will teach you a lot about how things are connected very quickly.
-    Dont worry if you cant figure it out. I could have tried harder, 
-    but I didn't actually figure it out until after I made it an excercise. 
-    I didnt even notice it until right before all these tutorial comments.
-    I dont like the non darkmode version. So I kinda just left it. It wasnt super important.
+    Dont worry if you cant figure it out.
+    I didn't actually figure it out until after I made it an excercise. 
+    I didnt even notice the bug until right before all these tutorial comments.
+    I dont like the non darkmode version. So I kinda just left it. It wasnt super important to me at the time.
 
     It is definitely doable without advanced techniques though. 
-    Its even doable without googling and mostly copy paste if you were paying attention when you read this file!
-    You just have to figure out the right things to check from minefield to achieve what you want.
+    Its even doable without googling if you were paying attention when you read this file!
 
     NECESSARY HINTS: 
 
@@ -581,11 +580,10 @@ public class Grid extends JPanel {
     }
     //---------------------------------------GameOver()-----------------------------------------------------------------------------------------
     private void GameOver(boolean won) {//reveals bombs on board with icon and border and stuff then passes the work to ScoresFileIO
-        //we have to set the size of the image to the size of the button or it will resize the board
         //remember those public static images from earlier in MineSweeper?
-        //we are going to create new scaleableIcons out of them, and scale them to the correct initial size.
-        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
-        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.MineIcon, getButtonAt(0,0).getWidth(), getButtonAt(0,0).getHeight());
+        //we are going to create new scaleableIcons out of them.
+        ScalableIcon EXPiconAutoScaled = new ScalableIcon(MineSweeper.ExplosionIcon);
+        ScalableIcon RVLiconAutoScaled = new ScalableIcon(MineSweeper.MineIcon);
 
         //            reveal bombs on board
         for (int i = 0; i < Fieldx; i++) {
@@ -620,11 +618,17 @@ public class Grid extends JPanel {
 
 
     //made it to the end? 
-    //Check out the zoom function here and in the main game window, and then ScaleableIcon below if you feel brave.
+    //Check out the zoom function here and in the main game window
     //then go to scoresFileIO
 
 
-    //this next one is hard but short. and only used in game over function right now. I needed to make it because of zoom + Icons
+
+
+
+    //You should really come back to this next one at the end
+
+
+    //this next one is hard but short. I needed to make it because of zoom + Icons
 
     //It makes it so that the Icon stays the same size of the button. 
     //It is also an example of implementing your own interface.
@@ -632,13 +636,12 @@ public class Grid extends JPanel {
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
     private class ScalableIcon implements Icon {//currently only used in GameOver function
         private ImageIcon originalIcon;//<-- getting original icon for sizing purposes
-        public ScalableIcon(Image originalIcon, int w, int h) {//<-- Constructor 
-            this.originalIcon = new ImageIcon(originalIcon.getScaledInstance(w, h, Image.SCALE_SMOOTH));//<-- scale the image to the correct initial size
-            //and create an ImageIcon out of it. It is not easy to get the height of the Image class.
-        }//Stuff for resizing Icon.
-        public int getIconWidth() {return originalIcon.getIconWidth();}
-        public int getIconHeight() {return originalIcon.getIconHeight();}
-        public void paintIcon(Component c, Graphics g, int x, int y) {
+        public ScalableIcon(Image originalImage) {//<-- Constructor 
+            this.originalIcon = new ImageIcon(originalImage);//<-- create an ImageIcon out of the icon. It is not easy to get the height of the Image class.
+        }
+        public int getIconWidth() {return 0;}//<-- it only matters that these are smaller than the buttons. If it isnt, the button will get bigger.
+        public int getIconHeight() {return 0;}//<-- We are implementing an interface. Other java functions use these functions. One of those, is JButton.
+        public void paintIcon(Component c, Graphics g, int x, int y) {//<-- This will then make the icon the size of the button after.
             int width = c.getWidth();
             int height = c.getHeight();
             Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
