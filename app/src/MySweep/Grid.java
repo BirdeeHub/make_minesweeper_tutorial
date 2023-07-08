@@ -188,7 +188,7 @@ public class Grid extends JPanel {
 
 
 /////////////////////////////////////////////////////////////////////////////
-//ANSWER VERSION 1 (version 2 in the comments below it.(its much shorter))
+//ANSWER VERSION 1
     void toggleDarkMode(){
         this.DarkMode = !DarkMode;
         for (int x = 0; x < Fieldx; x++) {
@@ -203,8 +203,8 @@ public class Grid extends JPanel {
                     if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
                         getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
-                }// it doesnt get caught by enclosing condition so this if basically says, only change text color if default color
-
+                }
+                //Handle new case:
                 if(answers.isBomb(x, y)&&answers.isGameOver()){//now we process it for our buttons with icons, after excluding them properly before
                     if(wonValue == 0){//<-- if we lost, its gonna be the explosion
                         if(DarkMode){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode now set the background black
@@ -236,7 +236,7 @@ public class Grid extends JPanel {
             //or relies on changing stuff not fixed by reset, then it was a good solution.
             //The most obvious different way to write it would be:
 
-//VERSION 2 (The one I would probably go with)
+//VERSION 2
 /*
     void toggleDarkMode(){
         this.DarkMode = !DarkMode;
@@ -253,8 +253,37 @@ public class Grid extends JPanel {
                     }
                     if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
                         //check for wonValue and then copy paste icon thing from game over
-                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon);
-                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon);
+                        if(wonValue == 0)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon));
+                        if(wonValue == 1)getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon));
+                    }
+                }
+            }
+        }
+        Grid.this.repaint();
+    }
+ */
+
+ //VERSION 3 (Only allocate the Icons 1 time. Faster.)
+/*
+    void toggleDarkMode(){
+        ScalableIcon Explosion = new ScalableIcon(MineSweeper.ExplosionIcon);
+        ScalableIcon Revealed = new ScalableIcon(MineSweeper.MineIcon);
+        this.DarkMode = !DarkMode;
+        for (int x = 0; x < Fieldx; x++) {
+            for (int y = 0; y < Fieldy; y++) {
+                if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){
+                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    }else{
+                        getButtonAt(x,y).setBackground(null);
+                        getButtonAt(x,y).setIcon(DefaultButtonIcon);
+                    }
+                    if(((DarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((DarkMode)?DarkModeTextColor:LightModeTextColor);
+                    }
+                    if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
+                        //check for wonValue and then copy paste icon thing from game over
+                        if(wonValue == 0)getButtonAt(x,y).setIcon(Explosion);
+                        if(wonValue == 1)getButtonAt(x,y).setIcon(Revealed);
                     }
                 }
             }
