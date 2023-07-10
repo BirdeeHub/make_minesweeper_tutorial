@@ -26,11 +26,11 @@ And it ends with a coding excercise that should hopefully be within grasp once y
 
 (Bug does not affect gameplay. But it was a real bug. I made it. On accident. Yes there is a link to solutions... try not to use it.)
 
-It should be challenging, but definitely not impossible, without previous coding experience if you generally understand that you can use commands and input arguments to those commands, and you generally understand how to follow the logic of this sentence, then you should be fine. That last sentence was more or less this Java if statement:
+It should be challenging, but definitely not impossible, without previous coding experience. If you generally understand that you can use commands and input arguments to those commands, and you generally understand how to follow the logic of this sentence, then you should be fine. That last sentence was more or less this Java if statement:
 
 ```Java
 if(knowsCommandsDoStuffBasedOnInput==true && understandHowToFollowSentence==true){//<-- if the values of both of these variables are equal to true
-    System.out.println("This guide will be challenging, but definitely not impossible.");//<-- then tell user they will do great!
+    System.out.println("You should be fine. This guide will be challenging, but definitely not impossible.");//<-- then tell user they will do great!
 }
 ```
 You will need to pay close attention.
