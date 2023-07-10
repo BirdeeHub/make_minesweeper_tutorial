@@ -73,11 +73,12 @@
     
     //This is how we declare a function in Java. it returns an int, it is called addTwoIntegers...etc.., and it recieves 2 integers as input
 
-    int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets a and b from input, which is entered when it is called
+    //int here means the value that this function will return will be of type integer
+    int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets integers a and b from input, which is entered when it is called
         int c;  //<-- it then creates a new integer c to store the value of a + b or a * b
         if((a+b) != 3){  //<---------- if answer not equal to 3
             c = a + b;  //<-- do this
-        }else{  //<--------------- in this case, else{} would be equivalent to if(c == 3){}
+        }else{  //<--------------- else, (if it was 3)
             c = a * b;  //<-- else do this
         }
         a = c;//<---- this will not change 'a' outside of the function. only inside.
@@ -121,7 +122,9 @@
     //First with i == 0, then i == 1, then 3, then 6 and then when it becomes 12, it will fail the check in the while loop and not execute again.
     //Try to read through it like the computer does. It's very good theAnswer == 42 otherwise it would loop forever! (until you get task manager involved)
 
+
     //this next thing will make more sense as you see it used and is a side detail but:
+
     //Theres also a weird thing that is nice sometimes that looks like (boolean)?"thing1":"thing2" and is used like:
 
     boolean comparison = (3 == 4);//<-- performs a comparison between 3 and 4 and returns the result false to the variable comparison
@@ -141,7 +144,7 @@
     in Java, execution begins at the main(String[] args) function, which takes an array as input, that is filled with whichever words (strings) 
     which may have been passed in from the command line. The main function of this program begins in MineSweeper.java
 
-    in Java, if you pass a primitive type(the ones mentioned at the top of the file), 
+    in Java, if you pass a primitive type(the ones mentioned at the top of the file) through a function call, 
     you pass a copy of the contents. You cannot change the value of the original with the result.
 
     int result;
@@ -151,6 +154,17 @@
     //firstNumber and secondNumber both are still 2, regardless of what happens to them inside the function. and result is now 4.
 
     But if you pass a thing that is an instance of a class instead, you CAN change the original inside a function.
+
+    void chairChopper(ChairClass thisChair){
+        thisChair.setHeight( thisChair.getHeight()/2 );
+    }
+
+    ChairClass chair1 = new ChairClass();
+    chair1.setHeight(4);
+    chairChopper(chair1);//<-- this will set height value of our chair1 instance to be half of what it was, because it is not a primitive type.
+    System.out.println(chair1.getHeight());
+
+    //^ the above would print the number 2 to the terminal
 
     5. And now for Classes
 
