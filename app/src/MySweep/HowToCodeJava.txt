@@ -101,7 +101,7 @@
     
     google operators for your language after reading this. Know how these work.
     
-    //this while loop will execute 4 times. Walk through it. if thisIsTrue do this, otherwise(else), if this, do this, etc...
+    //this while loop will execute 4 times. Walk through it. starting with i==0, if thisIsTrue do this, otherwise(else), if this, do this, etc...
     int theAnswer=42;
     int i = 0;
     while(i<12){
@@ -123,7 +123,9 @@
     //Try to read through it like the computer does. It's very good theAnswer == 42 otherwise it would loop forever! (until you get task manager involved)
 
 
-    //this next thing will make more sense as you see it used and is a side detail but:
+    //this next thing will make more sense as you see it used and is a side detail. 
+    
+    //A Ternary expression:
 
     //Theres also a weird thing that is nice sometimes that looks like (boolean)?"thing1":"thing2" and is used like:
 
@@ -135,14 +137,14 @@
 
     int x = (3 == 4)?numberone:numbertwo;
     
-    It is called a ternary. It is basically just an if statement that returns the thing that was chosen (which I stored in x in the above example)
+    //It is basically just an if statement that returns the thing that was chosen (which I stored in x in the above example)
 
     //----------------------------------------------------------------------------------------------------------------------------------------------
 
-    4. Okay, so this next part isnt all languages but all languages with classes (object-oriented) are basically like this:
+    4. Okay, so this next part isn't all languages but all languages with classes (object-oriented) are basically like this:
 
     in Java, execution begins at the main(String[] args) function, which takes an array as input, that is filled with whichever words (strings) 
-    which may have been passed in from the command line. The main function of this program begins in MineSweeper.java
+    which may have been passed in from the command line. The main function of this program begins in MineSweeper.java, and it calls our opening window.
 
     in Java, if you pass a primitive type(the ones mentioned at the top of the file) through a function call, 
     you pass a copy of the contents. You cannot change the value of the original with the result.
