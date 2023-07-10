@@ -55,7 +55,7 @@
     -You can tell it to perform a thing on a thing you stored, including changing it (usually) and checking it against the value of another thing.
     -You can tell it to do one set of things or another based on checking a comparison between things (the main way to do this is called an if statement)
     -You can tell it to do a set of things until a comparison becomes false which is called a loop.
-        (declared with "while(comparison){your stuff here}" or "for(variable_to_check; condition<variable; variable=variable+change){your stuff here}")
+        (declared with "while(comparison){your stuff here}" or "for(variable_to_check; condition>variable; variable=variable+change){your stuff here}")
     -You can add a comment, like the one this file is inside with /* a comment */, or by using // for rest of line comments
 
     3. Where do you put these things?
