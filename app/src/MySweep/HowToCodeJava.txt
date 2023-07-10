@@ -67,13 +67,13 @@
     Functions can also call themselves sometimes. This is called recursion and seems better than really it is sometimes.
     
     Things declared inside these things -> {} cannot be seen by things outside of them by default unless you return it. 
-    This is called scope. It sees out but not in.       
+    This is called scope. It sees out but not in.
     
-    {you}me <-- here, you can see me but I cant see you
+    {you}me //<-- here, you can see me but I cant see you
     
     //This is how we declare a function in Java. it returns an int, it is called addTwoIntegers...etc.., and it recieves 2 integers as input
 
-    int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets a and b from input
+    int addTwoIntegersUnlessAnswerIsThreeOtherwiseMultiply(int a, int b){//<-- gets a and b from input, which is entered when it is called
         int c;  //<-- it then creates a new integer c to store the value of a + b or a * b
         if((a+b) != 3){  //<---------- if answer not equal to 3
             c = a + b;  //<-- do this
