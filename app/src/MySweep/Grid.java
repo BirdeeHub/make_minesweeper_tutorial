@@ -207,7 +207,7 @@ public class Grid extends JPanel {
 
 
 
-    //----------------you should skip these next 3 functions for now.-----------------------------------------------------
+    //----------------you should skip these next 4 functions for now.-----------------------------------------------------
 
 //            ZOOM FUNCTION
     //this is called from the zoom listener in main game window
@@ -226,8 +226,19 @@ public class Grid extends JPanel {
         gridSizesOldNew[3] = (newCellSize.height*Fieldy);
         return gridSizesOldNew;
     }
-
-    boolean isDarkMode(){return DarkMode;}//<-- this is a function to get if dark mode is on
+    void resetZoom(Dimension windowSize){//<-- does not need mouse location because it zooms all the way out, so no scroll adjustments needed.
+        Dimension newCellSize= new Dimension(windowSize.width/Fieldx, windowSize.height/Fieldy);
+        Font newFont = new Font("Tahoma", 0, ((newCellSize.height>18)?18:newCellSize.height - 1));//<-- it does need font though cause for some reason my setcellfontsize function wasnt getting the correct cell size
+        for (int x = 0; x < Fieldx; x++){
+            for (int y = 0; y < Fieldy; y++){
+                getButtonAt(x,y).setPreferredSize(newCellSize);
+                getButtonAt(x,y).setFont(newFont);
+            }
+        }
+    }
+    boolean isDarkMode(){//<-- this is a function to get if dark mode is on (for setting the correct initial position of the toggle button)
+        return DarkMode;
+    }
 
 
 
