@@ -328,6 +328,16 @@ public class Grid extends JPanel {
         gridSizesOldNew[3] = (newCellSize.height*Fieldy);
         return gridSizesOldNew;
     }
+    void resetZoom(Dimension windowSize){//<-- does not need mouse location because it zooms all the way out, so no scroll adjustments needed.
+        Dimension newCellSize= new Dimension(windowSize.width/Fieldx, windowSize.height/Fieldy);
+        Font newFont = new Font("Tahoma", 0, ((newCellSize.height>18)?18:newCellSize.height - 1));//<-- it does need font though cause for some reason my setcellfontsize function wasnt getting the correct cell size
+        for (int x = 0; x < Fieldx; x++){
+            for (int y = 0; y < Fieldy; y++){
+                getButtonAt(x,y).setPreferredSize(newCellSize);
+                getButtonAt(x,y).setFont(newFont);
+            }
+        }
+    }
     void setCellFontSize(){//call this after pack to get correct component size.
         int cellHeight = Grid.this.getComponent(0).getHeight();
         int FontSize = cellHeight- 1;

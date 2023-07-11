@@ -269,6 +269,7 @@ public class MainGameWindow extends javax.swing.JFrame {
                 if((System.currentTimeMillis()-clickmemory)>1000){//<-- this means 1s has passed since last click
                     clickmemory = System.currentTimeMillis();//<-- if so, update clickmemory
                     grid.ResetBoard();
+                    grid.resetZoom(MainGameWindow.this.getContentPane().getSize());
                     setBombsFoundDisplay();
                     setLivesLostDisplay();
                     setGameOverDisplay();
