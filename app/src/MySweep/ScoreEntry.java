@@ -57,8 +57,7 @@ public class ScoreEntry{//This exists because i was converting from string way m
         String[] boardStrings = currentEntry[0].split(":");
         if(currentEntry.length == 3 && boardStrings.length == 4){
             try{
-                if(Integer.parseInt(boardStrings[0])<=0||Integer.parseInt(boardStrings[1])<=0||Integer.parseInt(boardStrings[2])<=0||Integer.parseInt(boardStrings[3])<=0||Integer.parseInt(currentEntry[1])<0||Long.parseLong(currentEntry[2])<0){
-                }else{
+                if(!(Integer.parseInt(boardStrings[0])<=0||Integer.parseInt(boardStrings[1])<=0||Integer.parseInt(boardStrings[2])<=0||Integer.parseInt(boardStrings[3])<=0||Integer.parseInt(currentEntry[1])<0||Long.parseLong(currentEntry[2])<0)){
                     validScore=true;
                     this.x=Integer.parseInt(boardStrings[0]);
                     this.y=Integer.parseInt(boardStrings[1]);

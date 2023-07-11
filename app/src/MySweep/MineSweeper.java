@@ -64,7 +64,7 @@ class MineSweeper {//<-- the start of our first class
 
             try{//<-- try means handle errors if they happen. (Language extensions can tell you when you need these)
 
-                //try to parse the arguments
+                //try to parse the arguments (if these fail, it will trigger the catch.)
                 width = (int)(Integer.parseInt(args[0]));//<-- checking and saving each item in our args array as an int
                 height = (int)(Integer.parseInt(args[1]));//<-- each index corresponds to a string. This is the second index.
                 bombCount = (int)(Integer.parseInt(args[2]));//<-- Integer.parseInt(String) converts strings to integers

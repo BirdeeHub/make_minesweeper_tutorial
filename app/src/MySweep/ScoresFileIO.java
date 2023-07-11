@@ -10,18 +10,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class ScoresFileIO{//reads from file, creates scoreEntry instances based on the file contents. ScoresWindow uses read and delete, maingame uses update. write is private
+    //set our scores file name based on OS
     private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
     private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-    private final String scoresFileName;
-    public ScoresFileIO(){
-        String os = System.getProperty("os.name").toLowerCase();//<-- set our file path based on system
-        if (os.contains("win")) {
-            scoresFileName = scoresFileNameWindows;
-        } else {
-            scoresFileName = scoresFileNameOther;
-        }
-    }
+    private final String scoresFileName = (System.getProperty("os.name").toLowerCase().contains("win"))?scoresFileNameWindows:scoresFileNameOther;
+    
+    public ScoresFileIO(){}//<-- our constructor doesnt necessarily need anything in it.
+    
     // it helps to have ScoreEntry open for reference sometimes in this class but it is not necessary
+    
     //----------------------------------WRITE------------------------------------------------------WRITE-------------------------------------------
     private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){// writes from Score Entries to file
         StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
@@ -32,14 +29,17 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
         //-------------------------write string----------------------write string-------------
         try {
             Files.createDirectories(Path.of(scoresFileName).getParent()); //<-- Create the directory.
-        } catch (IOException e) {System.out.println(e.getClass()+" @ "+scoresFileName);}
+        } catch (IOException e) {e.printStackTrace();}
         try{
             Files.createFile(Path.of(scoresFileName));//<-- Create the file if not created.
-        }catch(IOException e){if(!(e instanceof FileAlreadyExistsException))System.out.println(e.getClass()+" @ "+scoresFileName);}
-
+        }catch(IOException e){
+            if(!(e instanceof FileAlreadyExistsException)){//<-- printing stack trace for this every time would be obnoxious
+                e.printStackTrace();
+            }
+        }
         try (FileWriter out2 = new FileWriter(scoresFileName, append)) {//<-- filewriters can overwrite or append a string to a file
             out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
-        }catch(IOException e){System.out.println(e.getClass()+" @ "+scoresFileName);}
+        }catch(IOException e){e.printStackTrace();}
     }
     //-----------------------------------READ-------------------------------------READ----------------------------------------------------------------
     public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
@@ -48,12 +48,14 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
         try(Scanner in = new Scanner(new File(scoresFileName))) {//scanner class reads words from a file to strings (separated by whitespace) 
             while (in.hasNext()) {//<-- while theres still something in the file
                 ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (a string separated by whitespace)
-                if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
+                if(currentEntry.isValid()){//<-- only read out valid scores
+                    fileEntriesBuilder.add(currentEntry);
+                }
             }
             fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);//<-- return our array of entries
         }catch(FileNotFoundException e){
             fileEntries=null; 
-            System.out.println(e.getClass()+" @ "+scoresFileName);
+            e.printStackTrace();
         }
         return fileEntries;
     }

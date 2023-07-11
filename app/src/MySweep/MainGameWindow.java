@@ -297,7 +297,9 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                     setLivesLostDisplay();
                     setGameOverDisplay();
                     getContentPane().revalidate();//<-- revalidate is faster than pack and is fine for here.
-                }else clickmemory = System.currentTimeMillis();//if you spammed, update clickmemory instead
+                }else{ 
+                    clickmemory = System.currentTimeMillis();//if you spammed, update clickmemory instead
+                }
             }
         });
         toggleQuestionMarking.addActionListener(new ActionListener(){//<---toggles the ? option for marking cells on and off
@@ -341,7 +343,9 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
                     Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
                     if(CurrComp instanceof JToggleButton){
                         ((JToggleButton)CurrComp).doClick();//<-- you need to cast it as the correct type
-                    }else ((JButton)CurrComp).doClick();
+                    }else{ 
+                        ((JButton)CurrComp).doClick();
+                    }
                 }
             }
         };

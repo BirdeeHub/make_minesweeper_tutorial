@@ -42,8 +42,12 @@ public class ScoresWindow extends JFrame {
     private ActionListener BoardButtonListener = new ActionListener(){
         public void actionPerformed(ActionEvent evt) {
             if(clickableToggle.isSelected()==true){
-                if(!(isControlDown&&isShiftDown))BoardButtonPressedAction(((JButton) evt.getSource()), ParentFrame);
-                if(isControlDown&&isShiftDown)BoardButtonDeleteAction((JButton) evt.getSource());
+                if(!(isControlDown&&isShiftDown)){
+                    BoardButtonPressedAction(((JButton) evt.getSource()), ParentFrame);
+                }
+                if(isControlDown&&isShiftDown){
+                    BoardButtonDeleteAction((JButton) evt.getSource());
+                }
             }
         }
     };
@@ -65,7 +69,9 @@ public class ScoresWindow extends JFrame {
                 Component CurrComp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
                 if(CurrComp == clickableToggle){//<- this one is a JToggleButton
                     clickableToggle.doClick();
-                }else ((JButton)CurrComp).doClick();
+                }else{ 
+                    ((JButton)CurrComp).doClick();
+                }
             }
         }
         public void keyReleased(KeyEvent evt) {//if you release a key, let the program know
@@ -175,11 +181,17 @@ public class ScoresWindow extends JFrame {
                 if(!FileIssue){
                     BoardPanel.removeAll();//remove so we can add new ones without weirdness
                     if(clickable){//add the correct components to BoardPanel
-                        for(int i=0;i<BoardButton.length;i++)BoardPanel.add(BoardButton[i]);
-                    }else for(int i=0;i<BoardLabel.length;i++)BoardPanel.add(BoardLabel[i]);
-                    ScoresWindow.this.pack();//make it display right
-                    ScoresWindow.this.setVisible(true);
-                    ScoresWindow.this.getContentPane().revalidate();
+                        for(int i=0;i<BoardButton.length;i++){
+                            BoardPanel.add(BoardButton[i]);
+                        }
+                    }else {
+                        for(int i=0;i<BoardLabel.length;i++){
+                            BoardPanel.add(BoardLabel[i]);
+                        }
+                        ScoresWindow.this.pack();//make it display right
+                        ScoresWindow.this.setVisible(true);
+                        ScoresWindow.this.getContentPane().revalidate();
+                    }
                 }
             }
         });

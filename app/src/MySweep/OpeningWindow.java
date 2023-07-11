@@ -61,13 +61,23 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             int width =(int)(Integer.parseInt(WidthField.getText()));//(int) makes sure it is read as an integer. This is called a cast.
             int height =(int)(Integer.parseInt(HeightField.getText()));//Integer.parseInt(String) converts strings to integers
             int bombCount = (int)(Integer.parseInt(BombNumber.getText()));//if the parses fail, the catch clause will be triggered
-            int lives = (int)(Integer.parseInt(LivesNumber.getText()));//this is our first check on user inputs
+            int lives = (int)(Integer.parseInt(LivesNumber.getText()));//this is our check on user inputs
             if(width*height<=bombCount||bombCount<0||lives<1||width<1||height<1){//<-- and here, we check if they are valid numbers for the game
-                if(lives<1)LifeFieldLabel.setText("no life");
-                if(width<1)WidthFieldLabel.setText("invalid width");//<-- and tell the user what they did wrong 
-                if(height<1)HeightFieldLabel.setText("invalid height");//  by setting the text of a label we already had
-                if(width*height<=bombCount)BombFieldLabel.setText("Space<Bombs");
-                if(bombCount<0)BombFieldLabel.setText("Bombs<0");//notice the if statement at the start of each.
+                if(lives<1){
+                    LifeFieldLabel.setText("no life");//<-- and tell the user what they did wrong
+                }
+                if(width<1){
+                    WidthFieldLabel.setText("invalid width");//  by setting the text of a label we already had
+                } 
+                if(height<1){//<-- but we want to give them the correct message
+                    HeightFieldLabel.setText("invalid height");
+                }
+                if(width*height<=bombCount){//<-- so only set the relevant one
+                    BombFieldLabel.setText("Space<Bombs");
+                }
+                if(bombCount<0){
+                    BombFieldLabel.setText("Bombs<0");
+                }
                 return;//<-- return early, ending execution of the function, because input was bad.
             }
             EventQueue.invokeLater(new Runnable() {//<-- if you got here, you passed the checks.

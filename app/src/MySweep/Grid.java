@@ -88,8 +88,11 @@ public class Grid extends JPanel {
             if(borderColor!=null){
                 g.setColor(borderColor);//dont worry too much about what a Graphics class is. It makes graphics. And has functions to do it.
                 int top;                //it gets passed in, we use it to draw stuff.
-                if(!dynamicWidth){top = borderWeight;
-                }else top = borderWeight*(1+(this.getSize().height/23));
+                if(!dynamicWidth){
+                    top = borderWeight;
+                }else {
+                    top = borderWeight*(1+(this.getSize().height/23));
+                }
                 for(int i=0;i<top;i++){
                     g.drawRect(i, i, getWidth() - i*2 - 1, getHeight() - i*2 -1);//<-- like draw rectangles of 1 pixel width
                 }//in a loop because 1 pixel width, so i need many.
@@ -118,8 +121,14 @@ public class Grid extends JPanel {
                 getButtonAt(i,j).setXY(i,j);//<-- add our coordinates to our buttons.
             }//at the end 0,0 will be in the top left. like the first word on a page. doesnt matter to us though. we just need to know that its a grid and the x and y
         }
-        if(DarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);//<-- i do this more than i should... You are able to leave brackets off of things like if statements and loops if its just 1 function call.
-    }                                                                                           //^(its the same 2 for loops just on one line) im sorryyyy! Im also not though. You will need to be able to see it both ways. 
+        if(DarkMode){//<-- checking the if before doing a loop means it doesnt have to check for each one.
+            for(int i = 0; i < Fieldx; i++){
+                for(int j = 0; j < Fieldy; j++){
+                    getButtonAt(i,j).setBackground(BLACK);
+                }
+            }
+        }
+    }
     //-------------------------------------------END OF CONSTRUCTOR-------------------------------------------
     
     //-------------------------------------------Go to MineField.java, then come back here.--------------------------------------------------------
@@ -193,12 +202,13 @@ public class Grid extends JPanel {
         Grid.this.repaint();//<-- repaint so that it actually repaints at a time that makes sense rather than just like... later.
     }
     void setCellFontSize(){//<-- call this from main window after pack or resize to get correct component size before font size.
-        int cellHeight = Grid.this.getComponent(0).getHeight();
-        int FontSize = cellHeight- 1;
-        if(cellHeight>18)FontSize=18;
-        Font newFont = new Font("Tahoma", 0, FontSize);
-        for(int x = 0; x < Fieldx; x++)for(int y = 0; y < Fieldy; y++){//<-- more nested for loops. Everything is a grid haha
-            getButtonAt(x,y).setFont(newFont);
+        int cellHeight = Grid.this.getComponent(0).getHeight();//<-- if you don't do ^ this wouldnt be correct.
+        int FontSize = (cellHeight>18)?18:cellHeight-1;//<-- get our font size from cell height (also we dont need our numbers to get bigger than 18)
+        Font newFont = new Font("Tahoma", 0, FontSize);//<-- create our font. 
+        for(int x = 0; x < Fieldx; x++){
+            for(int y = 0; y < Fieldy; y++){
+                getButtonAt(x,y).setFont(newFont);
+            }
         }
     }
 
@@ -286,7 +296,8 @@ public class Grid extends JPanel {
 
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){//<- these are the 2 conditions in which I set background 
                     //                                                                            ^during game so I check to prevent overwriting it
-                    if(DarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    if(DarkMode){
+                        getButtonAt(x,y).setBackground(BLACK);
                     }else{
                         getButtonAt(x,y).setBackground(null);
                         getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- the light mode background is an icon (you can put the other icon back over it)
@@ -444,7 +455,9 @@ public class Grid extends JPanel {
                 for(int i=a-1;i<=a+1;i++){//go through neighbors
                     for(int j=b-1;j<=b+1;j++){
                         if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;//<-- if not a valid cell, skip to next iteration
-                        if(answers.marked(i, j))adjMarked++;//<-- this counts the number of marked cells adjacent for penalty if too many are marked
+                        if(answers.marked(i, j)){
+                            adjMarked++;//<-- this counts the number of marked cells adjacent for penalty if too many are marked
+                        }
                         if(!answers.exploded(i, j)&&!answers.marked(i, j)){//<-- if not exploded or marked (does not include !isQuesionable(x,y))
                             if(answers.isBomb(i, j)){//<-- then check this before checking !isQuestionable(x,y)
                                 answers.explode(i, j);
@@ -477,7 +490,7 @@ public class Grid extends JPanel {
                 int penalty = adjMarked-answers.adjCount(a, b);//<-- calculate the penalty
                 for(int i=a-1;i<=a+1;i++){//go through neighbors
                     for(int j=b-1;j<=b+1;j++){
-                        if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;
+                        if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;//<-- if not a valid cell, skip to next iteration
                         if(penalty>0&&answers.marked(i, j)&&answers.isBomb(i, j)&&!answers.exploded(i, j)){//if you marked a bomb correctly and still have penalties to give
                                 answers.unmark(i, j);//unmark it
                                 answers.explode(i, j);//then explode it
@@ -560,8 +573,10 @@ public class Grid extends JPanel {
                         for(int m=k-1;m<=k+1;m++){
                             if(!(l<0||m<0||l>=Fieldx||m>=Fieldy||(l==j && m==k))){//<-- it was valid cell
                                 totalneighbors++;      //<-- get number of neighbors
-                                if(answers.adjCount(l, m)==1 && answers.checked(l, m) && !prechekd[l][m])meetsConditions++; 
-                            }//                   ^^^ condition would mean fillzeroes just revealed it and adj count was 1 so add 1
+                                if(answers.adjCount(l, m)==1 && answers.checked(l, m) && !prechekd[l][m]){
+                                    meetsConditions++;//<-- condition would mean fillzeroes just revealed it and adj count was 1 so add 1
+                                }
+                            }
                         }
                     }
                     if(totalneighbors==meetsConditions)dqed=false;//fillzeroes revealed all neighbors and all were 1. It was a lonely bomb.
@@ -606,14 +621,18 @@ public class Grid extends JPanel {
                         if(answers.marked(i,j)){
                             getButtonAt(i,j).setDynamicBorderWidth(false);
                             getButtonAt(i,j).setBorderColor(GREEN, 2);
-                        }else{getButtonAt(i,j).setText("");}
+                        }else{
+                            getButtonAt(i,j).setText("");
+                        }
                         getButtonAt(i,j).setIcon(EXPiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }else{//<-- or did you find them?
                         if(!answers.marked(i,j)){
                             getButtonAt(i,j).setDynamicBorderWidth(false);
                             getButtonAt(i,j).setBorderColor(MAGENTA, 2);
-                        }else{getButtonAt(i,j).setText("");}
+                        }else{
+                            getButtonAt(i,j).setText("");
+                        }
                         getButtonAt(i,j).setIcon(RVLiconAutoScaled);
                         getButtonAt(i,j).revalidate();
                     }

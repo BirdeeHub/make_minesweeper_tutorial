@@ -78,14 +78,22 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
                 }
             }
         }
-        for(int j=0;j<Fieldx;j++)for(int k=0;k<Fieldy;k++)adj[j][k]=adjc(j,k);//<-- call the adjc(a,b) function on each cell to initialize all adj counts
+        for(int j=0;j<Fieldx;j++){
+            for(int k=0;k<Fieldy;k++){
+                adj[j][k]=adjc(j,k);//<-- call the adjc(a,b) function on each cell to initialize all adj counts
+            }
+        }
     }
     private int adjc(int a, int b){//when called, initialize adjacent bomb counts for 1 cell. Helper for initBoardForFirstClickAt(x,y).
         int adjCount = 0;
         for(int i=a-1;i<=a+1;i++){//a-1 to a+1
             for(int j=b-1;j<=b+1;j++){//b-1 to b+1
-                if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)) continue;//<--  if not inside the grid, continue so we dont check an out of bounds array index
-                if(cell[i][j]) adjCount++;//<-- if cell has bomb, increase adj count
+                if(i<0||j<0||i>=Fieldx||j>=Fieldy||(i==a && j==b)){
+                    continue;//<--  if not inside the grid, continue so we dont check an out of bounds array index
+                }
+                if(cell[i][j]){
+                    adjCount++;//<-- if cell has bomb, increase adj count
+                }
             }
         }
         return adjCount;//<-- return number of adjacent bombs
@@ -99,7 +107,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
 
     //exploding
     void explode(int a, int b){
-        if(!exp[a][b])totalExploded++;//<-- cant mess up the count because it checks if it was already exploded before incrementing it.
+        if(!exp[a][b]) totalExploded++;//<-- cant mess up the count because it checks if it was already exploded before incrementing it.
         exp[a][b]=true;
     }
     boolean exploded(int a, int b){return exp[a][b];}
@@ -107,7 +115,7 @@ class Minefield{//a data class for Grid. contains and manages all mutable game-s
 
     //marking
     void mark(int a, int b){
-        if(!mrk[a][b])totalMarked++;
+        if(!mrk[a][b])totalMarked++;//<-- also yes you can drop the {} if there is only 1 command for if and loops, but its usually bad for readability. (here its pretty nice though)
         mrk[a][b]=true;
     }
     void unmark(int a, int b){
