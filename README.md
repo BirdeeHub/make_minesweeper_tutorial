@@ -26,6 +26,8 @@ so linux needs to use the jar and a JDK for this one.
 
 It also means I need a native java executable in the windows package, so the package installer is an extra 10 MB.
 
+It also means that if you put it on a USB, you can play it on any computer and it will always have your scores. Which is kinda cool.
+
 **Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again to update the jar file. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
 **Attention:** Don't install this version unless you are curious.
