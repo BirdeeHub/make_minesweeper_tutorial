@@ -10,19 +10,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 class MineSweeper {
-    private static final Path tempPath = Paths.get(System.getProperty("java.io.tmpdir"));
-    private static final Path tempJarPath = Paths.get(System.getProperty("java.io.tmpdir"), "TempMSJarIn");
-    private static final Path minesweeperclasspath = Paths.get(System.getProperty("java.class.path"));
-    private static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
+    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
+    public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
+    public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
+    public static final String scoresFileName= "MinesweeperScores.txt";
+    public static final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
     //---public static methods-------------------------------------------------
-    public static final Path getTempJarPath(){return tempJarPath;}
-    public static final Path getClassPath(){return minesweeperclasspath;}
-    public static final Path getTempPath(){return tempPath;}
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
@@ -45,17 +42,18 @@ class MineSweeper {
                 try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){//<-- copy our program that overwrites
                     File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
-                    Files.copy(inputStream, Paths.get(tempPath.toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(inputStream, Path.of(tempPath.toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+Paths.get(System.getProperty("java.home")).resolve(Paths.get("bin","java")).toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+Path.of(System.getProperty("java.home")).resolve(Path.of("bin","java")).toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add("OverwriteJar");
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.command().add(scoresFromClassPath);
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
              	    Runtime.getRuntime().exec(OvrightJarCommand);
