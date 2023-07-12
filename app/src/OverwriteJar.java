@@ -41,45 +41,45 @@ class OverwriteJar {
             return thisJar.getManifest();
         }catch (IOException e){return null;}
     }
-private static void writeJarWithNewScores(Manifest jarManifest, String jarFilePath, String scoreEntryName, String scoresFileDirectory) throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
-         JarOutputStream jos = new JarOutputStream(baos)) {
+    private static void writeJarWithNewScores(Manifest jarManifest, String jarFilePath, String scoreEntryName, String scoresFileDirectory) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
+            JarOutputStream jos = new JarOutputStream(baos)) {
 
-        JarEntry entry;
-        while ((entry = jis.getNextJarEntry()) != null) {
-            if (!(entry.getName().equals(scoreEntryName))) {
-                jos.putNextEntry(entry);
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = jis.read(buffer)) != -1) {
-                    jos.write(buffer, 0, bytesRead);
-                }
-            } else {
-                File scoresFile = Path.of(scoresFileDirectory + File.separator + Path.of(scoreEntryName).getFileName()).toFile();
-                try (InputStream is = new FileInputStream(scoresFile)) {
-                    JarEntry scoresEntry = new JarEntry(scoreEntryName);
-                    jos.putNextEntry(scoresEntry);
+            JarEntry entry;
+            while ((entry = jis.getNextJarEntry()) != null) {
+                if (!(entry.getName().equals(scoreEntryName))) {
+                    jos.putNextEntry(entry);
                     byte[] buffer = new byte[4096];
                     int bytesRead;
-                    while ((bytesRead = is.read(buffer)) != -1) {
+                    while ((bytesRead = jis.read(buffer)) != -1) {
                         jos.write(buffer, 0, bytesRead);
                     }
+                } else {
+                    File scoresFile = Path.of(scoresFileDirectory + File.separator + Path.of(scoreEntryName).getFileName()).toFile();
+                    try (InputStream is = new FileInputStream(scoresFile)) {
+                        JarEntry scoresEntry = new JarEntry(scoreEntryName);
+                        jos.putNextEntry(scoresEntry);
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            jos.write(buffer, 0, bytesRead);
+                        }
+                    }
                 }
+                jis.closeEntry();
+                jos.closeEntry();
             }
-            jis.closeEntry();
-            jos.closeEntry();
+
+            if (jarManifest != null) {
+                JarEntry manifestEntry = new JarEntry(JarFile.MANIFEST_NAME);
+                jos.putNextEntry(manifestEntry);
+                jarManifest.write(jos);
+            }
         }
 
-        if (jarManifest != null) {
-            JarEntry manifestEntry = new JarEntry(JarFile.MANIFEST_NAME);
-            jos.putNextEntry(manifestEntry);
-            jarManifest.write(jos);
+        try (OutputStream outputStream = new FileOutputStream(jarFilePath)) {
+            baos.writeTo(outputStream);
         }
     }
-
-    try (OutputStream outputStream = new FileOutputStream(jarFilePath)) {
-        baos.writeTo(outputStream);
-    }
-}
 }
