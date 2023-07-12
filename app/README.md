@@ -152,7 +152,7 @@ MineSweeper.java contains the ever-important main function that launches everyth
 
 MineSweeper.java also contains the hook to copy OverwriteJar.class to a temp directory and run it upon exiting.
 
-OverwriteJar.java overwrites the main jar with the jar from the temp directory, and then cleans up the extra jar in the temp directory and then deletes itself.
+OverwriteJar.java extracts the contents of the original jar to memory, replaces the scores file with the scores file in the temp directory, and then overwrites the old jar with the new contents. If successful, it then cleans up the extra scores file in the temp directory and then deletes itself.
 
 The rest of the source files are just the other windows.
 

@@ -19,12 +19,14 @@ If you have come looking for answers from the tutorial experience, theyre in Gri
 
 **Attention:** This version is kinda dumb. Its also kinda cool. It exists as a proof of concept and because I wanted to try.
 
-Why is it so dumb? It saves by writing a new jar containing updated scores, and then overwriting itself on exit. 
-This means I can't make a linux package because all locations linux could install it to with dpkg are not writeable, 
-so linux needs to use the jar for this one.
-It also means I need a native java executable in the windows package until I learn to mess with a system class loader, so the package installer is an extra 10 MB.
+Why is it so dumb? It saves its scores to the temp folder, and then overwrites itself on exit with a new jar containing the new scores. 
 
-**Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again to move the jar file from the temp directory over the main one. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
+This means I can't make a linux package because all locations linux could install it to with dpkg are not writeable, 
+so linux needs to use the jar and a JDK for this one.
+
+It also means I need a native java executable in the windows package, so the package installer is an extra 10 MB.
+
+**Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again to update the jar file. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
 **Attention:** Don't install this version unless you are curious.
 

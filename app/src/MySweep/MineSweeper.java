@@ -19,7 +19,6 @@ class MineSweeper {
     public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
     public static final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
-    //---public static methods-------------------------------------------------
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
