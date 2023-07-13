@@ -55,7 +55,6 @@ class MineSweeper {
                     OvrightJarPro.command().add(scoresFromClassPath);
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
-                    System.out.println(OvrightJarCommand);
              	    Runtime.getRuntime().exec(OvrightJarCommand);
            	    } catch (IOException e) {e.printStackTrace();}
             }
