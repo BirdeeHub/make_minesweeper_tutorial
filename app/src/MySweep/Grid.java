@@ -274,10 +274,10 @@ public class Grid extends JPanel {
             //I tried to make this branch into like, the russian doll of .jar files. It saves its scores into itself sorta.
             //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
 
-            //what really happens is it just creates and updates a new jar file version in the temp folder,
+            //what really happens is it just creates and updates a new scores file in the temp folder,
             //and then when you close it, it copies a mini program out of itself, called OverwriteJar to run after this one closes.
-            //It runs that program, closes, and then OverwriteJar overwrites the jar with the new version for next time, 
-            //then deletes itself and the temp jar.
+            //It runs that program, closes, and then OverwriteJar overwrites the jar with a new version for next time containing updated scores, 
+            //then deletes itself and the temp scores file.
             //If it doesnt finish somehow (usually because of force quitting, causing it to skip the shutdown hook that runs OverwriteJar) 
             //it will still find the scores next time because it reads from the temp one first.
 
