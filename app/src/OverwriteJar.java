@@ -26,13 +26,16 @@ class OverwriteJar {
         String originalJarPath = args[0];
         String scoresEntryName = args[2];
         String scoresFileContent = null;
-
+        //File scoresFile = Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile();
+        doOverwrite(getManifest(originalJarPath), originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
+    }
+    private static void doOverwrite(Manifest jarManifest, String jarFilePath, String scoreEntryName, String scoresFileDirectory, String newScoresFileContents){
         boolean copySucceeded = true;
         try{
-            writeJarWithNewScores(getManifest(originalJarPath), originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
+            writeJarWithNewScores(jarManifest, jarFilePath, scoreEntryName, scoresFileDirectory, newScoresFileContents);
         }catch(IOException e){e.printStackTrace();copySucceeded = false;}
         if(copySucceeded){
-            Path.of(thisDirectory+File.separator+Path.of(scoresEntryName).getFileName()).toFile().delete();
+            Path.of(scoresFileDirectory+File.separator+Path.of(scoreEntryName).getFileName()).toFile().delete();
         }
     }
     private static Manifest getManifest(String jarFile){
