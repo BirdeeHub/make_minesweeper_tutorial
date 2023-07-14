@@ -17,7 +17,7 @@ import java.util.zip.ZipException;
 //loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
 class OverwriteMinesweeperJar {
     /**
-     * @param args String originalJarPath, String tempJarPath, String scoresEntryName
+     * @param args String originalJarPath, String tempJarPath, String scoresEntryName, String thisClassName
      */
     public static void main(String[] args) {
         String originalJarPath = args[0];

@@ -32,7 +32,7 @@ class MineSweeper {
         } catch (Exception e) {return false;}
     }
     /**
-     * @param args int width, int height, int BombCount, int lives
+     * @param args [String "o" or "m"], int width, int height, int BombCount, int lives
      */
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.

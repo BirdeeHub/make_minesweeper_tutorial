@@ -77,7 +77,6 @@ class ScoresFileIO{
                     fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
                 }catch(IOException e){e.printStackTrace();}
             }
-            return fileEntries;
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
             try{
                 File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresFileName).getPath().toString());
@@ -89,8 +88,8 @@ class ScoresFileIO{
                     fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
                 }catch(FileNotFoundException e){e.printStackTrace();}
             }catch(NullPointerException e){e.printStackTrace();}
-            return fileEntries;
         }
+        return fileEntries;
     }
     //--------------------------------------------Everything below here uses only ScoreEntries to do its work-----------------------------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work---------------------------------------------------
