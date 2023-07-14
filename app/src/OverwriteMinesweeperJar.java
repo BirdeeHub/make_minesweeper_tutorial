@@ -15,6 +15,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipException;
 //This class is to get compiled, and later copied out of the jar to a new directory and 
 //loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
+//do not add any internal or anonymous classes or it will compile into more than 1 file, and that file will not be copied.
 class OverwriteMinesweeperJar {
     /**
      * @param args String originalJarPath, String tempJarPath, String scoresEntryName, String thisClassName
