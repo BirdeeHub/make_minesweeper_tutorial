@@ -30,8 +30,9 @@ class OverwriteMinesweeperJar {
         }));
         try(Scanner in = new Scanner(Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile())) {
             StringBuilder scoresFileStringBuilder = new StringBuilder();
-            while (in.hasNext()) {
-                scoresFileStringBuilder.append(in.next()).append(" ");
+            while (in.hasNextLine()) {
+                scoresFileStringBuilder.append(in.nextLine());
+                if(in.hasNextLine())scoresFileStringBuilder.append('\n');
             }
             scoresFileContent=scoresFileStringBuilder.toString();
             doOverwrite(originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
