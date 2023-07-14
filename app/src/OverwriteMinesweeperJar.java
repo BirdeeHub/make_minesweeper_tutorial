@@ -14,21 +14,20 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipException;
 //This class is to get compiled, and later copied out of the jar to a new directory and 
-//loaded on shutdown such that it can overwrite original jar with the new one supplied by ScoresFileIO
-class OverwriteJar {
+//loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
+class OverwriteMinesweeperJar {
     /**
      * @param args String originalJarPath, String tempJarPath, String scoresEntryName
      */
     public static void main(String[] args) {
-        String thisDirectory = args[1];
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            String pathToProgram = thisDirectory+File.separator+"OverwriteJar.class"; // Specify the path to the program's file
-            File programFile = new File(pathToProgram);
-            programFile.delete();
-        }));
         String originalJarPath = args[0];
+        String thisDirectory = args[1];
         String scoresEntryName = args[2];
+        String thisClassName = args[3];
         String scoresFileContent = null;
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Path.of(thisDirectory+File.separator+thisClassName+".class").toFile().delete();
+        }));
         try(Scanner in = new Scanner(Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile())) {
             StringBuilder scoresFileStringBuilder = new StringBuilder();
             while (in.hasNext()) {
@@ -44,9 +43,7 @@ class OverwriteJar {
         try{
             writeJarWithNewScores(getManifest(jarFilePath), jarFilePath, scoreEntryName, scoresFileDirectory, newScoresFileContents);
         }catch(IOException e){e.printStackTrace();copySucceeded = false;}
-        if(copySucceeded){
-            Path.of(scoresFileDirectory+File.separator+Path.of(scoreEntryName).getFileName()).toFile().delete();
-        }
+        if(copySucceeded)Path.of(scoresFileDirectory+File.separator+Path.of(scoreEntryName).getFileName()).toFile().delete();
     }
     private static Manifest getManifest(String jarFile){
         try(JarFile thisJar = new JarFile(Path.of(jarFile).toFile())){
@@ -57,7 +54,6 @@ class OverwriteJar {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
             JarOutputStream jos = new JarOutputStream(baos)) {
-
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
                 if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoreEntryName)) {
@@ -76,7 +72,6 @@ class OverwriteJar {
                 jis.closeEntry();
                 jos.closeEntry();
             }
-
             if (jarManifest != null) {
                 try{
                     JarEntry manifestEntry = new JarEntry(JarFile.MANIFEST_NAME);
@@ -85,7 +80,6 @@ class OverwriteJar {
                 }catch(ZipException e){}
             }
         }
-
         try (OutputStream outputStream = new FileOutputStream(jarFilePath)) {
             baos.writeTo(outputStream);
         }

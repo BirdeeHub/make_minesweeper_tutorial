@@ -63,7 +63,7 @@ class ScoresFileIO{
                     }catch(FileNotFoundException e){e.printStackTrace();}
                 }catch(NullPointerException e){e.printStackTrace();}
             }else{
-                InputStream inputStream = ClassLoader.getSystemResourceAsStream(MineSweeper.scoresFromClassPath);
+                InputStream inputStream = ClassLoader.getSystemResourceAsStream(MineSweeper.scoresEntryName);
                 InputStreamReader streamReader = new InputStreamReader(inputStream);
                 BufferedReader in = new BufferedReader(streamReader);
                 try{

@@ -18,7 +18,8 @@ class MineSweeper {
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
     public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
-    public static final String scoresFromClassPath = "src/MySweep/"+scoresFileName;
+    public static final String scoresEntryName = "src/MySweep/"+scoresFileName;
+    public static final String OvrightJarClassName = "OverwriteMinesweeperJar";
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
@@ -28,9 +29,7 @@ class MineSweeper {
             return bytesRead == 4 &&
                     (magicNumber[0] == 0x50 && magicNumber[1] == 0x4B && magicNumber[2] == 0x03 && magicNumber[3] == 0x04)
                     || (magicNumber[0] == (byte) 0x80 && magicNumber[1] == 0x75 && magicNumber[2] == 0x03 && magicNumber[3] == 0x04);
-        } catch (Exception e) {
-            return false;
-        }
+        } catch (Exception e) {return false;}
     }
     /**
      * @param args int width, int height, int BombCount, int lives
@@ -38,10 +37,10 @@ class MineSweeper {
     public static void main(String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
             if(isJarFile()){
-                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream("OverwriteJar.class")){//<-- copy our program that overwrites
+                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
                     File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
-                    Files.copy(inputStream, Path.of(tempPath.toString()+File.separator+"OverwriteJar.class"), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(inputStream, Path.of(tempPath.toString()+File.separator+OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
@@ -49,10 +48,11 @@ class MineSweeper {
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
-                    OvrightJarPro.command().add("OverwriteJar");
+                    OvrightJarPro.command().add(OvrightJarClassName);
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
-                    OvrightJarPro.command().add(scoresFromClassPath);
+                    OvrightJarPro.command().add(scoresEntryName);
+                    OvrightJarPro.command().add(OvrightJarClassName);
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
              	    Runtime.getRuntime().exec(OvrightJarCommand);
