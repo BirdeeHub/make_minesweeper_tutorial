@@ -34,8 +34,8 @@ class OverwriteMinesweeperJar {
                 scoresFileStringBuilder.append(in.next()).append(" ");
             }
             scoresFileContent=scoresFileStringBuilder.toString();
+            doOverwrite(originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
         }catch(FileNotFoundException e){}
-        doOverwrite(originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
     }
 
     private static void doOverwrite(String jarFilePath, String scoreEntryName, String scoresFileDirectory, String newScoresFileContents){
