@@ -51,13 +51,13 @@ class MineSweeper {
                     OvrightJarPro.command().add(OvrightJarClassName);
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
-                    OvrightJarPro.command().add(scoresEntryName);
+                    OvrightJarPro.command().add(scoresEntryName);                 
                     OvrightJarPro.command().add(OvrightJarClassName);
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
-             	    Runtime.getRuntime().exec(OvrightJarCommand);
-           	    } catch (IOException e) {e.printStackTrace();}
-            }
+             	    Runtime.getRuntime().exec(OvrightJarCommand);//<-- if you dont do it this way and just run the process, the space in Program Files will become your worst enemy.
+           	    } catch (IOException e) {e.printStackTrace();}//Why does java not just detect it as Progra~1 or Progra~2... There might be a reason, but I strongly dislike whoever thought of that reason.
+            }                                                 //there is also probably a better way to do this than adding quotes and creating a string.
         }));
         try {
             // Set cross-platform Java L&F (also called "Metal")
