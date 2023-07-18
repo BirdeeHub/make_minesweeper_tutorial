@@ -19,6 +19,7 @@ class MineSweeper {
     public static final String scoresFileName= "MinesweeperScores.txt";
     public static final String scoresEntryName = "src/MySweep/"+scoresFileName;
     public static final String OvrightJarClassName = "OverwriteMinesweeperJar";
+    public static boolean isDarkMode = true;
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
