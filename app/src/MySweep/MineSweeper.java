@@ -1,7 +1,6 @@
 package MySweep;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.File;
@@ -51,7 +50,7 @@ class MineSweeper {
                     OvrightJarPro.command().add(OvrightJarClassName);
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
-                    OvrightJarPro.command().add(scoresEntryName);                 
+                    OvrightJarPro.command().add(scoresEntryName);
                     OvrightJarPro.command().add(OvrightJarClassName);
                     List<String> command = OvrightJarPro.command();
                     String OvrightJarCommand = String.join(" ", command);
@@ -59,14 +58,10 @@ class MineSweeper {
            	    } catch (IOException e) {e.printStackTrace();}//Why does java not just detect it as Progra~1 or Progra~2... There might be a reason, but I strongly dislike whoever thought of that reason.
             }                                                 //there is also probably a better way to do this than adding quotes and creating a string.
         }));
-        try {
-            // Set cross-platform Java L&F (also called "Metal")
+        try {// Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         }
-        catch (UnsupportedLookAndFeelException e) {}
-        catch (ClassNotFoundException e) {}
-        catch (InstantiationException e) {}
-        catch (IllegalAccessException e) {}
+        catch (Exception e) {e.printStackTrace();}
 
         int width, height, bombCount, lives;
         if(args.length == 4){
