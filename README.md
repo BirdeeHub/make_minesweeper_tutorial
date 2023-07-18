@@ -33,6 +33,7 @@ It also means that if you put it on a USB, you can play it on any computer and i
 **Attention:** Don't install this version unless you are curious.
 
 **EXTRA ATTENTION** Someone needs to tell me why including a compiler and an actual jartool made my installer smaller...
+Version 5.0 has the compiler and honestly, since it is smaller, download that one instead.
 
 |                                                     |                                                     |
 |-----------------------------------------------------|-----------------------------------------------------|
