@@ -82,7 +82,7 @@ public class MainGameWindow extends javax.swing.JFrame {
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
-
+    //used in both initComponents and toggleDarkMode
     private static final Icon DefaultButtonIcon = (new JButton()).getIcon();
     private JButton NewGame = new JButton("New Game");
     private JButton Reset = new JButton("Reset");
