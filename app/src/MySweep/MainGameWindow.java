@@ -6,6 +6,7 @@ import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.util.TimerTask;
 import java.util.Timer;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
@@ -13,6 +14,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JScrollBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.metal.MetalToggleButtonUI;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -46,8 +48,10 @@ public class MainGameWindow extends javax.swing.JFrame {
             long time = grid.getTime();
             if(time == -1){
                 timeDisplay.setText("");
-            }else timeDisplay.setText(Long.toString(time/1000));//if you want to add a time format you can do that here.
-        }//                            we pass the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
+            }else{ //if you want to add a time format you can do that here.
+                timeDisplay.setText(Long.toString(time/1000));
+            }//we passed the value through grid.getTime() to get the correct minefield's timer without needing to find it from here
+        }
     };
     private JLabel GameOverDisplay = new JLabel();
     private JLabel BombsFoundDisplay = new JLabel();
@@ -78,9 +82,13 @@ public class MainGameWindow extends javax.swing.JFrame {
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
-    void toggleDarkMode(){
-        grid.toggleDarkMode();
-    }
+
+    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();
+    private JButton NewGame = new JButton("New Game");
+    private JButton Reset = new JButton("Reset");
+    private JButton HowToPlay = new JButton("Help");
+    private JToggleButton toggleQuestionMarking = new JToggleButton("?'s?");
+    private JButton ScoreBoard = new JButton("HiSc");
     boolean isDMOn(){
         return grid.isDarkMode();
     }
@@ -190,16 +198,20 @@ public class MainGameWindow extends javax.swing.JFrame {
         JMenuBar menuBar = new JMenuBar();
         JPanel menuPanel = new JPanel(new GridBagLayout());
         GridBagConstraints menuBagConstraints = new GridBagConstraints();
-        JButton NewGame = new JButton("New Game");
-        JButton Reset = new JButton("Reset");
-        JButton HowToPlay = new JButton("Help");
-        JToggleButton toggleQuestionMarking = new JToggleButton("?'s?");
-        JButton ScoreBoard = new JButton("HiSc");
         Font ScoreAreaFontSize = new Font("Tahoma", 0, 20);
+        MetalToggleButtonUI toggleButtonSelectedColor = new MetalToggleButtonUI() {
+            @Override
+            protected Color getSelectColor() {
+                return (isDMOn())?PURPLE:super.getSelectColor();
+            }
+        };
+        //------------------------set stuff
         setBombsFoundDisplay();
         setLivesLostDisplay();
         setGameOverDisplay();
-        //------------------------set stuff
+        toggleQuestionMarking.setUI(toggleButtonSelectedColor);
+        markToggle.setUI(toggleButtonSelectedColor);
+        chordToggle.setUI(toggleButtonSelectedColor);
         BombsFoundDisplay.setHorizontalAlignment(SwingConstants.CENTER);
         livesLostDisplay.setHorizontalAlignment(SwingConstants.CENTER);
         GameOverDisplay.setHorizontalAlignment(SwingConstants.CENTER);
@@ -208,11 +220,18 @@ public class MainGameWindow extends javax.swing.JFrame {
         livesLostDisplay.setFont(ScoreAreaFontSize);
         GameOverDisplay.setFont(ScoreAreaFontSize);
         timeDisplay.setFont(ScoreAreaFontSize);
-        menuPanel.setBackground(PURPLE);
         timeDisplay.setForeground(GREEN);
         BombsFoundDisplay.setForeground(GREEN);
         livesLostDisplay.setForeground(GREEN);
         GameOverDisplay.setForeground(GREEN);
+        timeDisplay.setBackground(PURPLE);
+        livesLostDisplay.setBackground(PURPLE);
+        BombsFoundDisplay.setBackground(PURPLE);
+        GameOverDisplay.setBackground(PURPLE);
+        timeDisplay.setOpaque(true);
+        livesLostDisplay.setOpaque(true);
+        BombsFoundDisplay.setOpaque(true);
+        GameOverDisplay.setOpaque(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setBackground(PURPLE);
@@ -221,6 +240,24 @@ public class MainGameWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
         setIconImage(MineSweeper.MineIcon);
+
+        //dark mode vs light mode
+        if(isDMOn()){
+            markToggle.setForeground(Color.WHITE);
+            markToggle.setBackground(Color.BLACK);
+            chordToggle.setForeground(Color.WHITE);
+            chordToggle.setBackground(Color.BLACK);
+            toggleQuestionMarking.setForeground(Color.WHITE);
+            toggleQuestionMarking.setBackground(Color.BLACK);
+            NewGame.setForeground(Color.WHITE);
+            NewGame.setBackground(Color.BLACK);
+            Reset.setForeground(Color.WHITE);
+            Reset.setBackground(Color.BLACK);
+            HowToPlay.setForeground(Color.WHITE);
+            HowToPlay.setBackground(Color.BLACK);
+            ScoreBoard.setForeground(Color.WHITE);
+            ScoreBoard.setBackground(Color.BLACK);
+        }
         //---------------------component adding and layout managing
         menuBagConstraints.gridx =0;
         menuBagConstraints.gridy =0;
@@ -331,5 +368,46 @@ public class MainGameWindow extends javax.swing.JFrame {
         chordToggle.addKeyListener(keyAdapter);
 
         getContentPane().setVisible(true);
+    }
+    void toggleDarkMode(){
+        grid.toggleDarkMode();
+        if(isDMOn()){
+            markToggle.setForeground(Color.WHITE);
+            markToggle.setBackground(Color.BLACK);
+            chordToggle.setForeground(Color.WHITE);
+            chordToggle.setBackground(Color.BLACK);
+            toggleQuestionMarking.setForeground(Color.WHITE);
+            toggleQuestionMarking.setBackground(Color.BLACK);
+            NewGame.setForeground(Color.WHITE);
+            NewGame.setBackground(Color.BLACK);
+            Reset.setForeground(Color.WHITE);
+            Reset.setBackground(Color.BLACK);
+            HowToPlay.setForeground(Color.WHITE);
+            HowToPlay.setBackground(Color.BLACK);
+            ScoreBoard.setForeground(Color.WHITE);
+            ScoreBoard.setBackground(Color.BLACK);
+        }else{
+            markToggle.setForeground(Color.BLACK);
+            markToggle.setBackground(null);
+            markToggle.setIcon(DefaultButtonIcon);
+            chordToggle.setForeground(Color.BLACK);
+            chordToggle.setBackground(null);
+            chordToggle.setIcon(DefaultButtonIcon);
+            toggleQuestionMarking.setForeground(Color.BLACK);
+            toggleQuestionMarking.setBackground(null);
+            toggleQuestionMarking.setIcon(DefaultButtonIcon);
+            NewGame.setForeground(Color.BLACK);
+            NewGame.setBackground(null);
+            NewGame.setIcon(DefaultButtonIcon);
+            Reset.setForeground(Color.BLACK);
+            Reset.setBackground(null);
+            Reset.setIcon(DefaultButtonIcon);
+            HowToPlay.setForeground(Color.BLACK);
+            HowToPlay.setBackground(null);
+            HowToPlay.setIcon(DefaultButtonIcon);
+            ScoreBoard.setForeground(Color.BLACK);
+            ScoreBoard.setBackground(null);
+            ScoreBoard.setIcon(DefaultButtonIcon);
+        }
     }
 }
