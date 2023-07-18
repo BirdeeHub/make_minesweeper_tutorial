@@ -9,28 +9,30 @@
 
     While some things in this particular file are hard to understand, it is where the program begins. So it is where we start.
     If you dont understand all the details in this file, that is fine. 
+
+    The parts that are important to you right now, I have pointed out.
+
     EventQueue.invokeLater is one of these hard things. It just runs our windows and thats what matters.
     How some of the things at the end of this file actually work completely are also hard to understand.
-
-    The parts of those things that are important to you right now, I have pointed out.
 
     By the end of this file, you should see how an if statement works, 
     you should see some examples of variable definitions, remembering that they have a type
     you should see an example of an array, and referencing the things in it.
     you should see an example of how to use the 'new' keyword to create an instance of a class
-    and see that try{}catch(){} means that if an error occurs, it executes the stuff in the brackets of the catch{}
-    and 1 other thing explained at the end of the file.
+    you should see that try{}catch(){} means that if an error occurs, it executes the stuff in the brackets of the catch{}
+    you should learn about public and private variables
+    you should learn about static variables.
 */
 
 package MySweep;//<-- this class is in the MySweep package, and thus, the files will be in the MySweep folder. It means more stuff but thats what matters right now.
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;//<-- import the functions used from their libraries.
-import javax.swing.UnsupportedLookAndFeelException;//(smart editors can do this for you)
-import java.awt.EventQueue;
+import java.awt.EventQueue;//(smart editors can do this for you)
 import java.awt.Image;
 import java.io.FileInputStream;//these libraries, i.e. java.awt are also packages in java
 import java.nio.file.Paths;
+import java.awt.Frame;
 
 class MineSweeper {//<-- the start of our first class
     /** --a fancy comment-- @param aaaaaarg!!!
@@ -44,21 +46,15 @@ class MineSweeper {//<-- the start of our first class
 
         //you can ignore this thing though....
         try {//(I found out that if you dont do this thing some Swing library stuff breaks on mac)
-            // Set cross-platform Java L&F (also called "Metal") 
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        }                                          //^I copy pasted this straight from the oracle documentation
-        catch (UnsupportedLookAndFeelException e) {//and thats just fine. Now I can set button backgrounds on mac.
-        }
-        catch (ClassNotFoundException e) {
-        }
-        catch (InstantiationException e) {
-        }
-        catch (IllegalAccessException e) {
-        }
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());//<-- Set cross-platform Java L&F (also called "Metal") 
+        }catch (Exception e) {e.printStackTrace();}//^I copy pasted this straight from the oracle documentation
+                                                    //and thats just fine. Now I can set button backgrounds on mac.
 
         //Focus on how we check the input, using if statements and try.
 
         int width, height, bombCount, lives;//<-- this is a variable declaration for 4 integers. There is nothing in them yet.
+        //^these variables are not global and do not need to be declared public or private.
+        // They are contained within the scope of the main function only.
 
         if(args.length == 4){//<-- processing command line arguments. If we got 4 arguments from the command line, do:
 
@@ -132,11 +128,11 @@ class MineSweeper {//<-- the start of our first class
         }
     }
 
-    //the following are public variables and functions. 
+    //the following are public variables and functions (except for one private variable!). 
     //This means if you can reference an instance of this class, you can reference these variables and functions.
     //i.e. you could actually do instanceOfThisClass.publicFunctionFromThisClass(); and have it find and run the function
 
-    //they are also static, which means you dont need to use an instance. 
+    //they are also static, which means you dont need to use an instance of a class. They are associated with the class itself.
 
     //i.e. if(MineSweeper.isJarJile()) doSomething(); 
     //rather than if(instanceOfMineSweeper.isJarFile()) doSomething();
@@ -153,11 +149,25 @@ class MineSweeper {//<-- the start of our first class
 
     //public and static variables:
     //you can put in a value just like any variable
-    public static boolean isDarkMode = true;//<-- other classes will use this to know if darkmode is on (using MineSweeper.isDarkMode).
+    //public static ScoreEntry scoreEntryInstance = new ScoreEntry();
+    //^scope  ^modifier(s) ^Type    ^variableName     =  ^'new' followed by a Constructor (of the same type)
 
-    /*this one is just another example:
-    public static ScoreEntry scoreEntryInstance = new ScoreEntry();//<-- this is how you do the same thing, but with a class as the type.
-    //^scope  ^modifier(s) ^Type    ^variableName     =  ^'new' followed by a Constructor (of the same type)*/
+    //the following DarkMode variable is the only private global variable in this class. 
+    //It can be seen anywhere within the class but not outside. 
+    //It still needs to be static so that it can be used by static functions.
+    private static boolean DarkMode = true;//<-- we only set this in toggleDarkMode so it is private so we dont forget and mess that up somewhere
+
+    public static boolean isDarkMode(){return DarkMode;}//<-- this is how other classes get darkmode status using MineSweeper.isDarkMode()
+
+    public static void toggleDarkMode() {//<-- the toggle button in InstructionsWindow calls this.
+        Frame[] frames = Frame.getFrames();//<-- this is how you get all classes that extend Frame in a program. JFrames extend Frame
+        DarkMode = !DarkMode;//<-- toggle our DarkModeVariable
+        for (Frame frame : frames) {//<-- a fancy for loop. "for each frame in frames array"
+            if(frame instanceof MainGameWindow){//<-- check if it is a specific type so you can cast it as the correct window
+                ((MainGameWindow)frame).toggleDarkMode();//<-- cast as correct window, and run the function from that instance of the class.
+            }       //right now, the only frame we have defined toggleDarkMode() for is MainGameWindow.
+        }
+    }
 
     //these next 2 are images we will use for end of game display, as well as the icon in the top left of the window.
 
@@ -174,8 +184,6 @@ class MineSweeper {//<-- the start of our first class
 
     //MineSweeper.class.getResource("File/Path") just gets files from the path we ran the program from (we need to check if we are in a jar because running from a jar file would change the path to the icon.)
 
-
-    //a public and static function:
     public static boolean isJarFile() {//<-- you can see that it returns a boolean, i.e. true or false.
         
         //you need to do this stuff to read 4 bytes from a file. Dont worry. Just pay attention to "public static boolean" right now.
@@ -192,4 +200,4 @@ class MineSweeper {//<-- the start of our first class
     }      //It is read from a file, and the function returns true when it is there. If the number is there, its a .jar file
 }
 
-//Understand public, static and the type well enough for now? OpeningWindow Time!
+//Understand public, private, static and type well enough for now? OpeningWindow Time!

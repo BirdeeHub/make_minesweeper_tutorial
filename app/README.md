@@ -155,6 +155,8 @@ ScoresWindow displays ScoreEntry instances correctly and allows for deletion, an
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window.
 
+It also contains several handy public static functions and variables
+
 --
 
 1 more thing. Recommended reading order for the Coding Tutorial aspect of this game. (It is also marked by comments)

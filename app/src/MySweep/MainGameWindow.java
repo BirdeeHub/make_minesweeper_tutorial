@@ -87,8 +87,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     private boolean LMB = false;
     private boolean RMB = false;
     private JButton currentButton = null;
-    //these are accessible from instructions window if it has a reference to this instance of this class. They are public.
-    void toggleDarkMode(){
+    void toggleDarkMode(){//<-- this is accessible from any class that can get the correct instance of this class. It is public, but not static.
         grid.toggleDarkMode();
     }
 //---------------------MainGameWindow CONSTRUCTOR----------------------MainGameWindow CONSTRUCTOR----------------------------MainGameWindow CONSTRUCTOR------------------------------
@@ -325,7 +324,7 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
             public void actionPerformed(ActionEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
-                        new instructionsWindow(MainGameWindow.this).setVisible(true);
+                        new InstructionsWindow().setVisible(true);
                     }
                 });
             }
