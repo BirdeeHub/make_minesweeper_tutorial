@@ -10,7 +10,7 @@
     While some things in this particular file are hard to understand, it is where the program begins. So it is where we start.
     If you dont understand all the details in this file, that is fine. 
     EventQueue.invokeLater is one of these hard things. It just runs our windows and thats what matters.
-    How the things at the end of this file actually work completely are also hard to understand.
+    How some of the things at the end of this file actually work completely are also hard to understand.
 
     The parts of those things that are important to you right now, I have pointed out.
 
@@ -152,9 +152,12 @@ class MineSweeper {//<-- the start of our first class
 
 
     //public and static variables:
+    //you can put in a value just like any variable
+    public static boolean isDarkMode = true;//<-- other classes will use this to know if darkmode is on (using MineSweeper.isDarkMode).
 
-    public static ScoresFileIO scoresFileIO = new ScoresFileIO();//<-- this is a reference to an instance of our ScoresFileIO class we can get anywhere.
-    //^modifiers^  ^type    variableName^   =    ^'new' followed by a Constructor (of the same type)
+    /*this one is just another example:
+    public static ScoreEntry scoreEntryInstance = new ScoreEntry();//<-- this is how you do the same thing, but with a class as the type.
+    //^scope  ^modifier(s) ^Type    ^variableName     =  ^'new' followed by a Constructor (of the same type)*/
 
     //these next 2 are images we will use for end of game display, as well as the icon in the top left of the window.
 

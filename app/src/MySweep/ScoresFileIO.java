@@ -11,16 +11,16 @@ import java.util.Scanner;
 
 class ScoresFileIO{//reads from file, creates scoreEntry instances based on the file contents. ScoresWindow uses read and delete, maingame uses update. write is private
     //set our scores file name based on OS
-    private final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
-    private final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
-    private final String scoresFileName = (System.getProperty("os.name").toLowerCase().contains("win"))?scoresFileNameWindows:scoresFileNameOther;
+    private static final String scoresFileNameWindows = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "minesweeperScores" + File.separator + "Leaderboard.txt";
+    private static final String scoresFileNameOther = System.getProperty("user.home") + File.separator + ".minesweeper" + File.separator + "Leaderboard.txt";
+    private static final String scoresFileName = (System.getProperty("os.name").toLowerCase().contains("win"))?scoresFileNameWindows:scoresFileNameOther;
     
-    public ScoresFileIO(){}//<-- our constructor doesnt necessarily need anything in it.
+    //we dont need a constructor if everything is static because nothing requires an instance of the class.
     
-    // it helps to have ScoreEntry open for reference sometimes in this class but it is not necessary
+    // it helps to have ScoreEntry open for reference sometimes while reading this class but it is not necessary
     
     //----------------------------------WRITE------------------------------------------------------WRITE-------------------------------------------
-    private void writeLeaderboard(ScoreEntry[] allEntries, boolean append){// writes from Score Entries to file
+    private static void writeLeaderboard(ScoreEntry[] allEntries, boolean append){// writes from Score Entries to file
         StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
         if(append)scoresFileString.append(" ");//<-- make sure theres at least one space to separate it from the other scores
         for(int i = 0; i < allEntries.length; i++){//<-- for all the entries
@@ -42,7 +42,7 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
         }catch(IOException e){e.printStackTrace();}
     }
     //-----------------------------------READ-------------------------------------READ----------------------------------------------------------------
-    public ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
+    public static ScoreEntry[] readLeaderboard(){ //reads from file by word to Score Entries
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();//<-- Array lists also have a good append function.
         ScoreEntry[] fileEntries;
         try(Scanner in = new Scanner(new File(scoresFileName))) {//scanner class reads words from a file to strings (separated by whitespace) 
@@ -61,7 +61,7 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
     }
     //---------------------------------Everything below here uses only ScoreEntries to do its work---and uses read and write---------------
     //-----------------------------Everything below here uses only ScoreEntries to do its work------------deleteScoreEntry----------------------
-    public void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
+    public static void deleteScoreEntry(ScoreEntry thisEntry){//<-- reads score file, overwrites with the same thing but without specified entry
         ScoreEntry[] deletries = readLeaderboard();// <-- read
         ArrayList<ScoreEntry> newFileBuilder = new ArrayList<>();
         if(deletries!=null){
@@ -78,7 +78,7 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
             writeLeaderboard(deletries, false);// <-- overwrite with new
         }
     }//-------------------------------------------------------------------------update score entry-------------------------------------------
-    public int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
+    public static int updateScoreEntry(boolean won, long time, int cellsExploded, int Fieldx, int Fieldy, int bombCount, int lives){
         //Writes new scores to score file, returns highscore/new_board/normal index for assigning win/loss message
         int RemainingLives= Math.max(0, lives-cellsExploded);
         ScoreEntry thisEntry = new ScoreEntry(Fieldx,Fieldy,bombCount,lives,RemainingLives,time);

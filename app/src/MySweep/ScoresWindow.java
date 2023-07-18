@@ -102,7 +102,7 @@ public class ScoresWindow extends JFrame {
         }
     }//-------------------------or delete a score.
     private void BoardButtonDeleteAction(JButton BoardButtonPressed){
-        MineSweeper.scoresFileIO.deleteScoreEntry(((ScoreEntry)BoardButtonPressed.getClientProperty("BoardTarget")));//<-- delete this button's score from file
+        ScoresFileIO.deleteScoreEntry(((ScoreEntry)BoardButtonPressed.getClientProperty("BoardTarget")));//<-- delete this button's score from file
         BoardPanel.removeAll();//remove items in the GridLayout panels which are our columns because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
@@ -291,7 +291,7 @@ public class ScoresWindow extends JFrame {
         String EHL="</u>";//EndHighLight
         String Shtml="<html>";
         String Ehtml="</html>";
-        ScoreEntry[] entries = MineSweeper.scoresFileIO.readLeaderboard();//<-- read scores file to ScoreEntry array
+        ScoreEntry[] entries = ScoresFileIO.readLeaderboard();//<-- read scores file to ScoreEntry array
         if(entries==null){//<-- no file was present
             FileIssue=true;
             BoardLabel = new JLabel[1];

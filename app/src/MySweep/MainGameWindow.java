@@ -91,9 +91,6 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
     void toggleDarkMode(){
         grid.toggleDarkMode();
     }
-    boolean isDMOn(){
-        return grid.isDarkMode();
-    }
 //---------------------MainGameWindow CONSTRUCTOR----------------------MainGameWindow CONSTRUCTOR----------------------------MainGameWindow CONSTRUCTOR------------------------------
     public MainGameWindow(int w, int h, int bombNum, int lives) {
         Fieldx = w;
