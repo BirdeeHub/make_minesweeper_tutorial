@@ -169,7 +169,6 @@ public class Grid extends JPanel {
             }
         }
     }
-    boolean isDarkMode(){return MineSweeper.isDarkMode;}//<-- this is a function
 
 
 
