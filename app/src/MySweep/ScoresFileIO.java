@@ -17,7 +17,7 @@ class ScoresFileIO{//reads from file, creates scoreEntry instances based on the 
     
     //we dont need a constructor if everything is static because nothing requires an instance of the class.
     
-    // it helps to have ScoreEntry open for reference sometimes while reading this class but it is not necessary
+    //it helps to have ScoreEntry open for reference sometimes while reading this class
     
     //----------------------------------WRITE------------------------------------------------------WRITE-------------------------------------------
     private static void writeLeaderboard(ScoreEntry[] allEntries, boolean append){// writes from Score Entries to file
