@@ -30,10 +30,7 @@ It also means that if you put it on a USB, you can play it on any computer and i
 
 **Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again to update the jar file. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
-**Attention:** Don't install this version unless you are curious.
-
-**EXTRA ATTENTION** Someone needs to tell me why including a compiler and an actual jartool made my installer smaller...
-Version 5.0 has the compiler and honestly, since it is smaller, download that one instead.
+**Attention:** Don't install this version unless you are curious. Also it was only an extra 200KB or so to include the compiler by default so I did.
 
 |                                                     |                                                     |
 |-----------------------------------------------------|-----------------------------------------------------|
