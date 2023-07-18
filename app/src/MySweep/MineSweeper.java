@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.lang.management.ManagementFactory;
 import java.util.List;
+import java.awt.Frame;
 class MineSweeper {
     public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
@@ -19,7 +20,6 @@ class MineSweeper {
     public static final String scoresFileName= "MinesweeperScores.txt";
     public static final String scoresEntryName = "src/MySweep/"+scoresFileName;
     public static final String OvrightJarClassName = "OverwriteMinesweeperJar";
-    public static boolean isDarkMode = true;
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
@@ -30,6 +30,17 @@ class MineSweeper {
                     (magicNumber[0] == 0x50 && magicNumber[1] == 0x4B && magicNumber[2] == 0x03 && magicNumber[3] == 0x04)
                     || (magicNumber[0] == (byte) 0x80 && magicNumber[1] == 0x75 && magicNumber[2] == 0x03 && magicNumber[3] == 0x04);
         } catch (Exception e) {return false;}
+    }
+    private static boolean DarkMode = true;
+    public static boolean isDarkMode(){return DarkMode;}
+    public static void toggleDarkMode() {
+        Frame[] frames = Frame.getFrames();
+        DarkMode = !DarkMode;
+        for (Frame frame : frames) {
+            if(frame instanceof MainGameWindow){
+                ((MainGameWindow)frame).toggleDarkMode();
+            }
+        }
     }
     /**
      * @param args [String "o" or "m"], int width, int height, int BombCount, int lives

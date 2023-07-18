@@ -95,7 +95,7 @@ public class OpeningWindow extends JFrame {
             public void actionPerformed(ActionEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
-                        new instructionsWindow().setVisible(true);
+                        new InstructionsWindow().setVisible(true);
                     }
                 });
             }

@@ -125,7 +125,7 @@ public class Grid extends JPanel {
                 getButtonAt(i,j).setXY(i,j);//order of button add irrelevant because (i,j)=(i,j)
             }
         }
-        if(MineSweeper.isDarkMode)for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);
+        if(MineSweeper.isDarkMode())for(int i = 0; i < Fieldx; i++)for(int j = 0; j < Fieldy; j++)getButtonAt(i,j).setBackground(BLACK);
     }
     //--------------------getButtonAt(int x, int y) Became necessary after getting rid of 2d array to reference cells by location-------------------------
     private CellButton getButtonAt(int x, int y) {
@@ -162,7 +162,7 @@ public class Grid extends JPanel {
                 for (int y = 0; y < Fieldy; y++) {
                     if(answers.isQuestionable(x, y)){
                         answers.clearSuspicion(x,y);
-                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                         getButtonAt(x,y).setText("");
                     }
                 }
@@ -188,24 +188,23 @@ public class Grid extends JPanel {
 /////////////////////////////////////////////////////////////////////////////
 //ANSWER VERSION 1
     void toggleDarkMode(){
-        MineSweeper.isDarkMode = !MineSweeper.isDarkMode;
         for (int x = 0; x < Fieldx; x++) {
             for (int y = 0; y < Fieldy; y++) {
                 //I added a new condition to exclude.
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0)||(answers.isGameOver()&&answers.isBomb(x, y)))){
-                    if(MineSweeper.isDarkMode){getButtonAt(x,y).setBackground(BLACK);                            //^new check. Makes sure this if does not include revealed bombs
+                    if(MineSweeper.isDarkMode()){getButtonAt(x,y).setBackground(BLACK);                            //^new check. Makes sure this if does not include revealed bombs
                     }else{                                                        //this part inside was still correct.
                         getButtonAt(x,y).setBackground(null);
                         getButtonAt(x,y).setIcon(DefaultButtonIcon);
                     }
-                    if(((MineSweeper.isDarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
-                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                    if(((MineSweeper.isDarkMode())?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
                 }
                 //Handle new case:
                 if(answers.isBomb(x, y)&&answers.isGameOver()){//now we process it for our buttons with icons, after excluding them properly before
                     if(wonValue == 0){//<-- if we lost, its gonna be the explosion
-                        if(MineSweeper.isDarkMode){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode now set the background black
+                        if(MineSweeper.isDarkMode()){getButtonAt(x,y).setBackground(BLACK);//<-- if dark mode now set the background black
                         }else{                                          //else
                             getButtonAt(x,y).setBackground(null);//<-- set the background null
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
@@ -214,7 +213,7 @@ public class Grid extends JPanel {
                         getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon));
                     
                     }else if(wonValue == 1){//<-- if you won, you see the mines
-                        if(MineSweeper.isDarkMode){getButtonAt(x,y).setBackground(BLACK);
+                        if(MineSweeper.isDarkMode()){getButtonAt(x,y).setBackground(BLACK);
                         }else{
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
@@ -237,17 +236,16 @@ public class Grid extends JPanel {
 //VERSION 2
 /*
     void toggleDarkMode(){
-        MineSweeper.isDarkMode = !MineSweeper.isDarkMode;
         for (int x = 0; x < Fieldx; x++) {
             for (int y = 0; y < Fieldy; y++) {
                 if(!(answers.exploded(x, y)||(answers.checked(x, y)&&answers.adjCount(x, y)==0))){
-                    if(MineSweeper.isDarkMode){getButtonAt(x,y).setBackground(BLACK);
+                    if(MineSweeper.isDarkMode()){getButtonAt(x,y).setBackground(BLACK);
                     }else{
                         getButtonAt(x,y).setBackground(null);
                         getButtonAt(x,y).setIcon(DefaultButtonIcon);
                     }
-                    if(((MineSweeper.isDarkMode)?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
-                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                    if(((MineSweeper.isDarkMode())?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                     }
                     if(answers.isBomb(x, y)&&answers.isGameOver()){//<-- literally just stick this section in there.
                         //check for wonValue and then copy paste icon thing from game over
@@ -296,11 +294,11 @@ public class Grid extends JPanel {
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- get a new minefield, thus resetting the timer and everything else
         for (int i = 0; i < Fieldx; i++) {
             for (int j = 0; j < Fieldy; j++) {// and then reset appearances.
-                getButtonAt(i,j).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                getButtonAt(i,j).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                 getButtonAt(i,j).setBorderColor(defaultBorderColor, 1);
                 getButtonAt(i, j).setDynamicBorderWidth(false);
                 getButtonAt(i,j).setText("");
-                if(MineSweeper.isDarkMode){
+                if(MineSweeper.isDarkMode()){
                     getButtonAt(i,j).setBackground(BLACK);
                     getButtonAt(i,j).setIcon(null);
                 }else {
@@ -383,7 +381,7 @@ public class Grid extends JPanel {
                     livesLeft = lives-answers.cellsExploded();
                 } else if (answers.adjCount(xValue, yValue) != 0) {//*whew*.... close one.
                     current.setText(String.valueOf(answers.adjCount(xValue, yValue)));
-                    current.setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                    current.setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                     answers.check(xValue, yValue);
                     setBorderBasedOnAdj(xValue, yValue);
                 } else {                           //you clicked a 0
@@ -422,7 +420,7 @@ public class Grid extends JPanel {
                 }else if (answers.isQuestionable(xValue,yValue) || ((answers.marked(xValue, yValue) && cancelQuestionMarks))){
                     answers.unmark(xValue,yValue);//<-- it already checks if it was unmarked so just stick it here as well to make it work regardless of ? settings
                     answers.clearSuspicion(xValue,yValue);
-                    current.setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                    current.setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                     current.setText("");
                 }
                 BombsFound = answers.cellsMarked()+answers.cellsExploded();
@@ -448,7 +446,7 @@ public class Grid extends JPanel {
                             }else if(!answers.isQuestionable(i, j)){
                                 if (answers.adjCount(i, j) != 0) {//adjCount>0
                                     getButtonAt(i,j).setText(String.valueOf(answers.adjCount(i, j)));
-                                    getButtonAt(i,j).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                                    getButtonAt(i,j).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                                     answers.check(i, j);
                                     setBorderBasedOnAdj(i, j);
                                 } else {                           //you hit a 0
@@ -521,7 +519,7 @@ public class Grid extends JPanel {
                                 answers.check(i, j);
                                 setBorderBasedOnAdj(i, j);
                                 getButtonAt(i,j).setText(String.valueOf(answers.adjCount(i, j)));
-                                getButtonAt(i,j).setForeground((MineSweeper.isDarkMode)?DarkModeTextColor:LightModeTextColor);
+                                getButtonAt(i,j).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                             } else {
                                 stack.push(j * Fieldx + i);//is 0. queue it up!
                             }
