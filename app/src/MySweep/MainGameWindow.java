@@ -41,7 +41,7 @@ public class MainGameWindow extends javax.swing.JFrame {
     private final Color PURPLE = new Color(58, 0, 82);//its java what did you expect. so you create a new minefield to store mutable game state.
     private final Color GREEN = new Color(0, 255, 0);//Then the file got long so I put the grid display in grid and then split the rest of the window here.
     private final Dimension DefaultWindowSize = new Dimension(830, 830);//also i needed a private cellbutton class for border painting, etc...
-    private JLabel timeDisplay = new JLabel();//                                       super easy to refactor in my opinion though.
+    private JLabel timeDisplay = new JLabel();
     private final Timer displayTimer = new Timer();// Create Timer Displayer
     private final TimerTask timeDisplayTask = new TimerTask() {
         public void run() {
@@ -240,7 +240,6 @@ public class MainGameWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(DefaultWindowSize);
         setIconImage(MineSweeper.MineIcon);
-
         //dark mode vs light mode
         if(isDMOn()){
             markToggle.setForeground(Color.WHITE);
