@@ -229,11 +229,18 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
         livesLostDisplay.setFont(ScoreAreaFontSize);
         GameOverDisplay.setFont(ScoreAreaFontSize);
         timeDisplay.setFont(ScoreAreaFontSize);
-        menuPanel.setBackground(PURPLE);
         timeDisplay.setForeground(GREEN);
         BombsFoundDisplay.setForeground(GREEN);
         livesLostDisplay.setForeground(GREEN);
         GameOverDisplay.setForeground(GREEN);
+        timeDisplay.setBackground(PURPLE);
+        livesLostDisplay.setBackground(PURPLE);
+        BombsFoundDisplay.setBackground(PURPLE);
+        GameOverDisplay.setBackground(PURPLE);
+        timeDisplay.setOpaque(true);//<-- set JLabels as Opaque or the background wont show up.
+        livesLostDisplay.setOpaque(true);
+        BombsFoundDisplay.setOpaque(true);
+        GameOverDisplay.setOpaque(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setBackground(PURPLE);
