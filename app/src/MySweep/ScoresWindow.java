@@ -37,7 +37,7 @@ public class ScoresWindow extends JFrame {
     private JLabel ColumnHeadingLabel1, ColumnHeadingLabel2, ColumnHeadingLabel3, TitleLabel;//these are initialized globally to allow toggle dark mode to access them.
     private JButton Back;
     private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to allow leaderboardText() to be called anywhere in the file
-    private JLabel[] BoardLabel, LivesLabel, TimeLabel;//                                                              ^leaderboardText() defined at end of file.
+    private JLabel[] BoardLabel, LivesLabel, TimeLabel;//                                                              ^leaderboardText() defined after constructors
     private JButton[] BoardButton;//<-- these are here so we can swap them without re-running set leaderboard text function
     private boolean isControlDown;
     private boolean isShiftDown;
