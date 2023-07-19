@@ -114,7 +114,6 @@ public class ScoresWindow extends JFrame {
         LivesPanel.removeAll();
         TimePanel.removeAll();
         leaderboardText();//<-- Update the text for main scores display
-        setDarkMode();
         revalidate();
     }
 
@@ -233,8 +232,8 @@ public class ScoresWindow extends JFrame {
                 }else{
                     BoardPanel.add(BoardLabel[i]);
                 }
-
             }
+            setDarkMode();
         }
     }
     void toggleDarkMode(){
@@ -463,8 +462,10 @@ public class ScoresWindow extends JFrame {
         BoardSpacer2.setBorder(new EmptyBorder(10, 5, 10, 5));
 
         TimePanel.setLayout(new GridLayout(0, 1));
-        leaderboardText();//set text for main scores display
         JLabel BoardSpacer3 = new JLabel(" ");
+
+        leaderboardText();//<-- set text for main scores display (also calls setDarkMode)
+
 
         ScoresConstraints.fill = GridBagConstraints.BOTH;
         ScoresConstraints.gridx = 0;
@@ -484,8 +485,6 @@ public class ScoresWindow extends JFrame {
         ScoresConstraints.gridx = GridBagConstraints.REMAINDER;
         ScoresConstraints.weighty = 1.0;
         ScoresPanel.add(BoardSpacer3, ScoresConstraints);
-
-        setDarkMode();//<-- Im just going to set this at the end this time to avoid any problems
 
         pack();
         getContentPane().setVisible(true);
