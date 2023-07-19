@@ -160,13 +160,15 @@ class MineSweeper {//<-- the start of our first class
     public static boolean isDarkMode(){return DarkMode;}//<-- this is how other classes get darkmode status using MineSweeper.isDarkMode()
 
     public static void toggleDarkMode() {//<-- the toggle button in InstructionsWindow calls this.
-        Frame[] frames = Frame.getFrames();//<-- this is how you get all classes that extend Frame in a program. JFrames extend Frame
+        Frame[] frames = Frame.getFrames();//<-- this is how you get all class instances that extend Frame in a Java program. JFrames extend Frame, so this finds them, among others.
         DarkMode = !DarkMode;//<-- toggle our DarkModeVariable
         for (Frame frame : frames) {//<-- a fancy for loop. "for each frame in frames array"
-            if(frame instanceof MainGameWindow){//<-- check if it is a specific type so you can cast it as the correct window
-                ((MainGameWindow)frame).toggleDarkMode();//<-- cast as correct window, and run the function from that instance of the class.
-            }       //right now, the only frame we have defined toggleDarkMode() for is MainGameWindow.
-        }
+            if(frame instanceof MainGameWindow){
+                ((MainGameWindow)frame).toggleDarkMode();
+            }if(frame instanceof OpeningWindow){//<-- check if it is a specific type so you can cast it as the correct window
+                ((OpeningWindow)frame).toggleDarkMode();//<-- cast as correct window, and run the function from that instance of the class.
+            }
+        }//right now, the only frames we have defined toggleDarkMode() for are MainGameWindow and OpeningWindow. They are defined in the other branches on github though!
     }
 
     //these next 2 are images we will use for end of game display, as well as the icon in the top left of the window.
@@ -186,7 +188,7 @@ class MineSweeper {//<-- the start of our first class
 
     public static boolean isJarFile() {//<-- you can see that it returns a boolean, i.e. true or false.
         
-        //you need to do this stuff to read 4 bytes from a file. Dont worry. Just pay attention to "public static boolean" right now.
+        //you need to do this stuff to read 4 bytes from a file and check them. Dont worry too much about this one yet.
         //apparently .jar files have a magic number that shows if it is a jar file.
         try (FileInputStream fileInputStream = new FileInputStream(Paths.get(System.getProperty("java.class.path")).toFile())) {//<-- start file input stream from where we are running from
             byte[] magicNumber = new byte[4];

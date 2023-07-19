@@ -1,17 +1,21 @@
 package MySweep;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.EventQueue;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -36,6 +40,10 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     private JLabel BombFieldLabel = new JLabel();
     private JLabel TitleLabel = new JLabel();
     private JLabel AuthorLabel = new JLabel();
+    //misc
+    private final Color PURPLE = new Color(58, 0, 82);
+    private final Color LIGHTPRPL = new Color(215, 196, 255);
+    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- you can have static AND final if you want.
     //-----------------------------------------Constructors----------------------------------------------------------
     //notice a constructor just looks like a function, but it has the same name as the class
     public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//<-- called when you have 4 strings as arguments
@@ -90,7 +98,10 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             TitleLabel.setText("Invalid field(s)");//<-- if an error, tell the user their input was too stringy
         }
     } 
-    
+    void toggleDarkMode(){//<-- MineSweeper.toggleDarkMode() calls this function
+        setDarkMode();//<-- and it calls this, which is defined at the end of the file
+        repaint();
+    }
     //Yeah but where is the stuff located and what does it look like though? I thought this was a window? Or, a JFrame, or whatever?
     //---------------------------------initComponents()-----called by constructor-----------------------------------------------------------------
     private void initComponents() {//<-- a private function that doesnt return anything. It does stuff though.
@@ -178,6 +189,18 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         AuthorLabel.setText("-Birdee");
         AuthorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
+        setDarkMode();//<-- call this here too so we dont have to type it again.
+        
+        //You can actually use this syntax when you use 'new' to modify any class rather than just interfaces.
+        JPanel backgroundPanel = new JPanel(){//<-- new ClassConstructor(...){Your Stuff Here};
+            @Override//<-- use @Override to modify the original function of the class (works for extends as well!)
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);//<-- this one makes our background a prettier color.
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }//^unfortunately, I had to do this, because when using component.setBackground(color) the color gets inherited by child components if their background is null.
+        };
+
         //--------------------------now to add our stuff to our content pane----------------
 
         //Layout Managing:
@@ -185,7 +208,8 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         //this greatly simplifies making stuff be the right size in the right places on different screens and window sizes
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setPreferredSize(new Dimension(300, 200));
-        getContentPane().setLayout(new GridBagLayout());//<-- add the layout manager
+        getContentPane().add(backgroundPanel);//<-- it's generally best practice to have the contents in their own panel, so you can alter things about it easily, like we did above.
+        backgroundPanel.setLayout(new GridBagLayout());//<-- set the layout manager of the panel
         GridBagConstraints containerConstraints = new GridBagConstraints();//<-- you modify this, and add a thing to the pane with it
                 //when you do that, it imbues that thing with its position and size attributes. You then modify it and do it again with a new thing
                 //after you add the thing, you can change the constraints object without affecting how you set the previous thing
@@ -196,94 +220,126 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         containerConstraints.gridwidth =3;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(TitleLabel, containerConstraints);//<-- then add your component to the pane, but with containerConstraints as a 2nd argument
+        backgroundPanel.add(TitleLabel, containerConstraints);//<-- then add your component to the pane, but with containerConstraints as a 2nd argument
 
         containerConstraints.gridx =4;//<-- you can then change the values you want to, and then repeat the process, 
         containerConstraints.gridy =1;// and TitleLabel will keep the previous setting as its position.
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(AuthorLabel, containerConstraints);//<-- and this will recieve the new values, along with whatever wasnt changed from before.
+        backgroundPanel.add(AuthorLabel, containerConstraints);//<-- and this will recieve the new values, along with whatever wasnt changed from before.
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =2;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(WidthFieldLabel, containerConstraints);
+        backgroundPanel.add(WidthFieldLabel, containerConstraints);
 
         containerConstraints.gridx =4;
         containerConstraints.gridy =2;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(HeightFieldLabel, containerConstraints);
+        backgroundPanel.add(HeightFieldLabel, containerConstraints);
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =3;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(WidthField, containerConstraints);
+        backgroundPanel.add(WidthField, containerConstraints);
 
         containerConstraints.gridx =4;
         containerConstraints.gridy =3;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(HeightField, containerConstraints);
+        backgroundPanel.add(HeightField, containerConstraints);
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =4;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(BombFieldLabel, containerConstraints);
+        backgroundPanel.add(BombFieldLabel, containerConstraints);
 
         containerConstraints.gridx =4;
         containerConstraints.gridy =4;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(LifeFieldLabel, containerConstraints);
+        backgroundPanel.add(LifeFieldLabel, containerConstraints);
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =5;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(BombNumber, containerConstraints);
+        backgroundPanel.add(BombNumber, containerConstraints);
 
         containerConstraints.gridx =4;
         containerConstraints.gridy =5;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(LivesNumber, containerConstraints);
+        backgroundPanel.add(LivesNumber, containerConstraints);
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =6;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(ScoreBoard, containerConstraints);
+        backgroundPanel.add(ScoreBoard, containerConstraints);
 
         containerConstraints.gridx =2;
         containerConstraints.gridy =7;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(HelpWindow, containerConstraints);
+        backgroundPanel.add(HelpWindow, containerConstraints);
 
         containerConstraints.gridx =4;
         containerConstraints.gridy =6;
         containerConstraints.gridwidth =1;
         containerConstraints.gridheight =2;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        getContentPane().add(Start, containerConstraints);
+        backgroundPanel.add(Start, containerConstraints);
 
         pack();//<-- this pack(); causes it to evaluate sizes and paint the contents of the pane
         getContentPane().setVisible(true);//<-- then this displays the pane
+    }
+    private void setDarkMode(){//sets colors appropriately based on DarkMode
+        if(MineSweeper.isDarkMode()){
+            Start.setForeground(Color.WHITE);
+            ScoreBoard.setForeground(Color.WHITE);
+            HelpWindow.setForeground(Color.WHITE);
+            Start.setBackground(Color.BLACK);
+            ScoreBoard.setBackground(Color.BLACK);
+            HelpWindow.setBackground(Color.BLACK);
+            LifeFieldLabel.setForeground(Color.WHITE);
+            WidthFieldLabel.setForeground(Color.WHITE);
+            HeightFieldLabel.setForeground(Color.WHITE);
+            BombFieldLabel.setForeground(Color.WHITE);
+            TitleLabel.setForeground(Color.GREEN);
+            AuthorLabel.setForeground(Color.WHITE);
+        }else{
+            Start.setBackground(null);
+            Start.setIcon(DefaultButtonIcon);
+            Start.setForeground(Color.BLACK);
+            ScoreBoard.setBackground(null);
+            ScoreBoard.setIcon(DefaultButtonIcon);
+            ScoreBoard.setForeground(Color.BLACK);
+            HelpWindow.setBackground(null);
+            HelpWindow.setIcon(DefaultButtonIcon);
+            HelpWindow.setForeground(Color.BLACK);
+            LifeFieldLabel.setForeground(Color.BLACK);
+            WidthFieldLabel.setForeground(Color.BLACK);
+            HeightFieldLabel.setForeground(Color.BLACK);
+            BombFieldLabel.setForeground(Color.BLACK);
+            TitleLabel.setForeground(Color.BLACK);
+            AuthorLabel.setForeground(Color.BLACK);
+        }
     }
     //Made it to the end?
     
