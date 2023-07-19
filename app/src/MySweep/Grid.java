@@ -216,7 +216,7 @@ public class Grid extends JPanel {
 
 
 
-    //----------------you should skip these next 4 functions for now.-----------------------------------------------------
+    //----------------you should skip these next 3 functions for now.-----------------------------------------------------
 
 //            ZOOM FUNCTION
     //this is called from the zoom listener in main game window
