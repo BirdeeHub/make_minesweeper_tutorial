@@ -98,10 +98,6 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             TitleLabel.setText("Invalid field(s)");//<-- if an error, tell the user their input was too stringy
         }
     } 
-    void toggleDarkMode(){//<-- MineSweeper.toggleDarkMode() calls this function
-        setDarkMode();//<-- and it calls this, which is defined at the end of the file
-        repaint();
-    }
     //Yeah but where is the stuff located and what does it look like though? I thought this was a window? Or, a JFrame, or whatever?
     //---------------------------------initComponents()-----called by constructor-----------------------------------------------------------------
     private void initComponents() {//<-- a private function that doesnt return anything. It does stuff though.
@@ -190,7 +186,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         AuthorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         setDarkMode();//<-- call this here too so we dont have to type it again.
-        
+
         //You can actually use this syntax when you use 'new' to modify any class rather than just interfaces.
         JPanel backgroundPanel = new JPanel(){//<-- new ClassConstructor(...){Your Stuff Here};
             @Override//<-- use @Override to modify the original function of the class (works for extends as well!)
@@ -220,7 +216,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         containerConstraints.gridwidth =3;
         containerConstraints.gridheight =1;
         containerConstraints.fill = GridBagConstraints.BOTH;
-        backgroundPanel.add(TitleLabel, containerConstraints);//<-- then add your component to the pane, but with containerConstraints as a 2nd argument
+        backgroundPanel.add(TitleLabel, containerConstraints);//<-- then add your component to the panel, but with containerConstraints as a 2nd argument
 
         containerConstraints.gridx =4;//<-- you can then change the values you want to, and then repeat the process, 
         containerConstraints.gridy =1;// and TitleLabel will keep the previous setting as its position.
@@ -309,6 +305,10 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         pack();//<-- this pack(); causes it to evaluate sizes and paint the contents of the pane
         getContentPane().setVisible(true);//<-- then this displays the pane
     }
+    void toggleDarkMode(){//<-- MineSweeper.toggleDarkMode() calls this function
+        setDarkMode();//<-- and it calls this
+        repaint();
+    }
     private void setDarkMode(){//sets colors appropriately based on DarkMode
         if(MineSweeper.isDarkMode()){
             Start.setForeground(Color.WHITE);
@@ -342,6 +342,6 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
         }
     }
     //Made it to the end?
-    
+
     //Now time for main game window!
 }

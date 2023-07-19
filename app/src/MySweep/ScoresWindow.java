@@ -114,9 +114,12 @@ public class ScoresWindow extends JFrame {
         LivesPanel.removeAll();
         TimePanel.removeAll();
         leaderboardText();//<-- Update the text for main scores display
+        setDarkMode();
         revalidate();
     }
-    //------------------------------------Constructor------------Constructor-------------Constructor---------------------------------
+
+
+    //------------------------------------Constructor------------Constructor-------------Constructor-----------------Constructor-------------------Constructor-------------Constructor-----------------------
     public ScoresWindow(int Fieldx, int  Fieldy, int bombCount, int lives, JFrame ParentFrame) {
         thisBoard = new ScoreEntry(Fieldx, Fieldy, bombCount, lives, 0, 0);//<-- this is how it knows what score to highlight
         clickableToggle.setSelected(!(ParentFrame instanceof MainGameWindow));//<-- make button reflect default state of clickable
