@@ -39,6 +39,12 @@ class MineSweeper {
         for (Frame frame : frames) {
             if(frame instanceof MainGameWindow){
                 ((MainGameWindow)frame).toggleDarkMode();
+            }else if(frame instanceof InstructionsWindow){
+                ((InstructionsWindow)frame).toggleDarkMode();
+            }else if(frame instanceof OpeningWindow){
+                ((OpeningWindow)frame).toggleDarkMode();
+            }else if(frame instanceof ScoresWindow){
+                ((ScoresWindow)frame).toggleDarkMode();
             }
         }
     }
