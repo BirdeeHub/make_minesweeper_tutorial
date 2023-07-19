@@ -338,6 +338,8 @@ public class Grid extends JPanel {
     //and linux dpkg can only install to directories you cannot write to without sudo..... 
     //so this version is better for linux. For windows, you won't notice (although delete score will seem slower.).
     //it also does not have a version with a compiler, and you couldnt use the one from this because Jarred requires the management module and java.exe to be present.
+    //If you want to stay here for a bit after solving the bug, you could try adding dark mode to main game window and instructions window yourself!
+    //Or you could just download one of the other 2 versions and it will be in there.
 //------------------------------------------------------------------------------------
 
 

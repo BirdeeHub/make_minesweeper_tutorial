@@ -514,6 +514,8 @@ public class ScoresWindow extends JFrame {
     Dont forget to remove the thing i had in game over that I tell you to remove at the start of the excercise. 
     It will make spotting what is happening wrong much easier!
     After that, you will not have to do anything outside of toggle dark mode to fix it.
+    If you want to stay here for a bit after solving the bug in Grid, you could try adding dark mode to main game window and instructions window yourself!
+    Or you could just download one of the other 2 versions and it will be in there.
     
     After all that:
     I would suggest going and doing one of those python learn to code courses now that you can see how data flows around a program in an object-oriented language.
