@@ -1,4 +1,5 @@
 package MySweep;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -11,6 +12,7 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -32,12 +34,17 @@ public class ScoresWindow extends JFrame {
     private JFrame ParentFrame;//we need this reference in case we have to close it
     private boolean FileIssue = false;//<-- used to stop it from becoming a button when you use the toggle button if file issue. Probably not needed anymore since I split stuff out into IO and Entry but I'd have to change stuff
     private final Dimension defaultwindowsize = new Dimension(280, 500);
-    private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to allow leaderboardText(...) to be called anywhere in the file
-    private JLabel[] BoardLabel;//                                                              ^leaderboardText(...) defined at end of file.
+    private JLabel ColumnHeadingLabel1, ColumnHeadingLabel2, ColumnHeadingLabel3, TitleLabel;//these are initialized globally to allow toggle dark mode to access them.
+    private JButton Back;
+    private JPanel BoardPanel, LivesPanel, TimePanel;//these ones are globally initialized to allow leaderboardText() to be called anywhere in the file
+    private JLabel[] BoardLabel, LivesLabel, TimeLabel;//                                                              ^leaderboardText() defined at end of file.
     private JButton[] BoardButton;//<-- these are here so we can swap them without re-running set leaderboard text function
     private boolean isControlDown;
     private boolean isShiftDown;
     private boolean isDeleteMode;//<-- controls toggle button background color WHILE SELECTED (see constructor)
+    private final Color PURPLE = new Color(58, 0, 82);
+    private final Color LIGHTPRPL = new Color(215, 196, 255);
+    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();
     //-----------------------action listeners for leaderboardText(...). Yes, you can globally declare action listeners too------------------
     private ActionListener BoardButtonListener = new ActionListener(){
         public void actionPerformed(ActionEvent evt) {
@@ -106,7 +113,7 @@ public class ScoresWindow extends JFrame {
         BoardPanel.removeAll();//remove items in the GridLayout panels which are our columns because we are going to re-add from file.
         LivesPanel.removeAll();
         TimePanel.removeAll();
-        leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//<-- Update the text for main scores display
+        leaderboardText();//<-- Update the text for main scores display
         revalidate();
     }
     //------------------------------------Constructor------------Constructor-------------Constructor---------------------------------
@@ -124,168 +131,10 @@ public class ScoresWindow extends JFrame {
         this.ParentFrame=ParentFrame;//<-- we need this to close it later if new board is chosen
         initComponents();
     }
-    private void initComponents() {//-----------------------------------initComponents()------------------------------------------
-        clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
-            @Override
-            protected Color getSelectColor() {
-                return (isDeleteMode)?Color.RED:super.getSelectColor();//<-- "super" allows us to refer to the class we extended
-            }                                             // that way, if we override a function we can trigger the default functionality if we wish.
-        });
-        //------------------------------------------Initialize our nested gridbaglayout panels
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
-        getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
-        setIconImage(MineSweeper.MineIcon);
-        JPanel containerGridBag = new JPanel(new GridBagLayout());
-        GridBagConstraints containerConstraints = new GridBagConstraints();
-        JPanel HeadingPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints HeadingConstraints = new GridBagConstraints();
-        JPanel ScoresPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints ScoresConstraints = new GridBagConstraints();
-        JScrollPane scrollPane = new JScrollPane(ScoresPanel);//<-- add just the scores panel to scroll pane to scroll without losing back and toggle button
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        getContentPane().add(containerGridBag);//<-- add panel to frame
-
-        containerConstraints.fill = GridBagConstraints.BOTH;//add our HeadingPanel and scrollPane into the containerGridBag panel
-        containerConstraints.gridx = 0;
-        containerConstraints.gridy = 0;
-        containerConstraints.gridwidth = 1;
-        containerConstraints.gridheight = 1;
-        containerConstraints.weighty = 0.0;
-        containerGridBag.add(HeadingPanel, containerConstraints);
-        containerConstraints.gridy = 1;
-        containerConstraints.gridwidth = GridBagConstraints.REMAINDER;
-        containerConstraints.gridheight = GridBagConstraints.REMAINDER;
-        containerConstraints.weightx = 1.0;
-        containerConstraints.weighty = 1.0;
-        containerGridBag.add(scrollPane, containerConstraints);
-
-        //-----------------------------------------------Heading Panel----------------------------------------------------------
-
-        JLabel TitleLabel = new JLabel();              //initialize HeadingPanel items
-        TitleLabel.setFont(new Font("Tahoma", 0, 36));
-        TitleLabel.setText("High Scores!");
-        TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JButton Back = new JButton("Back");
-        clickableToggle.addKeyListener(keyAdapter);
-        Back.addKeyListener(keyAdapter);
-        Back.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent evt) {
-                ScoresWindow.this.dispose();
-            }
-        });
-        clickableToggle.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clickable = clickableToggle.isSelected();
-                getContentPane().setPreferredSize(ScoresWindow.this.getContentPane().getSize());
-                if(!FileIssue){
-                    BoardPanel.removeAll();//remove so we can add new ones without weirdness
-                    if(clickable){//add the correct components to BoardPanel
-                        for(int i=0;i<BoardButton.length;i++){
-                            BoardPanel.add(BoardButton[i]);
-                        }
-                    }else {
-                        for(int i=0;i<BoardLabel.length;i++){
-                            BoardPanel.add(BoardLabel[i]);
-                        }
-                        ScoresWindow.this.pack();//make it display right
-                        ScoresWindow.this.setVisible(true);
-                        ScoresWindow.this.getContentPane().revalidate();
-                    }
-                }
-            }
-        });
-
-        HeadingConstraints.gridx = 0;
-        HeadingConstraints.gridy = 0;
-        HeadingConstraints.gridwidth = 1;
-        HeadingConstraints.gridheight = 2;
-        HeadingConstraints.weighty = 1.0;
-        HeadingConstraints.fill = GridBagConstraints.BOTH;                //layout HeadingPanel
-        HeadingPanel.add(Back, HeadingConstraints);
-        HeadingConstraints.weighty = 0.0;
-        HeadingConstraints.gridy = 2;
-        HeadingConstraints.gridheight = 1;
-        HeadingPanel.add(clickableToggle, HeadingConstraints);
-        HeadingConstraints.gridy = 0;
-        HeadingConstraints.gridx = 1;
-        HeadingConstraints.gridheight = 3;
-        HeadingConstraints.gridwidth = GridBagConstraints.REMAINDER;
-        HeadingConstraints.weightx = 1.0;
-        HeadingPanel.add(TitleLabel, HeadingConstraints);
-
-        //-----------------------------------------------Scores Panel-------------------------------------------------
-
-        JLabel ColumnHeadingLabel1 = new JLabel("<html><u>Board:</u></html>");         //initialize row 1 of ScoresPanel
-        JLabel ColumnHeadingSpacer = new JLabel(" ");
-        JLabel ColumnHeadingLabel2 = new JLabel("<html><u>Lives Left:</u></html>");    //scores panel lives heading
-        JLabel ColumnHeadingSpacer2 = new JLabel(" ");
-        JLabel ColumnHeadingLabel3 = new JLabel("<html><u>time:</u></html>");          //scores panel time heading
-        ColumnHeadingLabel1.setBorder(new EmptyBorder(5, 10, 0, 0));
-        ColumnHeadingSpacer.setBorder(new EmptyBorder(5, 10, 0, 10));
-        ColumnHeadingLabel2.setBorder(new EmptyBorder(5, 0, 0, 0));
-        ColumnHeadingSpacer2.setBorder(new EmptyBorder(5, 5, 0, 5));
-        ColumnHeadingLabel3.setBorder(new EmptyBorder(5, 0, 0, 10));
-        ColumnHeadingLabel1.setVerticalAlignment(SwingConstants.NORTH);
-        ColumnHeadingSpacer.setVerticalAlignment(SwingConstants.NORTH);
-        ColumnHeadingLabel2.setVerticalAlignment(SwingConstants.NORTH);
-        ColumnHeadingSpacer2.setVerticalAlignment(SwingConstants.NORTH);
-        ColumnHeadingLabel3.setVerticalAlignment(SwingConstants.NORTH);
-
-        ScoresConstraints.fill = GridBagConstraints.BOTH;
-        ScoresConstraints.gridx = 0;
-        ScoresConstraints.gridy = 0;
-        ScoresConstraints.gridwidth = 1;
-        ScoresConstraints.gridheight = 1;
-        ScoresPanel.add(ColumnHeadingLabel1, ScoresConstraints);
-        ScoresConstraints.gridx = 1;
-        ScoresPanel.add(ColumnHeadingSpacer, ScoresConstraints); //layout row 1 of ScoresPanel
-        ScoresConstraints.gridx = 2;
-        ScoresPanel.add(ColumnHeadingLabel2, ScoresConstraints);
-        ScoresConstraints.gridx = 3;
-        ScoresPanel.add(ColumnHeadingSpacer2, ScoresConstraints);
-        ScoresConstraints.gridx = 4;
-        ScoresPanel.add(ColumnHeadingLabel3, ScoresConstraints);
-
-        BoardPanel = new JPanel();                           //set up main scores display properties
-        BoardPanel.setLayout(new GridLayout(0, 1)); 
-        JLabel BoardSpacer = new JLabel(" ");
-        BoardSpacer.setBorder(new EmptyBorder(10, 10, 10, 10));
-        LivesPanel = new JPanel();
-        LivesPanel.setLayout(new GridLayout(0, 1));//each one of these is going to be a column of the display after leaderboardText adds the entries
-        JLabel BoardSpacer2 = new JLabel(" ");
-        BoardSpacer2.setBorder(new EmptyBorder(10, 5, 10, 5));
-        TimePanel = new JPanel();
-        TimePanel.setLayout(new GridLayout(0, 1));
-        leaderboardText(BoardPanel, LivesPanel, TimePanel, BoardButtonListener, keyAdapter);//set text for main scores display
-        JLabel BoardSpacer3 = new JLabel(" ");
-
-        ScoresConstraints.fill = GridBagConstraints.BOTH;
-        ScoresConstraints.gridx = 0;
-        ScoresConstraints.gridy = 1;
-        ScoresConstraints.gridwidth = 1;
-        ScoresConstraints.gridheight = 1;
-        ScoresPanel.add(BoardPanel, ScoresConstraints);
-        ScoresConstraints.gridx = 1;
-        ScoresPanel.add(BoardSpacer, ScoresConstraints);             //layout main scores display
-        ScoresConstraints.gridx = 2;
-        ScoresPanel.add(LivesPanel, ScoresConstraints);
-        ScoresConstraints.gridx = 3;
-        ScoresPanel.add(BoardSpacer2, ScoresConstraints);
-        ScoresConstraints.gridx = 4;
-        ScoresPanel.add(TimePanel, ScoresConstraints);
-        ScoresConstraints.gridy = 2;
-        ScoresConstraints.gridx = GridBagConstraints.REMAINDER;
-        ScoresConstraints.weighty = 1.0;
-        ScoresPanel.add(BoardSpacer3, ScoresConstraints);
-
-        pack();
-        getContentPane().setVisible(true);
-    }
     //---------------------------this is the function to set the buttons and labels for the scores in the window.---------------------------------------
     //---------------------------leaderboardText()---------------leaderboardText()------------------leaderboardText()-------------leaderboardText()--------
     //----------------------------------------------leaderboardText()-----------Reads files, creates components based on contents-----------------
-    private void leaderboardText(JPanel BoardPanel, JPanel LivesPanel, JPanel TimePanel, ActionListener BoardButtonListener, KeyAdapter keyAdapter){
+    private void leaderboardText(){
         //creates components with info from string array recieved from scoresFileManager
         String SHL="<u>"; //StartHighLight variable for easily changing tags
         String EHL="</u>";//EndHighLight
@@ -296,8 +145,8 @@ public class ScoresWindow extends JFrame {
             FileIssue=true;
             BoardLabel = new JLabel[1];
             BoardButton = new JButton[1];
-            JLabel[] LivesLabel = new JLabel[1];
-            JLabel[] TimeLabel = new JLabel[1];
+            LivesLabel = new JLabel[1];
+            TimeLabel = new JLabel[1];
             BoardLabel[0] = new JLabel("File");
             BoardButton[0] = new JButton("File");
             LivesLabel[0] = new JLabel("not");
@@ -309,8 +158,8 @@ public class ScoresWindow extends JFrame {
             FileIssue=true;
             BoardButton = new JButton[1];
             BoardLabel = new JLabel[1];
-            JLabel[] LivesLabel = new JLabel[1];
-            JLabel[] TimeLabel = new JLabel[1];
+            LivesLabel = new JLabel[1];
+            TimeLabel = new JLabel[1];
             BoardLabel[0] = new JLabel("File");
             BoardButton[0] = new JButton("File");
             LivesLabel[0] = new JLabel("is");
@@ -361,8 +210,8 @@ public class ScoresWindow extends JFrame {
                 }
             }
             BoardLabel = new JLabel[entries.length];//initialize all the labels and button properties
-            JLabel[] LivesLabel = new JLabel[entries.length];//that we didnt need to add during read.
-            JLabel[] TimeLabel = new JLabel[entries.length];
+            LivesLabel = new JLabel[entries.length];//that we didnt need to add during read.
+            TimeLabel = new JLabel[entries.length];
             for(int i=0; i<entries.length; i++){
                 BoardButton[i].setMargin(new Insets(-1, 0, -1, 0));
                 BoardButton[i].setBorderPainted(false);
@@ -384,6 +233,259 @@ public class ScoresWindow extends JFrame {
 
             }
         }
+    }
+    void toggleDarkMode(){
+        repaint();
+        setDarkMode();
+    }
+    //----------------setDarkMode()----------setDarkMode()-----------------
+    private void setDarkMode(){
+        if(MineSweeper.isDarkMode()){
+            Back.setForeground(Color.WHITE);
+            Back.setBackground(Color.BLACK);
+            clickableToggle.setForeground(Color.WHITE);
+            clickableToggle.setBackground(Color.BLACK);
+            ColumnHeadingLabel1.setForeground(Color.WHITE);
+            ColumnHeadingLabel2.setForeground(Color.WHITE);
+            ColumnHeadingLabel3.setForeground(Color.WHITE);
+            TitleLabel.setForeground(Color.GREEN);
+            for(int i=0;i<BoardLabel.length;i++){
+                BoardButton[i].setForeground(Color.WHITE);
+                BoardButton[i].setBackground(Color.BLACK);
+                BoardLabel[i].setForeground(Color.WHITE);
+                LivesLabel[i].setForeground(Color.WHITE);
+                TimeLabel[i].setForeground(Color.WHITE);
+            }
+        }else{
+            Back.setForeground(Color.BLACK);
+            Back.setBackground(null);
+            Back.setIcon(DefaultButtonIcon);
+            clickableToggle.setForeground(Color.BLACK);
+            clickableToggle.setBackground(null);
+            clickableToggle.setIcon(DefaultButtonIcon);
+            ColumnHeadingLabel1.setForeground(Color.BLACK);
+            ColumnHeadingLabel2.setForeground(Color.BLACK);
+            ColumnHeadingLabel3.setForeground(Color.BLACK);
+            TitleLabel.setForeground(Color.BLACK);
+            for(int i=0;i<BoardLabel.length;i++){
+                BoardButton[i].setForeground(Color.BLACK);
+                BoardButton[i].setBackground(null);
+                BoardButton[i].setIcon(DefaultButtonIcon);
+                BoardLabel[i].setForeground(Color.BLACK);
+                LivesLabel[i].setForeground(Color.BLACK);
+                TimeLabel[i].setForeground(Color.BLACK);
+            }
+        }
+    }
+    private void initComponents() {//-----------------------------------initComponents()------------------------------------------
+        clickableToggle.setUI(new MetalToggleButtonUI() {//<-- allows me to change the color of a toggle button that is selected
+            @Override
+            protected Color getSelectColor() {
+                return (isDeleteMode)?Color.RED:((MineSweeper.isDarkMode())?PURPLE:super.getSelectColor());//<-- "super" allows us to refer to the class we extended
+            }                                                  // that way, with super, if we override a function we can trigger the default functionality if we wish.
+        });
+        //------------------------------------------Initialize our nested gridbaglayout panels
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
+        getContentPane().setPreferredSize(new Dimension(defaultwindowsize));
+        setIconImage(MineSweeper.MineIcon);
+
+        JPanel containerGridBag = new JPanel(new GridBagLayout()){//<-- we have a lot of JPanels in this file and I would like to set just the panel background
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        JPanel HeadingPanel = new JPanel(new GridBagLayout()){//<-- so we are going to have to do this kinda a lot in this file
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        JPanel ScoresPanel = new JPanel(new GridBagLayout()){//<-- only 6 though?
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        //the rest is the same as usual except its a lot of nested JPanels.
+        JScrollPane scrollPane = new JScrollPane(ScoresPanel);//<-- add just the scores panel to scroll pane to scroll without losing back and toggle button
+        GridBagConstraints containerConstraints = new GridBagConstraints();
+        GridBagConstraints HeadingConstraints = new GridBagConstraints();
+        GridBagConstraints ScoresConstraints = new GridBagConstraints();
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setBackground(PURPLE);
+        scrollPane.getHorizontalScrollBar().setBackground(PURPLE);
+        scrollPane.setBackground(PURPLE);
+        getContentPane().add(containerGridBag);//<-- add panel to frame
+
+        containerConstraints.fill = GridBagConstraints.BOTH;//add our HeadingPanel and scrollPane into the containerGridBag panel
+        containerConstraints.gridx = 0;
+        containerConstraints.gridy = 0;
+        containerConstraints.gridwidth = 1;
+        containerConstraints.gridheight = 1;
+        containerConstraints.weighty = 0.0;
+        containerGridBag.add(HeadingPanel, containerConstraints);
+        containerConstraints.gridy = 1;
+        containerConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        containerConstraints.gridheight = GridBagConstraints.REMAINDER;
+        containerConstraints.weightx = 1.0;
+        containerConstraints.weighty = 1.0;
+        containerGridBag.add(scrollPane, containerConstraints);
+
+        //-----------------------------------------------Heading Panel----------------------------------------------------------
+
+        TitleLabel = new JLabel();              //initialize HeadingPanel items
+        TitleLabel.setFont(new Font("Tahoma", 0, 36));
+        TitleLabel.setText("High Scores!");
+        TitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        Back = new JButton("Back");
+        clickableToggle.addKeyListener(keyAdapter);
+        Back.addKeyListener(keyAdapter);
+        Back.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                ScoresWindow.this.dispose();
+            }
+        });
+        clickableToggle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clickable = clickableToggle.isSelected();
+                getContentPane().setPreferredSize(ScoresWindow.this.getContentPane().getSize());
+                if(!FileIssue){
+                    BoardPanel.removeAll();//remove so we can add new ones without weirdness
+                    if(clickable){//add the correct components to BoardPanel
+                        for(int i=0;i<BoardButton.length;i++){
+                            BoardPanel.add(BoardButton[i]);
+                        }
+                    }else {
+                        for(int i=0;i<BoardLabel.length;i++){
+                            BoardPanel.add(BoardLabel[i]);
+                        }
+                    }
+                    ScoresWindow.this.pack();//make it display right
+                    ScoresWindow.this.setVisible(true);
+                    ScoresWindow.this.getContentPane().revalidate();
+                }
+            }
+        });
+
+        HeadingConstraints.gridx = 0;
+        HeadingConstraints.gridy = 0;
+        HeadingConstraints.gridwidth = 1;
+        HeadingConstraints.gridheight = 2;
+        HeadingConstraints.weighty = 1.0;
+        HeadingConstraints.fill = GridBagConstraints.BOTH;                //layout HeadingPanel
+        HeadingPanel.add(Back, HeadingConstraints);
+        HeadingConstraints.weighty = 0.0;
+        HeadingConstraints.gridy = 2;
+        HeadingConstraints.gridheight = 1;
+        HeadingPanel.add(clickableToggle, HeadingConstraints);
+        HeadingConstraints.gridy = 0;
+        HeadingConstraints.gridx = 1;
+        HeadingConstraints.gridheight = 3;
+        HeadingConstraints.gridwidth = GridBagConstraints.REMAINDER;
+        HeadingConstraints.weightx = 1.0;
+        HeadingPanel.add(TitleLabel, HeadingConstraints);
+
+        //-----------------------------------------------Scores Panel-------------------------------------------------
+
+        ColumnHeadingLabel1 = new JLabel("<html><u>Board:</u></html>");         //initialize row 1 of ScoresPanel
+        JLabel ColumnHeadingSpacer = new JLabel(" ");
+        ColumnHeadingLabel2 = new JLabel("<html><u>Lives Left:</u></html>");    //scores panel lives heading
+        JLabel ColumnHeadingSpacer2 = new JLabel(" ");
+        ColumnHeadingLabel3 = new JLabel("<html><u>time:</u></html>");          //scores panel time heading
+        ColumnHeadingLabel1.setBorder(new EmptyBorder(5, 10, 0, 0));
+        ColumnHeadingSpacer.setBorder(new EmptyBorder(5, 10, 0, 10));
+        ColumnHeadingLabel2.setBorder(new EmptyBorder(5, 0, 0, 0));
+        ColumnHeadingSpacer2.setBorder(new EmptyBorder(5, 5, 0, 5));
+        ColumnHeadingLabel3.setBorder(new EmptyBorder(5, 0, 0, 10));
+        ColumnHeadingLabel1.setVerticalAlignment(SwingConstants.NORTH);
+        ColumnHeadingSpacer.setVerticalAlignment(SwingConstants.NORTH);
+        ColumnHeadingLabel2.setVerticalAlignment(SwingConstants.NORTH);
+        ColumnHeadingSpacer2.setVerticalAlignment(SwingConstants.NORTH);
+        ColumnHeadingLabel3.setVerticalAlignment(SwingConstants.NORTH);
+
+        ScoresConstraints.fill = GridBagConstraints.BOTH;
+        ScoresConstraints.gridx = 0;
+        ScoresConstraints.gridy = 0;
+        ScoresConstraints.gridwidth = 1;
+        ScoresConstraints.gridheight = 1;
+        ScoresPanel.add(ColumnHeadingLabel1, ScoresConstraints);
+        ScoresConstraints.gridx = 1;
+        ScoresPanel.add(ColumnHeadingSpacer, ScoresConstraints); //layout row 1 of ScoresPanel
+        ScoresConstraints.gridx = 2;
+        ScoresPanel.add(ColumnHeadingLabel2, ScoresConstraints);
+        ScoresConstraints.gridx = 3;
+        ScoresPanel.add(ColumnHeadingSpacer2, ScoresConstraints);
+        ScoresConstraints.gridx = 4;
+        ScoresPanel.add(ColumnHeadingLabel3, ScoresConstraints);
+
+        BoardPanel = new JPanel(){//<-- these JPanels will contain the actual score info.
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        LivesPanel = new JPanel(){//I told you we were going to have to do this a lot...
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        TimePanel = new JPanel(){//last one!
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+
+        BoardPanel.setLayout(new GridLayout(0, 1)); //set up the layout stuff for the panels we just created
+        JLabel BoardSpacer = new JLabel(" ");
+        BoardSpacer.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        LivesPanel.setLayout(new GridLayout(0, 1));//each one of these is going to be a column of the display after leaderboardText adds the entries
+        JLabel BoardSpacer2 = new JLabel(" ");
+        BoardSpacer2.setBorder(new EmptyBorder(10, 5, 10, 5));
+
+        TimePanel.setLayout(new GridLayout(0, 1));
+        leaderboardText();//set text for main scores display
+        JLabel BoardSpacer3 = new JLabel(" ");
+
+        ScoresConstraints.fill = GridBagConstraints.BOTH;
+        ScoresConstraints.gridx = 0;
+        ScoresConstraints.gridy = 1;
+        ScoresConstraints.gridwidth = 1;
+        ScoresConstraints.gridheight = 1;
+        ScoresPanel.add(BoardPanel, ScoresConstraints);
+        ScoresConstraints.gridx = 1;
+        ScoresPanel.add(BoardSpacer, ScoresConstraints);             //layout main scores display
+        ScoresConstraints.gridx = 2;
+        ScoresPanel.add(LivesPanel, ScoresConstraints);
+        ScoresConstraints.gridx = 3;
+        ScoresPanel.add(BoardSpacer2, ScoresConstraints);
+        ScoresConstraints.gridx = 4;
+        ScoresPanel.add(TimePanel, ScoresConstraints);
+        ScoresConstraints.gridy = 2;
+        ScoresConstraints.gridx = GridBagConstraints.REMAINDER;
+        ScoresConstraints.weighty = 1.0;
+        ScoresPanel.add(BoardSpacer3, ScoresConstraints);
+
+        setDarkMode();//<-- Im just going to set this at the end this time to avoid any problems
+
+        pack();
+        getContentPane().setVisible(true);
     }
 }
 /*

@@ -167,9 +167,11 @@ class MineSweeper {//<-- the start of our first class
                 ((MainGameWindow)frame).toggleDarkMode();
             }if(frame instanceof OpeningWindow){//<-- check if it is a specific type so you can cast it as the correct window
                 ((OpeningWindow)frame).toggleDarkMode();//<-- cast as correct window, and run the function from that instance of the class.
+            }else if(frame instanceof ScoresWindow){
+                ((ScoresWindow)frame).toggleDarkMode();
             }
-        }//right now, the only frames we have defined toggleDarkMode() for are MainGameWindow and OpeningWindow. They are defined in the other branches on github though!
-    }
+        }//right now, toggleDarkMode() is not defined for InstructionsWindow. It is defined in the other branches on the github though!
+    }      //it was left out because I believe in you!
 
     //these next 2 are images we will use for end of game display, as well as the icon in the top left of the window.
 
