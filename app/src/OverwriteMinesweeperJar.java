@@ -24,12 +24,12 @@ class OverwriteMinesweeperJar {
         String thisDirectory = args[1];
         String scoresEntryName = args[2];
         String thisClassName = args[3];
-        String scoresFileContent = null;
         File scoresFile = Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             Path.of(thisDirectory+File.separator+thisClassName+".class").toFile().delete();
         }));
         try(Scanner in = new Scanner(scoresFile)) {
+            String scoresFileContent = null;
             StringBuilder scoresFileStringBuilder = new StringBuilder();
             while (in.hasNextLine()) {
                 scoresFileStringBuilder.append(in.nextLine());
@@ -52,8 +52,7 @@ class OverwriteMinesweeperJar {
                 if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoresEntryName)) {
                     JarEntry scoresEntry = new JarEntry(scoresEntryName);
                     jos.putNextEntry(scoresEntry);
-                    byte[] scoresContentBytes = newScoresFileContents.getBytes();
-                    jos.write(scoresContentBytes);
+                    jos.write(newScoresFileContents.getBytes());
                 } else {
                     jos.putNextEntry(entry);
                     byte[] buffer = new byte[4096];
