@@ -11,7 +11,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
 //This class is to get compiled, and later copied out of the jar to a new directory and 
 //loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
 //do not add any internal or anonymous classes or it will compile into more than 1 file, and that file will not be copied.
@@ -45,8 +44,9 @@ class OverwriteMinesweeperJar {
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
-            JarOutputStream jos = new JarOutputStream(baos, getManifest(jarFilePath))) {
+        try (JarFile thisJar = new JarFile(Path.of(jarFilePath).toFile());
+            JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
+            JarOutputStream jos = new JarOutputStream(baos, thisJar.getManifest())) {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
                 if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoresEntryName)) {
@@ -68,10 +68,5 @@ class OverwriteMinesweeperJar {
         try (OutputStream outputStream = new FileOutputStream(jarFilePath)) {
             baos.writeTo(outputStream);
         }
-    }
-    private static Manifest getManifest(String jarFile){
-        try(JarFile thisJar = new JarFile(Path.of(jarFile).toFile())){
-            return thisJar.getManifest();
-        }catch (IOException e){return null;}
     }
 }
