@@ -12,7 +12,6 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.zip.ZipException;
 //This class is to get compiled, and later copied out of the jar to a new directory and 
 //loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
 //do not add any internal or anonymous classes or it will compile into more than 1 file, and that file will not be copied.
@@ -26,40 +25,32 @@ class OverwriteMinesweeperJar {
         String scoresEntryName = args[2];
         String thisClassName = args[3];
         String scoresFileContent = null;
+        File scoresFile = Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             Path.of(thisDirectory+File.separator+thisClassName+".class").toFile().delete();
         }));
-        try(Scanner in = new Scanner(Path.of(thisDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile())) {
+        try(Scanner in = new Scanner(scoresFile)) {
             StringBuilder scoresFileStringBuilder = new StringBuilder();
             while (in.hasNextLine()) {
                 scoresFileStringBuilder.append(in.nextLine());
                 if(in.hasNextLine())scoresFileStringBuilder.append('\n');
             }
             scoresFileContent=scoresFileStringBuilder.toString();
-            doOverwrite(originalJarPath, scoresEntryName, thisDirectory, scoresFileContent);
+            boolean copySucceeded = true;
+            try{
+                writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileContent);
+            }catch(IOException e){e.printStackTrace();copySucceeded = false;}
+            if(copySucceeded)scoresFile.delete();
         }catch(FileNotFoundException e){}
     }
-
-    private static void doOverwrite(String jarFilePath, String scoreEntryName, String scoresFileDirectory, String newScoresFileContents){
-        boolean copySucceeded = true;
-        try{
-            writeJarWithNewScores(getManifest(jarFilePath), jarFilePath, scoreEntryName, scoresFileDirectory, newScoresFileContents);
-        }catch(IOException e){e.printStackTrace();copySucceeded = false;}
-        if(copySucceeded)Path.of(scoresFileDirectory+File.separator+Path.of(scoreEntryName).getFileName()).toFile().delete();
-    }
-    private static Manifest getManifest(String jarFile){
-        try(JarFile thisJar = new JarFile(Path.of(jarFile).toFile())){
-            return thisJar.getManifest();
-        }catch (IOException e){return null;}
-    }
-    private static void writeJarWithNewScores(Manifest jarManifest, String jarFilePath, String scoreEntryName, String scoresFileDirectory, String newScoresFileContents) throws IOException {
+    private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
-            JarOutputStream jos = new JarOutputStream(baos)) {
+            JarOutputStream jos = new JarOutputStream(baos, getManifest(jarFilePath))) {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
-                if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoreEntryName)) {
-                    JarEntry scoresEntry = new JarEntry(scoreEntryName);
+                if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoresEntryName)) {
+                    JarEntry scoresEntry = new JarEntry(scoresEntryName);
                     jos.putNextEntry(scoresEntry);
                     byte[] scoresContentBytes = newScoresFileContents.getBytes();
                     jos.write(scoresContentBytes);
@@ -74,16 +65,14 @@ class OverwriteMinesweeperJar {
                 jis.closeEntry();
                 jos.closeEntry();
             }
-            if (jarManifest != null) {
-                try{
-                    JarEntry manifestEntry = new JarEntry(JarFile.MANIFEST_NAME);
-                    jos.putNextEntry(manifestEntry);
-                    jarManifest.write(jos);
-                }catch(ZipException e){}
-            }
         }
         try (OutputStream outputStream = new FileOutputStream(jarFilePath)) {
             baos.writeTo(outputStream);
         }
+    }
+    private static Manifest getManifest(String jarFile){
+        try(JarFile thisJar = new JarFile(Path.of(jarFile).toFile())){
+            return thisJar.getManifest();
+        }catch (IOException e){return null;}
     }
 }
