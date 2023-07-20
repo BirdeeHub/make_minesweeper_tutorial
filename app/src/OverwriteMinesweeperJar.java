@@ -26,6 +26,7 @@ class OverwriteMinesweeperJar {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             Path.of(thisDirectory+File.separator+thisClassName+".class").toFile().delete();
         }));
+        boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)) {
             String scoresFileContent = null;
             StringBuilder scoresFileStringBuilder = new StringBuilder();
@@ -34,12 +35,12 @@ class OverwriteMinesweeperJar {
                 if(in.hasNextLine())scoresFileStringBuilder.append('\n');
             }
             scoresFileContent=scoresFileStringBuilder.toString();
-            boolean copySucceeded = true;
             try{
                 writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileContent);
+                copySucceeded = true;
             }catch(IOException e){e.printStackTrace();copySucceeded = false;}
-            if(copySucceeded)scoresFile.delete();
         }catch(FileNotFoundException e){}
+        if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
