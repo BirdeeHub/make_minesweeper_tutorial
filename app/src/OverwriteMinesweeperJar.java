@@ -38,8 +38,8 @@ class OverwriteMinesweeperJar {
             try{
                 writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileContent);
                 copySucceeded = true;
-            }catch(IOException e){e.printStackTrace();copySucceeded = false;}
-        }catch(FileNotFoundException e){}
+            }catch(IOException e){e.printStackTrace();}
+        }catch(FileNotFoundException e){e.printStackTrace();}
         if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
