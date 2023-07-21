@@ -34,7 +34,7 @@ class ScoresFileIO{
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
             }catch(IOException e){e.printStackTrace();}
         }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
-            File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresFileName).getPath().toString());
+            File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getPath().toString());
             StringBuilder scoresFileString = new StringBuilder();// create string from entries
             for(int i = 0; i < allEntries.length; i++){
                 scoresFileString.append(allEntries[i].toString()).append(" ");
@@ -79,7 +79,7 @@ class ScoresFileIO{
             }
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
             try{
-                File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresFileName).getPath().toString());
+                File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getPath().toString());
                 try(Scanner in = new Scanner(scoresFile)) {
                     while (in.hasNext()) {
                         ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)

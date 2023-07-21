@@ -18,7 +18,8 @@ class MineSweeper {
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
     public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
-    public static final String scoresEntryName = "src/MySweep/"+scoresFileName;
+    public static final String scoresPathForIDE = "save/"+scoresFileName;
+    public static final String scoresEntryName = "src/MySweep/"+scoresPathForIDE;
     public static final String OvrightJarClassName = "OverwriteMinesweeperJar";
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
@@ -66,8 +67,8 @@ class MineSweeper {
                     OvrightJarPro.command().add("-cp");
                     OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
                     OvrightJarPro.command().add(OvrightJarClassName);
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));//<- original jar path
+                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));//<-- scores directory
                     OvrightJarPro.command().add(scoresEntryName);
                     OvrightJarPro.command().add(OvrightJarClassName);
                     List<String> command = OvrightJarPro.command();
