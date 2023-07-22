@@ -18,12 +18,11 @@ class OverwriteMinesweeperJar {
      */
     public static void main(String[] args) {
         String originalJarPath = args[0];
-        String scoresDirectory = args[1];
+        File scoresFile = new File(args[1]);
         String scoresEntryName = args[2];
-        String thisClassName = args[3];
-        File scoresFile = Path.of(scoresDirectory + File.separator + Path.of(scoresEntryName).getFileName()).toFile();
+        String thisFile = args[3];
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Path.of(System.getProperty("java.class.path")+File.separator+thisClassName+".class").toFile().delete();
+            Path.of(thisFile).toFile().delete();
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)) {

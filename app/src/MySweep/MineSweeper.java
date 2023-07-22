@@ -11,10 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.lang.management.ManagementFactory;
-import java.util.List;
 import java.awt.Frame;
 class MineSweeper {
-    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
+    public static final String tempPath = System.getProperty("java.io.tmpdir");
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
     public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
@@ -56,26 +55,25 @@ class MineSweeper {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
             if(isJarFile()){
                 try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
-                    File destinationDir = tempPath.toFile();
+                    File destinationDir = new File(tempPath);
                     destinationDir.mkdirs();
-                    Files.copy(inputStream, Path.of(tempPath.toString()+File.separator+OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(inputStream, Path.of(tempPath+File.separator+OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+Path.of(System.getProperty("java.home")).resolve(Path.of("bin","java")).toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.directory(new File(System.getProperty("java.home")+File.separator+"bin"));
+                    OvrightJarPro.command().add("java");
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));
+                    OvrightJarPro.command().add(tempPath);
                     OvrightJarPro.command().add(OvrightJarClassName);
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+minesweeperclasspath.toAbsolutePath().toString()+((!ostype.equals("win"))?"":"\""));//<- original jar path
-                    OvrightJarPro.command().add(((!ostype.equals("win"))?"":"\"")+tempPath.toString()+((!ostype.equals("win"))?"":"\""));//<-- scores directory
+                    OvrightJarPro.command().add("\""+minesweeperclasspath.toAbsolutePath().toString()+"\"");//<- original jar path
+                    OvrightJarPro.command().add("\""+tempPath+scoresFileName+"\"");//<-- scores directory
                     OvrightJarPro.command().add(scoresEntryName);
-                    OvrightJarPro.command().add(OvrightJarClassName);
-                    List<String> command = OvrightJarPro.command();
-                    String OvrightJarCommand = String.join(" ", command);
-             	    Runtime.getRuntime().exec(OvrightJarCommand);//<-- if you dont do it this way and just run the process, the space in Program Files will become your worst enemy.
-           	    } catch (IOException e) {e.printStackTrace();}//Why does java not just detect it as Progra~1 or Progra~2... There might be a reason, but I strongly dislike whoever thought of that reason.
-            }                                                 //there is also probably a better way to do this than adding quotes and creating a string.
+                    OvrightJarPro.command().add("\""+tempPath+OvrightJarClassName+".class"+"\"");
+                    OvrightJarPro.start();
+           	    } catch (IOException e) {e.printStackTrace();}
+            }
         }));
         try {// Set cross-platform Java L&F (also called "Metal")
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
