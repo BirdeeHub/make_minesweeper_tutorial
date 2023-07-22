@@ -35,7 +35,8 @@ import java.awt.GridBagLayout;
 //This is the main game board display window. contains action listeners and displays control buttons, and a Grid instance, which is the game board.
 public class MainGameWindow extends javax.swing.JFrame {//Originally grid and mainGameWindow were all 1 class but it got way too long.
     //-----------------------Initialize-----------------------------
-    private final int Fieldx, Fieldy, bombCount, lives;//<-- variables to hold field x and y, number of bombs and lives.
+    private final int Fieldx, Fieldy, bombCount, lives;//<-- variables to hold field x and y, number of bombs and lives. 
+    //Notice they are final but not initialized. They must be set before constructor is over.
     //display stuff
     private final Color PURPLE = new Color(58, 0, 82);//<-- these variables are final, meaning they can't be changed.
     private final Color GREEN = new Color(0, 255, 0);       //You can start them as uninitialized if you want, like our board size above,

@@ -43,7 +43,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
     //misc
     private final Color PURPLE = new Color(58, 0, 82);
     private final Color LIGHTPRPL = new Color(215, 196, 255);
-    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- you can have static AND final if you want.
+    private static final Icon DefaultButtonIcon = (new JButton()).getIcon();//<-- final means that after you assign this variable, it cannot be changed. you can have static AND final if you want. 
     //-----------------------------------------Constructors----------------------------------------------------------
     //notice a constructor just looks like a function, but it has the same name as the class
     public OpeningWindow(String initialx, String initialy, String initialbombno, String initiallives) {//<-- called when you have 4 strings as arguments
