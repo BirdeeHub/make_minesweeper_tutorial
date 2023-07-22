@@ -70,7 +70,6 @@ class MineSweeper {
                     OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
                     OvrightJarPro.command().add(tempPath.resolve(OvrightJarClassName+".class").toString());
                     OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
-                    System.out.println(String.join(" ",OvrightJarPro.command()));
                     OvrightJarPro.start();
            	    } catch (IOException e) {e.printStackTrace();}
             }
