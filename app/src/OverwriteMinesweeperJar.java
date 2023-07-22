@@ -33,10 +33,8 @@ class OverwriteMinesweeperJar {
             try{
                 writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileStringBuilder.toString());
                 copySucceeded = true;
-            }catch(IOException e){
-                System.out.println("Overwrite failed: Move game file to a writeable directory."); 
-                System.out.println("Then open and close game to complete save.");
-                e.printStackTrace();
+            }catch(IOException e){e.printStackTrace();
+                System.out.println("Overwrite failed: Move game file to a writeable directory. \n Then open and close game to complete save."); 
             }
         }catch(FileNotFoundException e){}
         if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
@@ -48,8 +46,7 @@ class OverwriteMinesweeperJar {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
                 if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoresEntryName)) {
-                    JarEntry scoresEntry = new JarEntry(scoresEntryName);
-                    jos.putNextEntry(scoresEntry);
+                    jos.putNextEntry(new JarEntry(scoresEntryName));
                     jos.write(newScoresFileContents.getBytes());
                 } else {
                     jos.putNextEntry(entry);
