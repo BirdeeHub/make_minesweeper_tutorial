@@ -19,9 +19,9 @@ class OverwriteMinesweeperJar {
         String originalJarPath = args[0];
         File scoresFile = new File(args[1]);
         String scoresEntryName = args[2];
-        String thisFile = args[3];
+        File thisFile = new File(args[3]);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            new File(thisFile).delete();
+            thisFile.delete();
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)) {
