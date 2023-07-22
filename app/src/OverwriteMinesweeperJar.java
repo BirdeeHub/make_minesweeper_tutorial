@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -22,7 +21,7 @@ class OverwriteMinesweeperJar {
         String scoresEntryName = args[2];
         String thisFile = args[3];
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Path.of(thisFile).toFile().delete();
+            new File(thisFile).delete();
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)) {
