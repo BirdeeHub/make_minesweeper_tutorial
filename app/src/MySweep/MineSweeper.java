@@ -57,7 +57,7 @@ class MineSweeper {
                     File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
                     Files.copy(inputStream, Path.of(tempPath.resolve(OvrightJarClassName+".class").toString()), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
+                } catch (IOException e) {e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
                     OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());

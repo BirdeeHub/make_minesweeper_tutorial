@@ -13,7 +13,7 @@ class OverwriteMinesweeperJar {
     /**@param args String scoresEntryName, String originalJarPath, String scoresFile, String thisFile
      * This class is to get compiled, and later copied out of the jar to a new directory and 
      * loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
-     * do not add any internal or anonymous classes or it will compile into more than 1 file, and that file will not be copied.
+     * do not add any internal or anonymous classes or it will compile into more than 1 file, and the extra files will not be copied.
      */
     public static void main(String[] args) {
         String scoresEntryName = args[0];
@@ -25,18 +25,20 @@ class OverwriteMinesweeperJar {
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)) {
-            String scoresFileContent = null;
             StringBuilder scoresFileStringBuilder = new StringBuilder();
             while (in.hasNextLine()) {
                 scoresFileStringBuilder.append(in.nextLine());
                 if(in.hasNextLine())scoresFileStringBuilder.append('\n');
             }
-            scoresFileContent=scoresFileStringBuilder.toString();
             try{
-                writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileContent);
+                writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileStringBuilder.toString());
                 copySucceeded = true;
-            }catch(IOException e){e.printStackTrace();}
-        }catch(FileNotFoundException e){e.printStackTrace();}
+            }catch(IOException e){
+                System.out.println("Overwrite failed: Move game file to a writeable directory."); 
+                System.out.println("Then open and close game to complete save.");
+                e.printStackTrace();
+            }
+        }catch(FileNotFoundException e){}
         if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
