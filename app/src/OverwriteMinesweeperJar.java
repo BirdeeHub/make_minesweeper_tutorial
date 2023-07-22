@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 class OverwriteMinesweeperJar {
@@ -44,9 +43,8 @@ class OverwriteMinesweeperJar {
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (JarFile thisJar = new JarFile(Path.of(jarFilePath).toFile());
-            JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
-            JarOutputStream jos = new JarOutputStream(baos, thisJar.getManifest())) {
+        try (JarInputStream jis = new JarInputStream(new FileInputStream(jarFilePath));
+            JarOutputStream jos = new JarOutputStream(baos, jis.getManifest())) {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
                 if (!newScoresFileContents.equals(null)&&entry.getName().equals(scoresEntryName)) {
