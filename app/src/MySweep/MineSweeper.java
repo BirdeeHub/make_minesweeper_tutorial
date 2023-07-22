@@ -13,7 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.lang.management.ManagementFactory;
 import java.awt.Frame;
 class MineSweeper {
-    public static final String tempPath = System.getProperty("java.io.tmpdir");
+    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
     public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
@@ -55,22 +55,22 @@ class MineSweeper {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
             if(isJarFile()){
                 try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
-                    File destinationDir = new File(tempPath);
+                    File destinationDir = tempPath.toFile();
                     destinationDir.mkdirs();
-                    Files.copy(inputStream, Path.of(tempPath+File.separator+OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(inputStream, Path.of(tempPath.resolve(OvrightJarClassName+".class").toString()), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {System.out.println("Unable to copy updater. Scores will not be saved.");e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
-                    OvrightJarPro.directory(new File(System.getProperty("java.home")+File.separator+"bin"));
-                    OvrightJarPro.command().add("java");
+                    OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
                     OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
-                    OvrightJarPro.command().add(tempPath);
+                    OvrightJarPro.command().add(tempPath.toString());
                     OvrightJarPro.command().add(OvrightJarClassName);
-                    OvrightJarPro.command().add("\""+minesweeperclasspath.toAbsolutePath().toString()+"\"");//<- original jar path
-                    OvrightJarPro.command().add("\""+tempPath+scoresFileName+"\"");//<-- scores directory
                     OvrightJarPro.command().add(scoresEntryName);
-                    OvrightJarPro.command().add("\""+tempPath+OvrightJarClassName+".class"+"\"");
+                    OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
+                    OvrightJarPro.command().add(tempPath.resolve(OvrightJarClassName+".class").toString());
+                    OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
+                    System.out.println(String.join(" ",OvrightJarPro.command()));
                     OvrightJarPro.start();
            	    } catch (IOException e) {e.printStackTrace();}
             }
