@@ -15,7 +15,6 @@ import java.awt.Frame;
 class MineSweeper {
     public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     public static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
-    public static final String ostype = (System.getProperty("os.name").toLowerCase().contains("win"))?"win":"bash";
     public static final String scoresFileName= "MinesweeperScores.txt";
     public static final String scoresPathForIDE = "save/"+scoresFileName;
     public static final String scoresEntryName = "src/MySweep/"+scoresPathForIDE;
