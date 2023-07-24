@@ -21,7 +21,7 @@ class OverwriteMinesweeperJar {
         File thisFile = new File(args[2]);
         File scoresFile = new File(args[3]);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println((thisFile.delete())?thisFile.toString()+" failed to delete!\n":"");
+            System.out.println((thisFile.delete())?thisFile.toString()+" failed to delete!\n":"");//<-- .delete() deletes the file, and then returns a boolean based on success.
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)){
@@ -30,7 +30,7 @@ class OverwriteMinesweeperJar {
             try{
                 writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileStringBuilder.toString());
                 copySucceeded = true;
-            }catch(IOException e){System.out.println(e.getStackTrace().toString() + "\n Unable to overwrite"+originalJarPath+"! \n please move your game folder to a writeable directory");}
+            }catch(IOException e){System.out.println(e.getStackTrace().toString()+"\nUnable to overwrite "+originalJarPath+" with new scores!\nPlease move your game folder to a regular, user-writeable directory then open and close it to complete save.\n(because this game does not have admin privileges)");}
         }catch(FileNotFoundException e){}
         if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
     }
