@@ -32,7 +32,7 @@
     -A single bit (0 or 1)
     -A single byte ((8) 0s or 1s)
     -A character (or, well, an integer index for a character)
-    -How to refer to a specific piece of memory by an address(called a pointer)
+    -How to refer to a specific piece of memory by an address(also called a pointer, or a reference)
     -An array of things, which is a pointer to a list of things where you access each item by index starting at 0 
         (myarray[0] would give the value at the first index)
         (and if you choose an index above the max you crash the program so you can get myarray.length and prevent this. also you can have arrays of arrays)
@@ -143,10 +143,7 @@
 
     4. Okay, so this next part isn't all languages but all languages with classes (object-oriented) are basically like this:
 
-    in Java, execution begins at the main(String[] args) function, which takes an array as input, that is filled with whichever words (strings) 
-    which may have been passed in from the command line. The main function of this program begins in MineSweeper.java, and it calls our opening window.
-
-    in Java, if you pass a primitive type(the ones mentioned at the top of the file) through a function call, 
+    In Java, if you pass a primitive type(the ones mentioned at the top of the file except for arrays and strings) through a function call, 
     you pass a copy of the contents. You cannot change the value of the original with the result.
 
     int result;
@@ -156,6 +153,8 @@
     //firstNumber and secondNumber both are still 2, regardless of what happens to them inside the function. and result is now 4.
 
     But if you pass a thing that is an instance of a class instead, you CAN change the original inside a function.
+    This is because it passes a copy of the reference (pointer) to the object. 
+    It passes a copy of a primitive type called a reference or pointer that tells the program where to look, rather than a copy of the contents of the object.
 
     void chairChopper(ChairClass thisChair){
         thisChair.setHeight( thisChair.getHeight()/2 );
@@ -174,13 +173,16 @@
     If a language is object oriented, that basically just means it has classes rather than structs.
 
     Java has classes. Classes allow you to group sets of data and ALSO functions to work on that data, and you create new instances of them to use them. 
-    You can create multiple instances of a class just like you create a variable of a certain type, and each one will have its own separate set of data.
-    To access the data from a particular one, you create a variable of your new class type, 
+    You write a class, which is like a blueprint, and then you create new instances of them (called objects, because they are each a separate "thing").
+    You create instances of a class just like you create a variable of a certain type, and each one will have its own separate set of data.
+    To access the data from a particular instance(object): 
+    you first need to create a variable of your new class type, 
     and create a new instance using 'new' and a constructor
         (a constructor is just a function with the name of the class that automatically returns an instance of that class)
+    You can then pass this reference to the object (that particular instance) just like you pass a variable around.
     
-    you can then access functions and data (stored in variables) inside of it from outside of the class by using the dot operator '.'
-    the functions inside of them will operate on data accessible within *that instance* of the class.
+    you can then access functions and the data in the variables inside of the object from outside of the class by using the dot operator '.'
+    the functions inside of each object will operate on data accessible within *that object* (that particular instance of the class).
     
     This means if you have a class called chair with a height and a function to read it, you can then create 2 instances of chair.
     Then, Chair1.getHeight(); could be different from Chair2.getHeight();
@@ -205,11 +207,12 @@
     This is using the '.' operator to get the version of the function belonging to that instance of the class.
     i.e. chair.getHeight() would return the height of THAT chair and not another one.
 
-    6. Extends and implements:
+    6. extends and implements:
 
     Classes can also extend other classes. This means that they have all the functions the class they extend has. 
     They in essence are an instance of that class, but with more stuff.
-    They can change the things they inherit if they want with @Override
+    They "Inherit" the functions and variables of the parent classes they extend.
+    They can change definitions of things they inherit if they want with @Override.
 
     An example is, if my class was to "extend" a JFrame, it would inherit all the functions and properties needed to 
     display as a window and display UI components from the javax.swing library inside of it because those are the functions a JFrame class has access to. 
@@ -219,53 +222,74 @@
     An Interface is where you just inherit the developers problems. They decided it would be better not to tell you how to write your program.
     You must write the functions of an interface you implement if you want to use them. Other functions are relying on you for it!
     They did not write them. They just wrote stuff that uses them if you define them. 
-    If you want to make a class that defines functions from an interface you use the 'implements' keyword when you define the class.
-
-    when you want to use one that is already written it looks like this:
+    If you want to make a class that defines functions from an interface you use the 'implements' keyword when you define the class. 
+    Or, you can do it when you create an instance of the class with the new operator like this:
 
         ActionListener toggleQuestionMarkingListener = new ActionListener(){  //<-- create an instance of the ActionListener interface class
-            public void actionPerformed(ActionEvent e){  //<-- we would like to write an actionPerformed function
-                grid.toggleQuestionMarks();  //<-- and we would like to turn the stupid question marks off.
+            public void actionPerformed(ActionEvent e){  //<-- we would like to write an actionPerformed function (we also have to write it.)
+                grid.toggleQuestionMarks();  //<-- and we would like to turn the stupid question marks off when java swing functions call actionPerformed(ActionEvent e)
             }
         };
 
     And then you add it to a button. Now, when we click it, the JButton calls the actionPerformed function and it actually does something.
     So now in your code, you can use an interface to interact with code someone else wrote, but with your own custom logic.
+    Basically, you implement an interface whenever you want someone elses code to call your code. 
+    In this case, we want an action listener to call our code for what we do when we press a button
 
     7. Libraries:
 
-    -Languages also include libraries that use the basic operators and assignments to do more complex things so you can type less things to do things.
+    -Languages include libraries that use the basic operators and assignments to do more complex things so you can type less things to do things.
     Some languages do certain things better (less painfully, or faster) than others, and this is often because of what functions they have in their libraries.
     If you want to use a library, you must import it.
     
-    //all my buttons and windows are from this library. In another program, you should use a different one because this one is old apparently.
+    //all my buttons and windows are from the following library. In another program, you should use a different one because this one is old apparently.
+
     import javax.swing.*;
 
     8. Errors:
 
     -languages handle errors differently. java uses:
 
-    void thingtobetried() throws ExceptionClass {  //<-- you will catch this later
-        String thethings = "whatever stuff throws exceptions";
-        saveToFile(thethings);//<-- this might throw an error, which we will then throw out of this function
+    void thingtobetried() throws ExceptionClass {  //<-- you will catch this later if it gets thrown. It throws a reference to an object of type ExceptionClass
+        saveToFile("the string we are saving");//<-- this might throw an error, which we will then throw out of this function
     }
 
     try{
         thingtobetried();
     }catch(ExceptionClass variable){ //<-- catch the error we threw
-        variable.somefunction(); //<-- i usually just am lazy and do variable.printStackTrace();
+        variable.somefunction();
     }
+
+    //this next one is used if the thing that can throw the error has to be closed. I.E. when reading from a file, you have to tell it to stop reading from the file.
+    //if thingtoBeTriedThatTheNextStuffNeeds() is from a class that implements the "Closeable" interface, we could do the following:
 
     try(String thing = thingtoBeTriedThatTheNextStuffNeeds("some input")){
         thingtobetriedWithTheString(thing);
     }catch(ExceptionClass variable){
         variable.somefunction();
-    } 
+    }
+    
+    //try(thing){thing would close here->}catch(whatever){}
+    //this saves us from having to do thing.close(), and makes clear what the scope of the variable should be.
+    //Just as thingtoBeTriedThatTheNextStuffNeeds() implements Closeable to gain the functionality of remaining open until you call the close function that was implemented,
+    //exceptions in java implement Throwable and they gain the functionality of being able to cause execution to jump to wherever 
+    //the next 'catch' or 'throws' with an argument of the correct type is used.
+
+    9. Random Java stuff:
+
+    in Java, execution begins at the main(String[] args) function, which takes an array of strings as input (see top of this file if you forget what arrays are), 
+    The array is filled with whichever words (strings) which may have been passed in from the command line. 
+    The main function of this program begins in MineSweeper.java, and it calls our opening window.
 
     Java runs from a java virtual machine thingy that runs your java code so that you can run it anywhere you can install Java.
-    You have to first compile it into a .class file for the JVM to be able to read your .java file. A .jar file is a runnable compressed java class folder
+    You have to first compile it into a .class file for the JVM to be able to read your .java file.
 
     some languages compile directly to binary for your machine. Java chose increased compatibility. Or, they tried and did decently well.
+    Java compiles to "bytecode".
+
+    A .jar file is a runnable compressed java class folder. 
+    It is a zip file and it contains your .class files, and a manifest file that the java vm looks for first to tell it what to run.
+    Yes that means that on windows you can rename then to .zip and then unzip them with right click.
 
     Knowing the above, plus learning the syntax for doing each of those things, and knowing how to google for what functions in a 
     language would be best to use for a particular thing is honestly all you need to know to begin. 
@@ -296,6 +320,7 @@
     It wouldn't be a lie. Its just extra stuff for when you wanna go real fast. 
     Most of being fast is in how you structure the thing. Not the library or multi threading. 
     Anything that assigns new memory is heavier than changing something already there
+    You also should not worry about fast much until you have a working version.
 
     1 more thing. Important for beginners. Recommended reading order:
 

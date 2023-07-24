@@ -676,7 +676,7 @@ public class Grid extends JPanel {
             int height = c.getHeight();
             Graphics2D g2d = (Graphics2D) g.create();//<-- i hate these because i have to look for stuff like
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);//<-- RenderingHints
-            AffineTransform transform = new AffineTransform();//<-- or the stretch but with matricies that I couldnt remember the name of
+            AffineTransform transform = new AffineTransform();//<-- this is a stretch but with matricies. it scales 2d graphics evenly, and rendering hints will be used to keep the picture clear
             transform.scale((double) width / originalIcon.getIconWidth(), (double) height / originalIcon.getIconHeight());
             g2d.drawImage(originalIcon.getImage(), transform, null);
             g2d.dispose();

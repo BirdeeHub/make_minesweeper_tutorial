@@ -131,7 +131,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
             }
         });
         HelpWindow.addActionListener(new ActionListener() {//and this one runs our Help window!
-            public void actionPerformed(ActionEvent evt) {//these are anonymous interface classes. They are defined within the () of a function call.
+            public void actionPerformed(ActionEvent evt) {//these are anonymous interface class objects. They are defined within the () of a function call.
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
                         new InstructionsWindow().setVisible(true);
@@ -139,7 +139,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                 });//<-- see?
             }
         });//<-- 2 of them!
-        KeyAdapter keyAdapter = new KeyAdapter() {//this one is not defined as an anonymous class. It is called keyAdapter and it is a KeyAdapter.
+        KeyAdapter keyAdapter = new KeyAdapter() {//this one is not defined as an anonymous instance of a class. It is called keyAdapter and it is a KeyAdapter.
             public void keyPressed(KeyEvent evt) {//It is a listener though. and an interface.
                 // Check if the Enter key is pressed
                 if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -195,7 +195,7 @@ public class OpeningWindow extends JFrame {//<-- its a JFrame
                 g.setColor((MineSweeper.isDarkMode())?PURPLE:LIGHTPRPL);//<-- this one makes our background a prettier color.
                 g.fillRect(0, 0, getWidth(), getHeight());
             }//^unfortunately, I had to do this, because when using component.setBackground(color) the color gets inherited by child components if their background is null.
-        };
+        };      //^yes, I only realized I needed this when I was adding the toggle for dark mode at the end.
 
         //--------------------------now to add our stuff to our content pane----------------
 

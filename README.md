@@ -162,11 +162,19 @@ Make sure jdk is added to your path, or run it with the path to the java binary 
 
 Inside the Jar, there is a replica of the app directory. (yes, in a 1/5th of a MB file, that is also a game. Most of that is Icon.)
 
-If you wish to access these files to edit the program(or learn java), use:
-
+If you have a system with bash(linux or mac) and you wish to access these files to edit the program(or learn java), use:
+```bash
 jar -xvf ./minesweeper.jar && rm -r MySweep/ META-INF/
-
+#or:
+unzip ./minesweeper.jar && rm -r MySweep/ META-INF/
+```
 the rm -r command is optional, but those things arent needed to compile. They ARE what was compiled. Or, well, copies of the ones in the jar.
+
+In windows, you could do, ```jar -xvf .\minesweeper.jar && rm -r MySweep\ META-INF\```
+
+or rename the .jar to .zip and then right click and unzip it because jar files are just zip files with a META-INF/MANIFEST.MF file
+
+Keep in mind that the package script requires the contents you extracted to be in a folder called app if you wish to make your own installer.
 
 If you have another version of jdk already, 
 but it wont let you run due to incompatible version,

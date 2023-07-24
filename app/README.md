@@ -81,6 +81,8 @@ You can remove the META-INF/ directory and MyClass/*.class files that appear in 
 
 in bash, completing all these 3 steps would look like: mkdir app && cd app && jar xvf ../minesweeper.jar && rm -r META-INF MySweep
 
+in windows, you can rename the .jar to .zip and then right click and unzip it.
+
 _____________________________________________________________________________________________________________________________________________
 
 **Compiling**
