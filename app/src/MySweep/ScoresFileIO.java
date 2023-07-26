@@ -18,7 +18,6 @@ class ScoresFileIO{
             for(int i = 0; i < allEntries.length; i++){//<-- for all the entries
                 scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function. arrays dont.
             }
-            //-------------------------write string----------------------write string-------------
             try {
                 Files.createDirectories(MineSweeper.tempPath); //<-- Create the directory.
             } catch (IOException e) {e.printStackTrace();}

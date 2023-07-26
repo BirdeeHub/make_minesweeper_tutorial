@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.awt.Frame;
 class MineSweeper {
     public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
@@ -45,34 +44,35 @@ class MineSweeper {
             }
         }
     }
+    public static void startJarOverwriter() throws IOException{
+        ProcessBuilder OvrightJarPro = new ProcessBuilder();
+        OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
+        OvrightJarPro.command().add("-cp");
+        OvrightJarPro.command().add(tempPath.toString());
+        OvrightJarPro.command().add(OvrightJarClassName);
+        OvrightJarPro.command().add(String.valueOf(ProcessHandle.current().pid()));
+        OvrightJarPro.command().add(scoresEntryName);
+        OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
+        OvrightJarPro.command().add(tempPath.resolve(OvrightJarClassName+".class").toString());
+        OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
+        OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
+        OvrightJarPro.start();
+    }
     /**
      * @param args [String "o" or "m"], int width, int height, int BombCount, int lives
      */
     public static void main(String[] args) {
         try {UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
-            if(isJarFile()){
-                try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
-                    tempPath.toFile().mkdirs();
-                    Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {e.printStackTrace();}
-            	try {//<-- try to call it.
-                    ProcessBuilder OvrightJarPro = new ProcessBuilder();
-                    OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
-                    OvrightJarPro.command().add("-cp");
-                    OvrightJarPro.command().add(tempPath.toString());
-                    OvrightJarPro.command().add(OvrightJarClassName);
-                    OvrightJarPro.command().add(scoresEntryName);
-                    OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
-                    OvrightJarPro.command().add(tempPath.resolve(OvrightJarClassName+".class").toString());
-                    OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
-                    OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                    OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
-                    OvrightJarPro.start();
-           	    } catch (IOException e) {e.printStackTrace();}
-            }
-        }));
+        if(isJarFile()){
+            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
+                tempPath.toFile().mkdirs();
+                Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
+            } catch (IOException e) {e.printStackTrace();}
+            try {startJarOverwriter();}//<-- try to call it.
+            catch (IOException e) {e.printStackTrace();}
+        }
         int width, height, bombCount, lives;
         if(args.length == 4){
             try{

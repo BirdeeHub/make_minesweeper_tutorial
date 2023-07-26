@@ -10,29 +10,50 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 class OverwriteMinesweeperJar {
-    /**@param args String scoresEntryName, String originalJarPath, String scoresFile, String thisFile
-     * This class is to get compiled, and later copied out of the jar to a new directory and 
-     * loaded on shutdown such that it can overwrite original jar with a new one with a new scores file
-     * do not add any internal or anonymous classes or it will compile into more than 1 file, and the extra files will not be copied.
+    /**@param args long parentProcessId, String scoresEntryName, String originalJarPath, String scoresFile, String thisFile
+     * 
+     * This class is to get compiled, and later copied out of the jar to a new directory and loaded
+     * loaded on startup, and it will then overwrite the old jar with the new jar when the old jar exits.
+     * do not add any internal classes or it will compile into more than 1 file, and the extra files will not be copied.
+     * 
+     * If you open 1 jar many times, there will be no issue, as it will fail to overwrite, and thus not delete anything. 
+     * 
+     * If you open 2 different versions of the jar, 
+     * the first jar opened will recieve new scores from both files, and the original scores it contained.
+     * the second jar opened will keep its original scores, but it will not recieve any new scores.
      */
     public static void main(String[] args) {
-        String scoresEntryName = args[0];
-        String originalJarPath = args[1];
-        File thisFile = new File(args[2]);
-        File scoresFile = new File(args[3]);
+        long parentProcessId = Long.parseLong(args[0]);
+        String scoresEntryName = args[1];
+        String originalJarPath = args[2];
+        File thisFile = new File(args[3]);
+        File scoresFile = new File(args[4]);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            thisFile.delete();//There was an error message here too, but it always triggered, even if it worked? It is meant to return a boolean based on success...
+            thisFile.delete();//<-- will fail if still running
         }));
-        boolean copySucceeded = false;
-        try(Scanner in = new Scanner(scoresFile)){
-            StringBuilder scoresFileStringBuilder = new StringBuilder();
-            while(in.hasNextLine())scoresFileStringBuilder.append(in.nextLine()+((in.hasNextLine())?'\n':""));
-            try{
-                writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileStringBuilder.toString());
-                copySucceeded = true;
-            }catch(IOException e){System.out.println(e.getStackTrace().toString()+"\nUnable to overwrite "+originalJarPath+" with new scores!\nPlease move your game folder to a regular, user-writeable directory then open and close it to complete save.\n(because this game does not have admin privileges)");}
-        }catch(FileNotFoundException e){}
-        if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
+        Thread processMonitoringThread = new Thread(() -> {
+            while (true) {
+                try {// Check if the parent process is alive
+                    if (!ProcessHandle.of(parentProcessId).isPresent()) {
+                        boolean copySucceeded = false;
+                        try(Scanner in = new Scanner(scoresFile)){
+                            StringBuilder scoresFileStringBuilder = new StringBuilder();
+                            while(in.hasNextLine())scoresFileStringBuilder.append(in.nextLine()+((in.hasNextLine())?'\n':""));
+                            try{
+                                writeJarWithNewScores(originalJarPath, scoresEntryName, scoresFileStringBuilder.toString());//<-- will fail if still running
+                                copySucceeded = true;
+                            }catch(IOException e){
+                                System.out.println(e.getStackTrace().toString()+"\nUnable to overwrite "+originalJarPath+" with new scores!\nPlease move your game folder to a regular, user-writeable directory then open and close it to complete save.\n(because this game does not have admin privileges)\nIf you still have another version of minesweeper running, you can ignore this message.");
+                            }
+                        }catch(FileNotFoundException e){}
+                        if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
+                        break;
+                    }
+                    Thread.sleep(1000);//<-- Sleep for a short interval before checking again
+                } catch (InterruptedException e) {e.printStackTrace();}
+            }
+        });
+        processMonitoringThread.start();
     }
     private static void writeJarWithNewScores(String jarFilePath, String scoresEntryName, String newScoresFileContents) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

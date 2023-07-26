@@ -28,9 +28,14 @@ It also means I need a native java executable in the windows package, so the pac
 
 It also means that if you put it on a USB, you can play it on any computer and it will always have your scores. Which is kinda cool.
 
-**Attention:** Is it better? No it's worse. Force quitting might mean you have to then open and close the game again to update the jar file. But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
+**Attention:** Is it better? No it's worse. 
 
-**Attention:** Don't install this version unless you are curious.
+    - If you open 1 jar many times, there will be no issue
+    - If you open 2 different versions of the jar, 
+        - the first jar opened will recieve new scores from both files, and the original scores it contained.
+        - the second jar opened will keep its original scores, but it will not recieve any new scores.
+
+But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
 |                                                     |                                                     |
 |-----------------------------------------------------|-----------------------------------------------------|
