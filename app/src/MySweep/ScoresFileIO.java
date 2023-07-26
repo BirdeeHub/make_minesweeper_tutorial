@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -26,7 +25,7 @@ class ScoresFileIO{
                 Files.createDirectories(MineSweeper.tempPath); //<-- Create the directory.
             } catch (IOException e) {e.printStackTrace();}
             try{
-                Files.createFile(Path.of(MineSweeper.tempPath.toString() + File.separator + MineSweeper.scoresFileName));//<-- Create the file if not created.
+                Files.createFile(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName));//<-- Create the file if not created.
             }catch(IOException e){
                 if(!(e instanceof FileAlreadyExistsException))e.printStackTrace();
             }
