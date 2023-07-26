@@ -21,7 +21,7 @@ class OverwriteMinesweeperJar {
         File thisFile = new File(args[2]);
         File scoresFile = new File(args[3]);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println((thisFile.delete())?thisFile.toString()+" failed to delete!\n":"");//<-- .delete() deletes the file, and then returns a boolean based on success.
+            thisFile.delete();//There was an error message here too, but it always triggered, even if it worked? It is meant to return a boolean based on success...
         }));
         boolean copySucceeded = false;
         try(Scanner in = new Scanner(scoresFile)){
