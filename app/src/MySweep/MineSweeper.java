@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.lang.management.ManagementFactory;
 import java.awt.Frame;
 class MineSweeper {
     public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
@@ -61,7 +60,6 @@ class MineSweeper {
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
                     OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
-                    OvrightJarPro.command().addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
                     OvrightJarPro.command().add("-cp");
                     OvrightJarPro.command().add(tempPath.toString());
                     OvrightJarPro.command().add(OvrightJarClassName);
