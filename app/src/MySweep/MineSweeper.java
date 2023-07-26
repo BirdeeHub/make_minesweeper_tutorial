@@ -3,7 +3,6 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.EventQueue;
 import java.awt.Image;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,12 +49,13 @@ class MineSweeper {
      * @param args [String "o" or "m"], int width, int height, int BombCount, int lives
      */
     public static void main(String[] args) {
+        try {UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());}
+        catch (Exception e) {e.printStackTrace();}
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {//<-- this is where we call our overwrite so that next time we open, we have a new jar.
             if(isJarFile()){
                 try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
-                    File destinationDir = tempPath.toFile();
-                    destinationDir.mkdirs();
-                    Files.copy(inputStream, Path.of(tempPath.resolve(OvrightJarClassName+".class").toString()), StandardCopyOption.REPLACE_EXISTING);
+                    tempPath.toFile().mkdirs();
+                    Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {e.printStackTrace();}
             	try {//<-- try to call it.
                     ProcessBuilder OvrightJarPro = new ProcessBuilder();
@@ -73,11 +73,6 @@ class MineSweeper {
            	    } catch (IOException e) {e.printStackTrace();}
             }
         }));
-        try {// Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        }
-        catch (Exception e) {e.printStackTrace();}
-
         int width, height, bombCount, lives;
         if(args.length == 4){
             try{

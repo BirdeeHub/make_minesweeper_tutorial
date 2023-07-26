@@ -1,9 +1,7 @@
 package MySweep;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -15,8 +13,8 @@ import java.util.Arrays;
 class ScoresFileIO{
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
     private static void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
+        StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
         if(MineSweeper.isJarFile()){//-------------------------------------------------------IN A JAR----------------------------
-            StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
             for(int i = 0; i < allEntries.length; i++){//<-- for all the entries
                 scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function. arrays dont.
             }
@@ -29,16 +27,14 @@ class ScoresFileIO{
             }catch(IOException e){
                 if(!(e instanceof FileAlreadyExistsException))e.printStackTrace();
             }
-            try (FileWriter out2 = new FileWriter(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toString())) {//<-- filewriters can overwrite or append a string to a file
+            try (FileWriter out2 = new FileWriter(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile())) {//<-- filewriters can overwrite or append a string to a file
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
             }catch(IOException e){e.printStackTrace();}
         }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
-            File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getPath().toString());
-            StringBuilder scoresFileString = new StringBuilder();// create string from entries
             for(int i = 0; i < allEntries.length; i++){
                 scoresFileString.append(allEntries[i].toString()).append(" ");
             }
-            try (FileWriter out2 = new FileWriter(scoresFile)) {// write string
+            try (FileWriter out2 = new FileWriter(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getFile())) {// write string
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
             }catch(IOException e){e.printStackTrace();}
         }
@@ -52,8 +48,7 @@ class ScoresFileIO{
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR--------------------------------------------
             if(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile().exists()){
                 try{
-                    File scoresFile = MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile();
-                    try(Scanner in = new Scanner(scoresFile)) {
+                    try(Scanner in = new Scanner(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile())) {
                         while (in.hasNext()) {
                             ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
                             if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
@@ -62,9 +57,7 @@ class ScoresFileIO{
                     }catch(FileNotFoundException e){e.printStackTrace();}
                 }catch(NullPointerException e){e.printStackTrace();}
             }else{
-                InputStream inputStream = ClassLoader.getSystemResourceAsStream(MineSweeper.scoresEntryName);
-                InputStreamReader streamReader = new InputStreamReader(inputStream);
-                BufferedReader in = new BufferedReader(streamReader);
+                BufferedReader in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(MineSweeper.scoresEntryName)));
                 try{
                     for (String line; (line = in.readLine()) != null;) {
                         String[] words = line.split("\\s+");
@@ -77,15 +70,12 @@ class ScoresFileIO{
                 }catch(IOException e){e.printStackTrace();}
             }
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
-            try{
-                File scoresFile = new File(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getPath().toString());
-                try(Scanner in = new Scanner(scoresFile)) {
-                    while (in.hasNext()) {
-                        ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
-                        if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
-                    }
-                    fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
-                }catch(FileNotFoundException e){e.printStackTrace();}
+            try(Scanner in = new Scanner(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getFile())) {
+                while (in.hasNext()) {
+                    ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
+                    if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
+                }
+                fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
             }catch(NullPointerException e){e.printStackTrace();}
         }
         return fileEntries;
