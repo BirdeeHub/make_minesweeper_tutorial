@@ -70,10 +70,20 @@ class MineSweeper {
                 tempPath.toFile().mkdirs();
                 Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
             } catch (IOException e) {}
-            try {
-                startJarOverwriter();
-            }//<-- try to call it.
-            catch (IOException e) {e.printStackTrace();}
+            Thread processMonitoringThread = new Thread(() -> {//<-- lambda functions will not create a new file, because they are not anonymous classes, but rather, anonymous functions.
+                try {
+                    Process jarOverwriter = startJarOverwriter();
+                    while (true) {
+                        try {// Check if the child process is alive
+                            int exitCode = jarOverwriter.waitFor();
+                            System.out.println("Overwriter process exited with code: " + exitCode + ". Attempting restart of " + OvrightJarClassName);
+                            jarOverwriter = startJarOverwriter();
+                            Thread.sleep(1500);//<-- Sleep for a short interval before checking again
+                        } catch (InterruptedException e) {e.printStackTrace();}
+                    }
+                }catch (IOException e) {e.printStackTrace();}
+            });
+            processMonitoringThread.start();
         }
         int width, height, bombCount, lives;
         if(args.length == 4){
