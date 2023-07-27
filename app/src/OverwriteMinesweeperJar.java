@@ -31,7 +31,7 @@ class OverwriteMinesweeperJar {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             thisFile.delete();//<-- will fail if still running
         }));
-        Thread processMonitoringThread = new Thread(() -> {
+        Thread processMonitoringThread = new Thread(() -> {//<-- lambda functions will not create a new file, because they are not anonymous classes, but rather, anonymous functions.
             while (true) {
                 try {// Check if the parent process is alive
                     if (!ProcessHandle.of(parentProcessId).isPresent()) {
