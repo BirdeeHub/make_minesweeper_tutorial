@@ -32,10 +32,15 @@ It also means that if you put it on a USB, you can play it on any computer and i
 
     - If you open 1 jar many times, there will be no issue (even if it crashes, which it won't. As long as the overwriter program continues running, it will save. Otherwise, open and close game to fix save.)
     - If you open 2 different versions of the jar, 
-        - the first jar to be closed will recieve new scores from both files, and the original scores it contained.
+        - the first jar to be closed will recieve new scores from both files, and the original scores from the first jar that was opened.
         - the second jar to be closed will keep its original scores, but it will not recieve any new scores.
+        - If you didnt update the scores file, either by new highscore, or delete, nothing will happen.
 
 But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
+
+If you plan to just play the game, and have it in a writeable directory, this is probably the best version. 
+
+If you have a java version, the jar is so small that it is textable (140kb if you download the jar that doesnt contain source), and it contains your scores.
 
 |                                                     |                                                     |
 |-----------------------------------------------------|-----------------------------------------------------|
