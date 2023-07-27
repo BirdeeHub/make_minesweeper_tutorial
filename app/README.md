@@ -27,7 +27,7 @@ So I made one!
 
 Mostly I just wanted to learn some Java.
 
-If you plan to just play the game, and have it in a writeable directory, this is probably the best version. 
+If you plan to just play the game from the jar, and have it in a writeable directory, this is probably the best version. 
 
 If you have a java version, the jar is so small that it is textable (140kb if you download the jar that doesnt contain source, package Icon, etc, 235 otherwise), 
 
