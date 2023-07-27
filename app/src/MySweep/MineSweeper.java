@@ -69,7 +69,7 @@ class MineSweeper {
             try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
                 tempPath.toFile().mkdirs();
                 Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
-            } catch (IOException e) {e.printStackTrace();}
+            } catch (IOException e) {}
             try {startJarOverwriter();}//<-- try to call it.
             catch (IOException e) {e.printStackTrace();}
         }

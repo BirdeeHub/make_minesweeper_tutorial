@@ -49,7 +49,7 @@ class OverwriteMinesweeperJar {
                         if(copySucceeded)scoresFile.delete();//<-- need to delete after closing Scanner otherwise it wont delete
                         break;
                     }
-                    Thread.sleep(1000);//<-- Sleep for a short interval before checking again
+                    Thread.sleep(1500);//<-- Sleep for a short interval before checking again
                 } catch (InterruptedException e) {e.printStackTrace();}
             }
         });

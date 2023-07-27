@@ -30,7 +30,7 @@ It also means that if you put it on a USB, you can play it on any computer and i
 
 **Attention:** Is it better? No it's worse. 
 
-    - If you open 1 jar many times, there will be no issue
+    - If you open 1 jar many times, there will be no issue (even if you force quit.)
     - If you open 2 different versions of the jar, 
         - the first jar opened will recieve new scores from both files, and the original scores it contained.
         - the second jar opened will keep its original scores, but it will not recieve any new scores.
@@ -41,6 +41,10 @@ But its also significantly cooler in my opinion. Also I used swing so I can't ea
 |-----------------------------------------------------|-----------------------------------------------------|
 | ![Screenshot](./Screenshots/Screenshot.png)         | ![Screenshot](./Screenshots/WinScreenshot.png)      |
 | ![Screenshot](./Screenshots/ScreenshotWithZoom.png) | ![Screenshot](./Screenshots/LossScreenshot.png)     |
+
+|                                                |                                               |                                               |
+|------------------------------------------------|-----------------------------------------------|-----------------------------------------------|
+| ![Screenshot](./Screenshots/OpeningWindow.png) | ![Screenshot](./Screenshots/ScoresScreen.png) | ![Screenshot](./Screenshots/Instructions.png) |
 
 ************************************************************************************
 
