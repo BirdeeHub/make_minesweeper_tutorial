@@ -10,12 +10,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.awt.Frame;
 class MineSweeper {
-    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     private static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
+    private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
+    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     public static final String scoresFileName= "MinesweeperScores.txt";
     public static final String scoresPathForIDE = "save/"+scoresFileName;
     public static final String scoresEntryName = "src/MySweep/"+scoresPathForIDE;
-    public static final String OvrightJarClassName = "OverwriteMinesweeperJar";
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
@@ -44,7 +44,7 @@ class MineSweeper {
             }
         }
     }
-    public static Process startJarOverwriter() throws IOException{
+    private static Process startJarOverwriter() throws IOException{
         ProcessBuilder OvrightJarPro = new ProcessBuilder();
         OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
         OvrightJarPro.command().add("-cp");
@@ -70,11 +70,11 @@ class MineSweeper {
                 tempPath.toFile().mkdirs();
                 Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
             } catch (IOException e) {}
-            Thread processMonitoringThread = new Thread(() -> {//<-- lambda functions will not create a new file, because they are not anonymous classes, but rather, anonymous functions.
+            Thread processMonitoringThread = new Thread(() -> {
                 try {
                     Process jarOverwriter = startJarOverwriter();
                     while (true) {
-                        try {// Check if the child process is alive
+                        try {// wait for the overwriter process to die in case it dies before the game does so that we can restart it.
                             int exitCode = jarOverwriter.waitFor();
                             System.out.println("Overwriter process exited with code: " + exitCode + ". Attempting restart of " + OvrightJarClassName);
                             jarOverwriter = startJarOverwriter();
