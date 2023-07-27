@@ -23,8 +23,6 @@ If you have a java version, the jar is so small that it is textable (140kb if yo
 
 and it contains your scores, meaning you can pick back up where you left off without sending the scores file separately.
 
-You can replace the jar in the game files of any of the other installations with this one if you wish, as long as they are in a writeable directory.
-
 **Attention:** This version is kinda dumb. Its also kinda cool. It exists as a proof of concept and because I wanted to try.
 
 Why is it so dumb? It saves its scores to the temp folder, and then overwrites itself on exit with a new jar containing the new scores. 
