@@ -234,6 +234,7 @@ public class Grid extends JPanel {
             //^The bug is fixed. Obviously there are other ways to write it, 
             //but as long as it works and doesnt rely on doing too much stuff outside of the function
             //or relies on changing stuff not fixed by reset, then it was a good solution.
+            //the above ande below solutions actually execute the same number of instructions
             //The most obvious different way to write it would be:
 
 //VERSION 2
