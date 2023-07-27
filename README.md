@@ -30,7 +30,7 @@ It also means that if you put it on a USB, you can play it on any computer and i
 
 **Attention:** Is it better? No it's worse. 
 
-    - If you open 1 jar many times, there will be no issue (even if you force quit.)
+    - If you open 1 jar many times, there will be no issue (even if it crashes! As long as the overwriter program continues running, it will save. Otherwise, open and close game to fix save.)
     - If you open 2 different versions of the jar, 
         - the first jar opened will recieve new scores from both files, and the original scores it contained.
         - the second jar opened will keep its original scores, but it will not recieve any new scores.
