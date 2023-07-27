@@ -220,6 +220,9 @@ public class Grid extends JPanel {
                         }
                         getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon));
                     }
+                    if(((MineSweeper.isDarkMode())?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
+                        getButtonAt(x,y).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
+                    }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
                 }
             }
         }
