@@ -53,6 +53,8 @@ But its also significantly cooler in my opinion. Also I used swing so I can't ea
 |------------------------------------------------|-----------------------------------------------|-----------------------------------------------|
 | ![Screenshot](./Screenshots/OpeningWindow.png) | ![Screenshot](./Screenshots/ScoresScreen.png) | ![Screenshot](./Screenshots/Instructions.png) |
 
+![Screenshot](./Screenshots/ProperProcessKilling.png)
+
 ************************************************************************************
 
 **WINDOWS**
