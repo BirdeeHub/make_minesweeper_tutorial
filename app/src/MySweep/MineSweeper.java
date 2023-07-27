@@ -101,7 +101,7 @@ class MineSweeper {
                         if(args[0].equals("m"))EventQueue.invokeLater(new Runnable(){public void run(){
                             new MainGameWindow(width, height, bombCount, lives).setVisible(true);}});
                         if(args[0].equals("o"))EventQueue.invokeLater(new Runnable(){public void run(){
-                            new OpeningWindow(Integer.toString(width),Integer.toString(height), Integer.toString(bombCount), Integer.toString(lives)).setVisible(true);}});
+                            new OpeningWindow(args[1],args[2],args[3],args[4]).setVisible(true);}});
                     }else{
                         System.out.println("<m or o>, width, height, BombCount, lives");
                         EventQueue.invokeLater(new Runnable(){public void run(){new OpeningWindow().setVisible(true);}});
