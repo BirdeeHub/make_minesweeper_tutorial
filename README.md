@@ -32,8 +32,8 @@ It also means that if you put it on a USB, you can play it on any computer and i
 
     - If you open 1 jar many times, there will be no issue (even if it crashes, which it won't. As long as the overwriter program continues running, it will save. Otherwise, open and close game to fix save.)
     - If you open 2 different versions of the jar, 
-        - the first jar opened will recieve new scores from both files, and the original scores it contained.
-        - the second jar opened will keep its original scores, but it will not recieve any new scores.
+        - the first jar to be closed will recieve new scores from both files, and the original scores it contained.
+        - the second jar to be closed will keep its original scores, but it will not recieve any new scores.
 
 But its also significantly cooler in my opinion. Also I used swing so I can't easily use GraalVM to make a true native version so I settled on making it interesting.
 
