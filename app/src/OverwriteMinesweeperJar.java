@@ -34,9 +34,9 @@ class OverwriteMinesweeperJar {
         Thread processMonitoringThread = new Thread(() -> {//<-- lambda functions will not create a new file, because they are not anonymous classes, but rather, anonymous functions.
             while (true) {
                 try {// Check if the parent process is alive
-                    if (!ProcessHandle.of(parentProcessId).isPresent()) {
+                    if (!ProcessHandle.of(parentProcessId).isPresent()) {//<-- if not
                         boolean copySucceeded = false;
-                        try(Scanner in = new Scanner(scoresFile)){
+                        try(Scanner in = new Scanner(scoresFile)){//<-- if no scores file, this will throw an Exception
                             StringBuilder scoresFileStringBuilder = new StringBuilder();
                             while(in.hasNextLine())scoresFileStringBuilder.append(in.nextLine()+((in.hasNextLine())?'\n':""));
                             try{
