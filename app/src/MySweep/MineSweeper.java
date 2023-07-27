@@ -44,7 +44,7 @@ class MineSweeper {
             }
         }
     }
-    public static void startJarOverwriter() throws IOException{
+    public static Process startJarOverwriter() throws IOException{
         ProcessBuilder OvrightJarPro = new ProcessBuilder();
         OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
         OvrightJarPro.command().add("-cp");
@@ -57,7 +57,7 @@ class MineSweeper {
         OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
         OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
-        OvrightJarPro.start();
+        return OvrightJarPro.start();
     }
     /**
      * @param args [String "o" or "m"], int width, int height, int BombCount, int lives
@@ -70,7 +70,9 @@ class MineSweeper {
                 tempPath.toFile().mkdirs();
                 Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
             } catch (IOException e) {}
-            try {startJarOverwriter();}//<-- try to call it.
+            try {
+                startJarOverwriter();
+            }//<-- try to call it.
             catch (IOException e) {e.printStackTrace();}
         }
         int width, height, bombCount, lives;
