@@ -82,7 +82,7 @@ You might need to add it to your path.
 
 If you wish to make your own installer, you will still need a JDK regardless of if your game version includes compiler.
 
-You will also need your own JDK if you wish to include modules not included in java.base or java.desktop or java.management (you probably wont though)
+You will also need your own JDK if you wish to include modules not included in java.base or java.desktop (you probably wont though)
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
