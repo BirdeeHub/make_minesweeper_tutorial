@@ -219,10 +219,11 @@
     All classes in this project named somethingWindow are examples of this. All game windows are JFrames with the relevant stuff inside them.
     Grid extends JPanel and an instance of it is inside a JFrame called MainGameWindow.
 
-    An Interface is where you just inherit the developers problems. They decided it would be better not to tell you how to write your program.
+    An Interface is where you inherit the developers problems. They decided it would be better not to tell you how to write your program.
     You must write the functions of an interface you implement if you want to use them. Other functions are relying on you for it!
-    They did not write them. They just wrote stuff that uses them if you define them. 
+    They did not write them. They just wrote funtions that use them if you define them. 
     If you want to make a class that defines functions from an interface you use the 'implements' keyword when you define the class. 
+    You must implement all functions of an interface if you wish to use an interface.
     Or, you can do it when you create an instance of the class with the new operator like this:
 
         ActionListener toggleQuestionMarkingListener = new ActionListener(){  //<-- create an instance of the ActionListener interface class

@@ -660,7 +660,7 @@ public class Grid extends JPanel {
     //this next class is complicated. I needed to make it because of zoom + Icons
 
     //It makes it so that the Icon stays the same size of the button. 
-    //It is also an example of implementing an interface.
+    //It is also an example of implementing an interface without using an anonymous class definition.
     //I am required to define all of the functions in the interface. I can define others as well, such as my own constructor
     //(control click Icon if in VS code to see the interface I am implementing.)
     //--------------------------------------------Scaleable Icon-----------------ScaleableIcon();-----------Scaleable Icon----------------
