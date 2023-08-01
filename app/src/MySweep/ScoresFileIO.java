@@ -33,7 +33,7 @@ class ScoresFileIO{
             for(int i = 0; i < allEntries.length; i++){
                 scoresFileString.append(allEntries[i].toString()).append(" ");
             }
-            try (FileWriter out2 = new FileWriter(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getFile())) {// write string
+            try (FileWriter out2 = new FileWriter(MineSweeper.scoresPathForIDE.toFile())) {// write string
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
             }catch(IOException e){e.printStackTrace();}
         }
@@ -69,13 +69,13 @@ class ScoresFileIO{
                 }catch(IOException e){e.printStackTrace();}
             }
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
-            try(Scanner in = new Scanner(MineSweeper.class.getResource(MineSweeper.scoresPathForIDE).getFile())) {
+            try(Scanner in = new Scanner(MineSweeper.scoresPathForIDE.toFile())) {
                 while (in.hasNext()) {
                     ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
                     if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
                 }
                 fileEntries = fileEntriesBuilder.toArray(new ScoreEntry[0]);
-            }catch(NullPointerException e){e.printStackTrace();}
+            }catch(FileNotFoundException e){e.printStackTrace();}
         }
         return fileEntries;
     }

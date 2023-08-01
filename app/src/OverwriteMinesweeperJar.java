@@ -16,11 +16,12 @@ class OverwriteMinesweeperJar {
      * loaded on startup, and it will then overwrite the old jar with the new jar when the old jar exits.
      * do not add any internal classes or it will compile into more than 1 file, and the extra files will not be copied.
      * 
-     * If you open 1 jar many times, there will be no issue, as it will fail to overwrite, and thus not delete anything. 
+     * If you open 1 jar many times, there will be no issue, as it will fail to overwrite, and thus not delete anything, and will do the overwrite when the last game open exits
      * 
      * If you open 2 different versions of the jar, 
-     * the first jar opened will recieve new scores from both files, and the original scores it contained.
-     * the second jar opened will keep its original scores, but it will not recieve any new scores.
+     *  - the first jar to be closed will recieve new scores from both files, and the original scores from the first jar that was opened.
+     *  - the second jar to be closed will keep its original scores, but it will not recieve any new scores.
+     *  - If you didnt update the scores file, either by new highscore, or delete, nothing will happen.
      */
     public static void main(String[] args) {
         long parentProcessId = Long.parseLong(args[0]);

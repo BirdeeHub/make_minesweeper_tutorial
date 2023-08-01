@@ -14,8 +14,8 @@ class MineSweeper {
     private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
     public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
     public static final String scoresFileName= "MinesweeperScores.txt";
-    public static final String scoresPathForIDE = "save/"+scoresFileName;
-    public static final String scoresEntryName = "src/MySweep/"+scoresPathForIDE;
+    public static final Path scoresPathForIDE = minesweeperclasspath.resolve("MySweep").resolve("save").resolve(scoresFileName);
+    public static final String scoresEntryName = "src/MySweep/save/"+scoresFileName;
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
