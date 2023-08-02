@@ -208,18 +208,19 @@ public class Grid extends JPanel {
                         }else{                                          //else
                             getButtonAt(x,y).setBackground(null);//<-- set the background null
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);//<-- and apply default icon
-                        }//THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
+                        }//^this if else is just the same one from before copied here
+                        //THEN set the custom icon again    (copy it from game over function into the input of the setIcon function here.)
                         //this will put it back on top of the other stuff we put.
                         getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.ExplosionIcon));
-                    
                     }else if(wonValue == 1){//<-- if you won, you see the mines
                         if(MineSweeper.isDarkMode()){getButtonAt(x,y).setBackground(BLACK);
                         }else{
                             getButtonAt(x,y).setBackground(null);
                             getButtonAt(x,y).setIcon(DefaultButtonIcon);
-                        }
-                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon));
+                        }//^this if else is just the same one from before copied here
+                        getButtonAt(x,y).setIcon(new ScalableIcon(MineSweeper.MineIcon));//<-- adding the game over icon again
                     }
+                    //same as before, but here.
                     if(((MineSweeper.isDarkMode())?(getButtonAt(x,y).getForeground() == LightModeTextColor):(getButtonAt(x,y).getForeground() == DarkModeTextColor))){
                         getButtonAt(x,y).setForeground((MineSweeper.isDarkMode())?DarkModeTextColor:LightModeTextColor);
                     }//^this if is to make sure it doesnt change the color of the game over ! marker when it happens on a chord because it will replace a number. 
@@ -234,7 +235,7 @@ public class Grid extends JPanel {
             //^The bug is fixed. Obviously there are other ways to write it, 
             //but as long as it works and doesnt rely on doing too much stuff outside of the function
             //or relies on changing stuff not fixed by reset, then it was a good solution.
-            //the above ande below solutions actually execute the same number of instructions
+            //the above and below solutions actually execute the same number of instructions
             //The most obvious different way to write it would be:
 
 //VERSION 2
@@ -275,14 +276,13 @@ public class Grid extends JPanel {
             //This is harder than it sounds because you cant overwrite the .jar file you are currently running from.
 
             //what really happens is it just creates and updates a new scores file in the temp folder,
-            //and then when you close it, it copies a mini program out of itself, called OverwriteJar to run after this one closes.
+            //and then when you close it, it copies a mini program out of itself, called OverwriteMinesweeperJar to run after this one closes.
             //It runs that program, closes, and then OverwriteJar overwrites the jar with a new version for next time containing updated scores, 
             //then deletes itself and the temp scores file.
-            //If it doesnt finish somehow (usually because of force quitting, causing it to skip the shutdown hook that runs OverwriteJar) 
-            //it will still find the scores next time because it reads from the temp one first.
 
             //Because I wrote the program in a modular fashion, the only thing that needed to be changed in this version was
-            //minesweeper.java, and ScoresFileIO, and adding OverwriteJar.java
+            //Minesweeper.java (to copy and run overwrite program), 
+            //and ScoresFileIO (now reads and writes scores file from a different location), and adding OverwriteMinesweeperJar.java
             //I did end up changing more stuff that wasnt necessary though, like making toggle dark mode apply to a few more things
 
 
