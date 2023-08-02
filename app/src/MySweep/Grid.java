@@ -281,8 +281,8 @@ public class Grid extends JPanel {
             //then deletes itself and the temp scores file.
 
             //Because I wrote the program in a modular fashion, the only thing that needed to be changed in this version was
-            //Minesweeper.java (to copy and run overwrite program), 
-            //and ScoresFileIO (now reads and writes scores file from a different location), and adding OverwriteMinesweeperJar.java
+            //Minesweeper.java (to call run overwrite program), 
+            //and ScoresFileIO (contains function to copy and start overwrite program and now reads and writes scores file from a different location), and adding OverwriteMinesweeperJar.java
             //I did end up changing more stuff that wasnt necessary though, like making toggle dark mode apply to a few more things
 
 

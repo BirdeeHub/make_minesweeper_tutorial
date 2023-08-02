@@ -156,9 +156,11 @@ On each reset, Grid creates a new Minefield instance (which was designed to be a
 
 ScoresFileIO contains functions directly pertaining to reading and writing to the scores file. 
 
+ScoresFileIO also contains the function to copy OverwriteMineSweeperJar.class to a temp directory and run it, which is called by MineSweeper.jar
+
 ScoresFileIO turns the scores file into ScoreEntry instances, and can update or delete them.
 
-scores save to %userprofile%\AppData\Roaming\minesweeperScores for windows and ~/.minesweeper/ for others.
+--
 
 ScoresWindow displays ScoreEntry instances correctly and allows for deletion, and relaunching a new opening window with a pre populated score.
 
@@ -166,9 +168,7 @@ ScoresWindow displays ScoreEntry instances correctly and allows for deletion, an
 
 MineSweeper.java contains the ever-important main function that launches everything, as well as logic for command line launching straight to game window.
 
-MineSweeper.java also contains the hook to copy OverwriteJar.class to a temp directory and run it upon exiting.
-
-OverwriteJar.java extracts the contents of the original jar to memory, replaces the scores file with the scores file in the temp directory, and then overwrites the old jar with the new contents. If successful, it then cleans up the extra scores file in the temp directory and then deletes itself.
+OverwriteMineSweeperJar.java extracts the contents of the original jar to memory, replaces the scores file with the scores file in the temp directory, and then overwrites the old jar with the new contents. If successful, it then cleans up the extra scores file in the temp directory and then deletes itself.
 
 The rest of the source files are just the other windows.
 

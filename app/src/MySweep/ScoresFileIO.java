@@ -2,15 +2,61 @@ package MySweep;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 class ScoresFileIO{
+    private static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
+    private static final Path tempDirPath = Path.of(System.getProperty("java.io.tmpdir"));
+    private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
+    private static final String OvrightJarEntry = OvrightJarClassName+".class";
+    private static final Path OvrightJarPath = tempDirPath.resolve(OvrightJarClassName+".class");
+    private static final String scoresFileName= "MinesweeperScores.txt";
+    private static final Path tempScoresPath = tempDirPath.resolve(scoresFileName);
+    private static final Path scoresPathForIDE = minesweeperclasspath.resolve("MySweep").resolve("save").resolve(scoresFileName);
+    private static final String scoresEntryName = "src/MySweep/save/"+scoresFileName;
+    private static Process startJarOverwriter() throws IOException{
+        ProcessBuilder OvrightJarPro = new ProcessBuilder();
+        OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
+        OvrightJarPro.command().add("-cp");
+        OvrightJarPro.command().add(OvrightJarPath.getParent().toString());
+        OvrightJarPro.command().add(OvrightJarClassName);
+        OvrightJarPro.command().add(String.valueOf(ProcessHandle.current().pid()));
+        OvrightJarPro.command().add(scoresEntryName);
+        OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
+        OvrightJarPro.command().add(OvrightJarPath.toString());
+        OvrightJarPro.command().add(tempScoresPath.toString());
+        OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
+        return OvrightJarPro.start();
+    }
+    public static void startOverwriterAndKeepAlive(){//<-- MineSweeper.java calls this
+            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarEntry)){//<-- copy our program that overwrites
+                OvrightJarPath.getParent().toFile().mkdirs();
+                Files.copy(inputStream, OvrightJarPath);
+            } catch (IOException e) {}
+            Thread processMonitoringThread = new Thread(() -> {//<-- define thread that will start it and keep it alive
+                try {
+                    Process jarOverwriter = startJarOverwriter();
+                    while (true) {
+                        try {// wait for the overwriter process to die in case it dies before the game does so that we can restart it.
+                            int exitCode = jarOverwriter.waitFor();
+                            System.out.println("Overwriter process exited with code: " + exitCode + ". Attempting restart of " + OvrightJarClassName);
+                            jarOverwriter = startJarOverwriter();
+                            Thread.sleep(1500);//<-- Sleep for a short interval before checking again
+                        } catch (InterruptedException e) {e.printStackTrace();}
+                    }
+                }catch (IOException e) {e.printStackTrace();}
+            });
+            processMonitoringThread.start();//<-- start the thread
+    }
     //----------------------------------WRITE------------------------------------------------------WRITE----------------------------------
     private static void writeLeaderboard(ScoreEntry[] allEntries){//writes from Score Entries to file or jar
         StringBuilder scoresFileString = new StringBuilder();// StringBuilder to store and create string from entries
@@ -19,21 +65,21 @@ class ScoresFileIO{
                 scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function. arrays dont.
             }
             try {
-                Files.createDirectories(MineSweeper.tempScoresPath.getParent()); //<-- Create the directory.
+                Files.createDirectories(tempScoresPath.getParent()); //<-- Create the directory.
             } catch (IOException e) {e.printStackTrace();}
             try{
-                Files.createFile(MineSweeper.tempScoresPath);//<-- Create the file if not created.
+                Files.createFile(tempScoresPath);//<-- Create the file if not created.
             }catch(IOException e){
                 if(!(e instanceof FileAlreadyExistsException))e.printStackTrace();
             }
-            try (FileWriter out2 = new FileWriter(MineSweeper.tempScoresPath.toFile())) {//<-- filewriters can overwrite or append a string to a file
+            try (FileWriter out2 = new FileWriter(tempScoresPath.toFile())) {//<-- filewriters can overwrite or append a string to a file
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
             }catch(IOException e){e.printStackTrace();}
         }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
             for(int i = 0; i < allEntries.length; i++){
                 scoresFileString.append(allEntries[i].toString()).append(" ");
             }
-            try (FileWriter out2 = new FileWriter(MineSweeper.scoresPathForIDE.toFile())) {// write string
+            try (FileWriter out2 = new FileWriter(scoresPathForIDE.toFile())) {// write string
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents.
             }catch(IOException e){e.printStackTrace();}
         }
@@ -45,9 +91,9 @@ class ScoresFileIO{
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries=null;
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR--------------------------------------------
-            if(MineSweeper.tempScoresPath.toFile().exists()){
+            if(tempScoresPath.toFile().exists()){
                 try{
-                    try(Scanner in = new Scanner(MineSweeper.tempScoresPath.toFile())) {
+                    try(Scanner in = new Scanner(tempScoresPath.toFile())) {
                         while (in.hasNext()) {
                             ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
                             if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores
@@ -56,7 +102,7 @@ class ScoresFileIO{
                     }catch(FileNotFoundException e){e.printStackTrace();}
                 }catch(NullPointerException e){e.printStackTrace();}
             }else{
-                BufferedReader in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(MineSweeper.scoresEntryName)));
+                BufferedReader in = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(scoresEntryName)));
                 try{
                     for (String line; (line = in.readLine()) != null;) {
                         String[] words = line.split("\\s+");
@@ -69,7 +115,7 @@ class ScoresFileIO{
                 }catch(IOException e){e.printStackTrace();}
             }
         }else{//-------------------------------------------this exists for IDEs-------NOT IN A JAR------------------------------------------
-            try(Scanner in = new Scanner(MineSweeper.scoresPathForIDE.toFile())) {
+            try(Scanner in = new Scanner(scoresPathForIDE.toFile())) {
                 while (in.hasNext()) {
                     ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
                     if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores

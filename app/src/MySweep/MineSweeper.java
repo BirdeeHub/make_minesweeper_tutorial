@@ -4,25 +4,13 @@ import javax.swing.UIManager;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.awt.Frame;
 class MineSweeper {
-    private static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
-    private static final Path tempDirPath = Path.of(System.getProperty("java.io.tmpdir"));
-    private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
-    private static final String OvrightJarEntry = OvrightJarClassName+".class";
-    private static final Path OvrightJarPath = tempDirPath.resolve(OvrightJarClassName+".class");
-    private static final String scoresFileName= "MinesweeperScores.txt";
-    public static final Path tempScoresPath = tempDirPath.resolve(scoresFileName);
-    public static final Path scoresPathForIDE = minesweeperclasspath.resolve("MySweep").resolve("save").resolve(scoresFileName);
-    public static final String scoresEntryName = "src/MySweep/save/"+scoresFileName;
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
     public static final Image MineIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/MineSweeperIcon.png")).getImage();
     public static boolean isJarFile() {//<-- apparently .jar files have a magic number that shows if it is a jar file.
-        try (FileInputStream fileInputStream = new FileInputStream(minesweeperclasspath.toFile())) {
+        try (FileInputStream fileInputStream = new FileInputStream(Path.of(System.getProperty("java.class.path")).toFile())) {
             byte[] magicNumber = new byte[4];
             int bytesRead = fileInputStream.read(magicNumber);
             return bytesRead == 4 &&
@@ -47,21 +35,6 @@ class MineSweeper {
             }
         }
     }
-    private static Process startJarOverwriter() throws IOException{
-        ProcessBuilder OvrightJarPro = new ProcessBuilder();
-        OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
-        OvrightJarPro.command().add("-cp");
-        OvrightJarPro.command().add(OvrightJarPath.getParent().toString());
-        OvrightJarPro.command().add(OvrightJarClassName);
-        OvrightJarPro.command().add(String.valueOf(ProcessHandle.current().pid()));
-        OvrightJarPro.command().add(scoresEntryName);
-        OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
-        OvrightJarPro.command().add(OvrightJarPath.toString());
-        OvrightJarPro.command().add(tempScoresPath.toString());//<-- scores directory
-        OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-        OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
-        return OvrightJarPro.start();
-    }
     /**
      * @param args [String "o" or "m"], int width, int height, int BombCount, int lives
      */
@@ -69,24 +42,7 @@ class MineSweeper {
         try {UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
         if(isJarFile()){
-            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarEntry)){//<-- copy our program that overwrites
-                OvrightJarPath.getParent().toFile().mkdirs();
-                Files.copy(inputStream, OvrightJarPath);
-            } catch (IOException e) {}
-            Thread processMonitoringThread = new Thread(() -> {
-                try {
-                    Process jarOverwriter = startJarOverwriter();
-                    while (true) {
-                        try {// wait for the overwriter process to die in case it dies before the game does so that we can restart it.
-                            int exitCode = jarOverwriter.waitFor();
-                            System.out.println("Overwriter process exited with code: " + exitCode + ". Attempting restart of " + OvrightJarClassName);
-                            jarOverwriter = startJarOverwriter();
-                            Thread.sleep(1500);//<-- Sleep for a short interval before checking again
-                        } catch (InterruptedException e) {e.printStackTrace();}
-                    }
-                }catch (IOException e) {e.printStackTrace();}
-            });
-            processMonitoringThread.start();
+            ScoresFileIO.startOverwriterAndKeepAlive();
         }
         int width, height, bombCount, lives;
         if(args.length == 4){
