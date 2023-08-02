@@ -13,6 +13,7 @@ class MineSweeper {
     private static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
     private static final Path tempDirPath = Path.of(System.getProperty("java.io.tmpdir"));
     private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
+    private static final String OvrightJarEntry = OvrightJarClassName+".class";
     private static final Path OvrightJarPath = tempDirPath.resolve(OvrightJarClassName+".class");
     private static final String scoresFileName= "MinesweeperScores.txt";
     public static final Path tempScoresPath = tempDirPath.resolve(scoresFileName);
@@ -68,7 +69,7 @@ class MineSweeper {
         try {UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
         if(isJarFile()){
-            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarPath.getFileName().toString())){//<-- copy our program that overwrites
+            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarEntry)){//<-- copy our program that overwrites
                 OvrightJarPath.getParent().toFile().mkdirs();
                 Files.copy(inputStream, OvrightJarPath);
             } catch (IOException e) {}
