@@ -19,14 +19,14 @@ class ScoresFileIO{
                 scoresFileString.append(allEntries[i].toString()).append(" ");//<-- string builders have a good append function. arrays dont.
             }
             try {
-                Files.createDirectories(MineSweeper.tempPath); //<-- Create the directory.
+                Files.createDirectories(MineSweeper.tempScoresPath.getParent()); //<-- Create the directory.
             } catch (IOException e) {e.printStackTrace();}
             try{
-                Files.createFile(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName));//<-- Create the file if not created.
+                Files.createFile(MineSweeper.tempScoresPath);//<-- Create the file if not created.
             }catch(IOException e){
                 if(!(e instanceof FileAlreadyExistsException))e.printStackTrace();
             }
-            try (FileWriter out2 = new FileWriter(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile())) {//<-- filewriters can overwrite or append a string to a file
+            try (FileWriter out2 = new FileWriter(MineSweeper.tempScoresPath.toFile())) {//<-- filewriters can overwrite or append a string to a file
                 out2.write(scoresFileString.toString());//<-- overwrite the file with new contents, or append as specified.
             }catch(IOException e){e.printStackTrace();}
         }else{//------------------------------------this exists for IDEs------------NOT IN A JAR---------------------------
@@ -45,9 +45,9 @@ class ScoresFileIO{
         ArrayList<ScoreEntry> fileEntriesBuilder = new ArrayList<>();
         ScoreEntry[] fileEntries=null;
         if(MineSweeper.isJarFile()){//----------------------------------------------------------IN A JAR--------------------------------------------
-            if(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile().exists()){
+            if(MineSweeper.tempScoresPath.toFile().exists()){
                 try{
-                    try(Scanner in = new Scanner(MineSweeper.tempPath.resolve(MineSweeper.scoresFileName).toFile())) {
+                    try(Scanner in = new Scanner(MineSweeper.tempScoresPath.toFile())) {
                         while (in.hasNext()) {
                             ScoreEntry currentEntry = new ScoreEntry(in.next());//<-- get next word (string separated by whitespace)
                             if(currentEntry.isValid())fileEntriesBuilder.add(currentEntry);//<-- only read out valid scores

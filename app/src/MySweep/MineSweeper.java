@@ -11,9 +11,11 @@ import java.nio.file.Path;
 import java.awt.Frame;
 class MineSweeper {
     private static final Path minesweeperclasspath = Path.of(System.getProperty("java.class.path"));
+    private static final Path tempDirPath = Path.of(System.getProperty("java.io.tmpdir"));
     private static final String OvrightJarClassName = "OverwriteMinesweeperJar";
-    public static final Path tempPath = Path.of(System.getProperty("java.io.tmpdir"));
-    public static final String scoresFileName= "MinesweeperScores.txt";
+    private static final Path OvrightJarPath = tempDirPath.resolve(OvrightJarClassName+".class");
+    private static final String scoresFileName= "MinesweeperScores.txt";
+    public static final Path tempScoresPath = tempDirPath.resolve(scoresFileName);
     public static final Path scoresPathForIDE = minesweeperclasspath.resolve("MySweep").resolve("save").resolve(scoresFileName);
     public static final String scoresEntryName = "src/MySweep/save/"+scoresFileName;
     public static final Image ExplosionIcon = new ImageIcon(MineSweeper.class.getResource(((isJarFile())?"/src/MySweep/":"") + "Icons/GameOverExplosion.png")).getImage();
@@ -48,13 +50,13 @@ class MineSweeper {
         ProcessBuilder OvrightJarPro = new ProcessBuilder();
         OvrightJarPro.command(Path.of(System.getProperty("java.home")).resolve("bin").resolve("java").toString());
         OvrightJarPro.command().add("-cp");
-        OvrightJarPro.command().add(tempPath.toString());
+        OvrightJarPro.command().add(OvrightJarPath.getParent().toString());
         OvrightJarPro.command().add(OvrightJarClassName);
         OvrightJarPro.command().add(String.valueOf(ProcessHandle.current().pid()));
         OvrightJarPro.command().add(scoresEntryName);
         OvrightJarPro.command().add(minesweeperclasspath.toAbsolutePath().toString());//<- original jar path
-        OvrightJarPro.command().add(tempPath.resolve(OvrightJarClassName+".class").toString());
-        OvrightJarPro.command().add(tempPath.resolve(scoresFileName).toString());//<-- scores directory
+        OvrightJarPro.command().add(OvrightJarPath.toString());
+        OvrightJarPro.command().add(tempScoresPath.toString());//<-- scores directory
         OvrightJarPro.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         OvrightJarPro.redirectError(ProcessBuilder.Redirect.INHERIT);
         return OvrightJarPro.start();
@@ -66,9 +68,9 @@ class MineSweeper {
         try {UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());}
         catch (Exception e) {e.printStackTrace();}
         if(isJarFile()){
-            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarClassName+".class")){//<-- copy our program that overwrites
-                tempPath.toFile().mkdirs();
-                Files.copy(inputStream, tempPath.resolve(OvrightJarClassName+".class"));
+            try(InputStream inputStream = ClassLoader.getSystemResourceAsStream(OvrightJarPath.getFileName().toString())){//<-- copy our program that overwrites
+                OvrightJarPath.getParent().toFile().mkdirs();
+                Files.copy(inputStream, OvrightJarPath);
             } catch (IOException e) {}
             Thread processMonitoringThread = new Thread(() -> {
                 try {
