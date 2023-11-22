@@ -101,10 +101,10 @@ public class Grid extends JPanel {
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     //---------------------GRID CONSTRUCTOR----------------------GRID CONSTRUCTOR----------------------------GRID CONSTRUCTOR------------------------------
     public Grid(int w, int h, int bombNum, int lives) {//INIT
-        Fieldx = w;
-        Fieldy = h;                                      //THE
+        Fieldx = w;                                      //THE
+        Fieldy = h;                                        //GRID
         this.lives = lives;//<-- "this." allows us to say, the one belonging to this instance of the class
-        bombCount = bombNum;                               //GRID
+        bombCount = bombNum;
         BombsFound = 0;
         livesLeft = lives;
         answers = new Minefield(Fieldx, Fieldy, bombCount);//<-- constructor understood? go to MineField.java
