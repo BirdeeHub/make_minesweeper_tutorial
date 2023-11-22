@@ -129,15 +129,10 @@
 
     //Theres also a weird thing that is nice sometimes that looks like (boolean)?"thing1":"thing2" and is used like:
 
-    boolean comparison = (3 == 4);//<-- performs a comparison between 3 and 4 and returns the result false to the variable comparison
-    
-    int x = (comparison)?numberone:numbertwo;//<--int x will recieve numbertwo from the ternary expression
-
-    //or more simply:
-
     int x = (3 == 4)?numberone:numbertwo;
     
     //It is basically just an if statement that returns the thing that was chosen (which I stored in x in the above example)
+    // In this case, because 3 is not equal to 4, the ternary expression will return the second thing (whatever is inside numbertwo).
 
     //----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -156,10 +151,12 @@
     This is because it passes a copy of the reference (pointer) to the object. 
     It passes a copy of a primitive type called a reference or pointer that tells the program where to look, rather than a copy of the contents of the object.
 
+    //A function called chairChooper that takes a reference to a chair as an argument.
     void chairChopper(ChairClass thisChair){
         thisChair.setHeight( thisChair.getHeight()/2 );
     }
 
+    // and an example of it changing the value of the height of the chair passed into it.
     ChairClass chair1 = new ChairClass();
     chair1.setHeight(4);
     chairChopper(chair1);//<-- this will set height value of our chair1 instance to be half of what it was, because it is not a primitive type.
