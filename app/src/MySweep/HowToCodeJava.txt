@@ -62,7 +62,7 @@
 
     There is 1 fundamental way of both dictating and grouping what things should be stored and what things should be done on those things.
     It is called a function. A function has a name, and you can call it later. 
-    It also returns a new thing to you so that you can do something with the result (as long as you give it a place to put it!)
+    It also returns a new thing to you so that you can do something with the result
     you can make it return void in many languages to return nothing. 
     Functions can also call themselves sometimes. This is called recursion and seems better than really it is sometimes.
     
