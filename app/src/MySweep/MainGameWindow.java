@@ -113,28 +113,35 @@ public class MainGameWindow extends javax.swing.JFrame implements DarkModeToggle
             }//                                         ^ this is because each listener is associated with a particular button, and contains both methods
             @Override
             public void mousePressed(MouseEvent e) {
+                // It thinks double click is middle click
+                if(SwingUtilities.isMiddleMouseButton(e)) {
+                    currentButton = (JButton)e.getSource();
+                    grid.doClickType(currentButton, 2);//Chord
+                }
                 if(SwingUtilities.isLeftMouseButton(e)){
                     LMB = true;
-                    if(currentButton!=null){
-                        if(chordToggle.isSelected()){
-                            grid.doClickType(currentButton, 2);
-                        }else if(markToggle.isSelected()){
-                            grid.doClickType(currentButton, 1);//mark
-                        }else if(RMB){
-                            grid.doClickType(currentButton, 2);//Chord
-                        }else{
-                            grid.doClickType(currentButton, 0);//regular
-                        }
+                    if(currentButton==null){
+                        currentButton = (JButton)e.getSource();
+                    }
+                    if(chordToggle.isSelected()){
+                        grid.doClickType(currentButton, 2);
+                    }else if(markToggle.isSelected()){
+                        grid.doClickType(currentButton, 1);//mark
+                    }else if(RMB){
+                        grid.doClickType(currentButton, 2);//Chord
+                    }else{
+                        grid.doClickType(currentButton, 0);//regular
                     }
                 }
                 if(SwingUtilities.isRightMouseButton(e)){//same thing but for right click, so no need for clickType 0 or marktoggle check
                     RMB = true;
-                    if(currentButton!=null){
-                        if(LMB){
-                            grid.doClickType(currentButton, 2);
-                        }else{
-                            grid.doClickType(currentButton, 1);
-                        }
+                    if(currentButton==null){
+                        currentButton = (JButton)e.getSource();
+                    }
+                    if(LMB){
+                        grid.doClickType(currentButton, 2);
+                    }else{
+                        grid.doClickType(currentButton, 1);
                     }
                 }
                 setBombsFoundDisplay();//<-- update display text with changes
