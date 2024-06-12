@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ##once compiled, this jar will not contain scripts, Minesweeper.ico file, or source code.
 [ -f ../src/MySweep/Icons/Minesweeper.ico ] && mv ../src/MySweep/Icons/Minesweeper.ico .
 javac ../src/MySweep/*.java ../src/*.java -d ../minesweeper_jar_in && cd ../minesweeper_jar_in/ && \
