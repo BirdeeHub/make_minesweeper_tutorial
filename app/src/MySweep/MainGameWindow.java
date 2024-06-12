@@ -114,28 +114,35 @@ public class MainGameWindow extends javax.swing.JFrame {//Originally grid and ma
             
             @Override                                  //dont worry too much if this listener is confusing for now.
             public void mousePressed(MouseEvent e) {//<-- you need to know that they can fire on things like mouse pressed
+                // It thinks double click is middle click
+                if(SwingUtilities.isMiddleMouseButton(e)) {
+                    currentButton = (JButton)e.getSource();
+                    grid.doClickType(currentButton, 2);//Chord
+                }
                 if(SwingUtilities.isLeftMouseButton(e)){// and how to search for how to write an event listener for a mouse or a key or whatever in a language
                     LMB = true;//<-- set our left mouse button variable true so that all the buttons can hear if the mouse was pressed
-                    if(currentButton!=null){//<-- if mouse is over a button
-                        if(chordToggle.isSelected()){//<-- if the toggle button for chords is selected
-                            grid.doClickType(currentButton, 2);//<-- in this case, we run grid.doClickType 2 (a chord)
-                        }else if(markToggle.isSelected()){//<-- if the toggle button for marking is selected
-                            grid.doClickType(currentButton, 1);//mark
-                        }else if(RMB){//was the right mouse button also pressed?
-                            grid.doClickType(currentButton, 2);//Chord
-                        }else{//else do regular left click
-                            grid.doClickType(currentButton, 0);//regular
-                        }
+                    if(currentButton==null){
+                        currentButton = (JButton)e.getSource();
+                    }
+                    if(chordToggle.isSelected()){//<-- if the toggle button for chords is selected
+                        grid.doClickType(currentButton, 2);//<-- in this case, we run grid.doClickType 2 (a chord)
+                    }else if(markToggle.isSelected()){//<-- if the toggle button for marking is selected
+                        grid.doClickType(currentButton, 1);//mark
+                    }else if(RMB){//was the right mouse button also pressed?
+                        grid.doClickType(currentButton, 2);//Chord
+                    }else{//else do regular left click
+                        grid.doClickType(currentButton, 0);//regular
                     }
                 }
                 if(SwingUtilities.isRightMouseButton(e)){//same thing but for right click, so no need for clickType 0 or checking our toggle buttons
                     RMB = true;
-                    if(currentButton!=null){
-                        if(LMB){
-                            grid.doClickType(currentButton, 2);
-                        }else{
-                            grid.doClickType(currentButton, 1);
-                        }
+                    if(currentButton==null){
+                        currentButton = (JButton)e.getSource();
+                    }
+                    if(LMB){
+                        grid.doClickType(currentButton, 2);
+                    }else{
+                        grid.doClickType(currentButton, 1);
                     }
                 }
                 setBombsFoundDisplay();//<-- update display text with changes
