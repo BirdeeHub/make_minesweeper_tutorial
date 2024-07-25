@@ -110,7 +110,7 @@ dpkg has certain install locations it allows....
 
 **If you are learning java, download the .deb file (or the .jar) for the reasons stated above.** 
 ```bash
-wget -O minesweeper_1.0-1_amd64.deb https://github.com/BirdeeHub/minesweeper/raw/main/minesweeper_1.0-1_amd64.deb && \
+wget -O minesweeper_1.0-1_amd64.deb https://github.com/BirdeeHub/make_minesweeper_tutorial/raw/main/minesweeper_1.0-1_amd64.deb && \
 sudo dpkg -i ./minesweeper_1.0-1_amd64.deb
 ```
 
@@ -118,7 +118,7 @@ sudo dpkg -i ./minesweeper_1.0-1_amd64.deb
 
 move to a writeable directory and run the following command (requires wget):
 ```bash
-wget -O minesweeper_linux_dist.zip https://github.com/BirdeeHub/minesweeper/raw/main/minesweeper_linux_dist.zip && \
+wget -O minesweeper_linux_dist.zip https://github.com/BirdeeHub/make_minesweeper_tutorial/raw/main/minesweeper_linux_dist.zip && \
 unzip minesweeper_linux_dist.zip -d minesweeper_linux_dist && \
 sudo ./minesweeper_linux_dist/installLinuxMinesweeper.sh
 ```
